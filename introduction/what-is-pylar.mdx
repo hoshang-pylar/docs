@@ -1,0 +1,124 @@
+---
+title: "What is Pylar?"
+description: "Learn about Pylar, a secure data access layer designed for AI agents to safely interact with structured data sources"
+---
+
+## Overview
+
+Pylar is a secure data access layer designed for AI agents, enabling them to interact with structured data sources safely and efficiently. It provides organizations with the tools to create governed views of their data, publish them as Machine-Consumable Protocol (MCP) tools, and monitor agent performance through comprehensive evaluations.
+
+<Info>
+Pylar bridges the gap between your data warehouse and AI agents, providing secure, controlled access without exposing raw database queries or compromising data governance.
+</Info>
+
+## The Problem
+
+As AI agents become increasingly powerful, organizations face a critical challenge: **how to provide agents with access to structured data while maintaining security, compliance, and governance.**
+
+Traditional approaches often require:
+- Exposing raw database access to AI agents
+- Writing custom integration code for each data source
+- Manually managing permissions and access controls
+- Building separate pipelines for different agent frameworks
+- Lack of visibility into what data agents are accessing
+
+<Warning>
+Giving AI agents direct database access can lead to security vulnerabilities, compliance issues, and uncontrolled data usage.
+</Warning>
+
+## The Solution
+
+Pylar solves these challenges by providing a **governed data access layer** that sits between your data warehouse and AI agents. Instead of giving agents direct database access, you define secure, scoped views of your data that agents can safely query.
+
+### How It Works
+
+1. **Define Governed Views**: Create SQL views on your data warehouse with fine-grained permissions
+2. **Auto-Generate MCP Tools**: Pylar automatically converts your SQL views into MCP tools
+3. **Publish & Share**: Share tools with agent builders using a single link
+4. **Monitor & Evaluate**: Track agent performance, query success rates, and data usage
+
+## Key Features
+
+### Governed SQL Views
+
+Define secure, scoped data views on your data warehouse, controlling precisely what data agents can access with fine-grained permissions.
+
+- **Granular Access Control**: Set permissions at the view, column, and row level
+- **Data Masking**: Automatically mask sensitive data based on your policies
+- **Query Validation**: Validate queries before execution to prevent unauthorized access
+- **Audit Trail**: Track all queries and data access for compliance
+
+<Tip>
+Start with read-only views for your most commonly accessed data. You can always expand access as you gain confidence in your governance policies.
+</Tip>
+
+### Auto-Generated MCP Tools
+
+Automatically create MCP (Machine-Consumable Protocol) tools from your SQL views, providing agents with safe access to structured data without exposing raw database queries.
+
+- **Zero Code Required**: No need to write custom integration code
+- **Standard Protocol**: Uses MCP, the emerging standard for AI agent tooling
+- **Type Safety**: Automatically infers schemas and types from your views
+- **Documentation**: Auto-generates tool descriptions from your SQL comments
+
+### Publishing Custom Tools
+
+Develop custom MCP tools tailored to specific views and publish them to agent builders with a single link, facilitating tool sharing across teams and environments.
+
+- **One-Click Sharing**: Share tools with a simple link
+- **Version Control**: Manage different versions of your tools
+- **Environment Management**: Separate tools for development, staging, and production
+- **Team Collaboration**: Share tools across teams and projects
+
+### Evals & Observability Layer
+
+Monitor agent performance, track query success rates, and measure data usage, ensuring governance and transparency in production AI systems.
+
+- **Performance Metrics**: Track query latency, success rates, and error patterns
+- **Usage Analytics**: Understand which data agents are accessing most frequently
+- **Cost Tracking**: Monitor data warehouse costs associated with agent queries
+- **Alerting**: Set up alerts for unusual patterns or security concerns
+
+<Check>
+With Pylar's observability features, you'll always know what your AI agents are doing with your data.
+</Check>
+
+### Seamless Integration
+
+Connect with various databases like BigQuery, Snowflake, PostgreSQL, and more, allowing you to model a view once and publish MCP tools without additional pipelines or migrations.
+
+**Supported Data Sources:**
+- BigQuery
+- Snowflake
+- PostgreSQL
+- MySQL
+- Redshift
+- And more...
+
+## Benefits
+
+By implementing Pylar, organizations can:
+
+- **Maintain Security**: Control exactly what data agents can access with fine-grained permissions
+- **Ensure Compliance**: Track all data access and maintain audit trails
+- **Accelerate Development**: Auto-generate tools instead of writing custom integrations
+- **Reduce Risk**: Eliminate direct database access for AI agents
+- **Improve Visibility**: Understand agent behavior and data usage patterns
+- **Scale Easily**: Add new data sources and tools without complex migrations
+
+## Use Cases
+
+Pylar is ideal for:
+
+- **AI Agent Development**: Provide agents with safe access to structured data
+- **Data Analytics Teams**: Enable analysts to build AI-powered data tools
+- **Enterprise AI Adoption**: Safely scale AI agent usage across your organization
+- **Compliance-Critical Industries**: Maintain data governance while leveraging AI
+- **Multi-Tenant Applications**: Isolate data access for different customers or teams
+
+## Next Steps
+
+Ready to get started? Learn more about:
+
+- [Why Pylar?](/introduction/why-pylar) - Understand the benefits and use cases
+- [Quick Start](/introduction/quick-start) - Get up and running in minutes
