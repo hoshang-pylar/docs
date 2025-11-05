@@ -32,60 +32,70 @@ Pylar solves these challenges by providing a **governed data access layer** that
 
 ### How It Works
 
-1. **Define Governed Views**: Create SQL views on your data warehouse with fine-grained permissions
-2. **Auto-Generate MCP Tools**: Pylar automatically converts your SQL views into MCP tools
-3. **Publish & Share**: Share tools with agent builders using a single link
-4. **Monitor & Evaluate**: Track agent performance, query success rates, and data usage
+1. **Connect Databases**: Connect to multiple data sources (BigQuery, Snowflake, PostgreSQL, etc.)
+2. **Create Projects**: Organize your work in projects that contain all your views and tools
+3. **Build Views in SQL IDE**: Use the built-in SQL IDE to select data sources and write queries, including cross-database joins
+4. **Create MCP Tools**: Build MCP tools via AI (using natural language) or manually, with multiple tools per view
+5. **Test & Publish**: Test your tools, then publish to get a link and header token
+6. **Deploy to Agents**: Paste the link and token into any agent builder
+7. **Monitor with Evals**: Use comprehensive evals to see how agents interact, errors, query shapes, and raw logs
 
 ## Key Features
 
 ### Governed SQL Views
 
-Define secure, scoped data views on your data warehouse, controlling precisely what data agents can access with fine-grained permissions.
+Create secure, scoped data views using Pylar's SQL IDE. These views are the **only level of access** agents get—they never have raw database access.
 
-- **Granular Access Control**: Set permissions at the view, column, and row level
-- **Data Masking**: Automatically mask sensitive data based on your policies
-- **Query Validation**: Validate queries before execution to prevent unauthorized access
-- **Audit Trail**: Track all queries and data access for compliance
+- **SQL IDE**: Built-in SQL editor where you select data sources and write queries
+- **Cross-Database Joins**: Join data across multiple databases and warehouses in a single query
+- **Project Organization**: Organize views within projects for better management
+- **Complete Isolation**: Agents can only query through your defined views, never raw tables
 
 <Tip>
 Start with read-only views for your most commonly accessed data. You can always expand access as you gain confidence in your governance policies.
 </Tip>
 
-### Auto-Generated MCP Tools
+<Warning>
+Views are the only access level. AI agents never get direct database access, ensuring complete security and governance.
+</Warning>
 
-Automatically create MCP (Machine-Consumable Protocol) tools from your SQL views, providing agents with safe access to structured data without exposing raw database queries.
+### AI-Powered MCP Tool Creation
 
-- **Zero Code Required**: No need to write custom integration code
+Create MCP (Machine-Consumable Protocol) tools from your SQL views using AI or manual configuration. Build multiple tools on a single view, each governing how agents interact with your data differently.
+
+- **AI-Assisted Creation**: Use natural language prompts like "create a tool to fetch error codes, events, and deal information" and Pylar's AI configures the tool
+- **Manual Configuration**: Fine-tune tools manually for complete control
+- **Multiple Tools Per View**: Create different tools on the same view for different use cases
+- **Test Before Deploy**: Test your tools before publishing to ensure they work correctly
 - **Standard Protocol**: Uses MCP, the emerging standard for AI agent tooling
-- **Type Safety**: Automatically infers schemas and types from your views
-- **Documentation**: Auto-generates tool descriptions from your SQL comments
 
-### Publishing Custom Tools
+### Publishing & Deployment
 
-Develop custom MCP tools tailored to specific views and publish them to agent builders with a single link, facilitating tool sharing across teams and environments.
+Publish your tools and get everything you need to connect to any agent builder.
 
-- **One-Click Sharing**: Share tools with a simple link
-- **Version Control**: Manage different versions of your tools
-- **Environment Management**: Separate tools for development, staging, and production
-- **Team Collaboration**: Share tools across teams and projects
+- **Publish with One Click**: Hit publish to generate your deployment package
+- **Link & Token**: Receive a unique MCP server link and header token for secure access
+- **Universal Compatibility**: Works with any agent builder that supports MCP (Claude Desktop, Cursor, Windsurf, etc.)
+- **Automatic Updates**: Adjust queries, view scope, or tools on the platform—changes reflect everywhere automatically
 
 ### Evals & Observability Layer
 
-Monitor agent performance, track query success rates, and measure data usage, ensuring governance and transparency in production AI systems.
+Get in-depth insights into how your agents interact with your views. Click "Evals" to see comprehensive analytics that help you optimize your views and tools.
 
-- **Performance Metrics**: Track query latency, success rates, and error patterns
-- **Usage Analytics**: Understand which data agents are accessing most frequently
-- **Cost Tracking**: Monitor data warehouse costs associated with agent queries
-- **Alerting**: Set up alerts for unusual patterns or security concerns
+- **Interaction Patterns**: See exactly how agents are using your tools
+- **Success vs. Errors**: Track successful queries and identify failures
+- **Error Analysis**: Detailed breakdown of errors—what they are, when they occur, and why they failed
+- **Query Shape**: Understand the types of queries agents are making
+- **Raw Logs**: Access full query logs for debugging and analysis
+- **Iterative Improvement**: Use evals insights to adjust view scope and tool configurations
 
 <Check>
 With Pylar's observability features, you'll always know what your AI agents are doing with your data.
 </Check>
 
-### Seamless Integration
+### Seamless Multi-Database Integration
 
-Connect with various databases like BigQuery, Snowflake, PostgreSQL, and more, allowing you to model a view once and publish MCP tools without additional pipelines or migrations.
+Connect to multiple databases and warehouses simultaneously. Join data across different sources in a single query, giving you flexibility without complexity.
 
 **Supported Data Sources:**
 - BigQuery
@@ -93,7 +103,13 @@ Connect with various databases like BigQuery, Snowflake, PostgreSQL, and more, a
 - PostgreSQL
 - MySQL
 - Redshift
+- AlloyDB
+- Databricks
 - And more...
+
+<Tip>
+You can join tables from BigQuery and Snowflake in the same query, giving you unified access to all your data sources.
+</Tip>
 
 ## Benefits
 

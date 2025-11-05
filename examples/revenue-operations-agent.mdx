@@ -1,0 +1,139 @@
+---
+title: "Revenue Operations Agent"
+description: "Build an AI agent for revenue forecasting, deal analysis, pipeline health monitoring, and quota tracking"
+---
+
+## Overview
+
+A Revenue Operations Agent powered by Pylar provides comprehensive revenue analytics, forecasts, deal analysis, and pipeline health monitoring to help revenue teams make data-driven decisions.
+
+## What the Agent Needs to Accomplish
+
+The agent must:
+- Forecast revenue across multiple time periods
+- Analyze deal progression and conversion rates
+- Monitor pipeline health and identify risks
+- Track quota attainment and performance
+- Identify trends and patterns in revenue data
+- Generate revenue reports and insights
+
+## How Pylar Helps
+
+Pylar enables the agent by:
+- **Unified Revenue View**: Combining deals, contracts, billing, and historical data
+- **Real-time Analytics**: Querying current revenue metrics and forecasts
+- **Multi-Source Integration**: Joining CRM, billing, and finance data
+- **Advanced Calculations**: Complex revenue calculations and forecasting
+- **Trend Analysis**: Identifying revenue patterns and trends
+
+## Without Pylar vs With Pylar
+
+### Without Pylar
+
+**Challenges**:
+- ❌ Data scattered across CRM, billing, and finance systems
+- ❌ Manual revenue calculations and forecasting
+- ❌ Complex data aggregation across systems
+- ❌ Time-consuming report generation
+- ❌ Limited real-time insights
+- ❌ Difficult to track quota and performance
+
+**Implementation Complexity**:
+- 4-5 different system integrations
+- Custom revenue calculation logic
+- Manual forecasting models
+- Complex data aggregation
+- ~6-8 weeks development time
+
+### With Pylar
+
+**Benefits**:
+- ✅ Single endpoint for all revenue data
+- ✅ Automated revenue calculations
+- ✅ Real-time forecasting
+- ✅ Unified quota tracking
+- ✅ Easy to update calculations
+- ✅ Built-in analytics
+
+**Implementation Complexity**:
+- Connect 4-5 data sources (1.5 hours)
+- Create revenue views (3 hours)
+- Build MCP tools with AI (2 hours)
+- Connect to agent builder (15 minutes)
+- **Total: ~7 hours**
+
+## Step-by-Step Implementation
+
+### Step 1: Connect Data Sources
+
+1. **Connect CRM** (Deals, opportunities, contracts)
+2. **Connect Billing System** (Invoices, subscriptions, payments)
+3. **Connect Finance System** (Revenue recognition, financial data)
+4. **Connect Sales Activity** (Quota, performance data)
+
+### Step 2: Create Revenue Views
+
+**Revenue Forecast View**:
+```sql
+CREATE VIEW revenue_forecast AS
+SELECT 
+  DATE_TRUNC('month', close_date) as forecast_month,
+  SUM(amount * (probability / 100)) as weighted_revenue,
+  SUM(amount) as best_case_revenue,
+  COUNT(*) as deal_count,
+  AVG(probability) as avg_probability
+FROM crm.deals
+WHERE close_date >= CURRENT_DATE
+GROUP BY DATE_TRUNC('month', close_date);
+```
+
+**Quota Tracking View**:
+```sql
+CREATE VIEW quota_tracking AS
+SELECT 
+  rep_name,
+  quota_amount,
+  SUM(closed_won_amount) as attained_amount,
+  (SUM(closed_won_amount) / quota_amount) * 100 as quota_attainment_percent,
+  SUM(weighted_pipeline) as pipeline_value,
+  (SUM(weighted_pipeline) / quota_amount) * 100 as pipeline_coverage_percent
+FROM sales.rep_performance
+GROUP BY rep_name, quota_amount;
+```
+
+### Step 3: Create MCP Tools
+
+**Tool 1: Get Revenue Forecast**
+- `get_revenue_forecast(months_ahead: number, include_breakdown: boolean)`
+
+**Tool 2: Track Quota Attainment**
+- `get_quota_tracking(rep_name: string, period: string)`
+
+**Tool 3: Analyze Pipeline Health**
+- `analyze_pipeline_health(threshold: number)`
+
+**Tool 4: Revenue Trend Analysis**
+- `analyze_revenue_trends(period: string, metric: string)`
+
+## Example Agent Interactions
+
+**User**: "What's our revenue forecast for Q2?"
+
+**Agent**: "Q2 Revenue Forecast:
+- Weighted Forecast: $1.2M
+- Best Case: $1.8M
+- Pipeline Coverage: 3.2x quota
+- Top Rep: Sarah Johnson (145% of quota)"
+
+## Outcomes
+
+- **Forecast Accuracy**: 30% improvement
+- **Quota Visibility**: Real-time tracking
+- **Pipeline Health**: 25% better pipeline management
+- **Report Efficiency**: 85% reduction in report time
+
+## Next Steps
+
+- [Sales Assistant Example](/examples/sales-assistant)
+- [Financial Analyst Example](/examples/financial-analyst)
+

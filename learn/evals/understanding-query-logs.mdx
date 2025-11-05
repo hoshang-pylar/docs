@@ -1,0 +1,266 @@
+---
+title: "Understanding Query Logs"
+description: "Learn how to read and analyze raw query logs from Evals to understand tool execution details"
+---
+
+## Overview
+
+Raw Logs provide detailed records of every MCP tool call. They show you exactly what happened—which tools were called, what queries were executed, whether they succeeded, and any errors that occurred.
+
+## Accessing Raw Logs
+
+In the Evaluation Dashboard:
+
+1. Scroll to the bottom of the page
+2. Find the **Raw Logs** section
+3. Review the detailed records
+
+You can scroll through the logs to see all tool invocations.
+
+## Log Structure
+
+Each log entry contains:
+
+- **Tool Name**: Which MCP tool was invoked
+- **Query Executed**: The actual SQL query that ran
+- **Invocation Status**: Success or failure
+- **Timestamp**: When the invocation occurred
+- **Error Message**: Error details (empty when successful)
+
+## Understanding Log Fields
+
+### Tool Name
+
+**What it shows**: The name of the MCP tool that was invoked.
+
+**Example**: `fetch_engagement_scores_by_event_type`
+
+**What it tells you**: Which tool agents are using most frequently.
+
+### Query Executed
+
+**What it shows**: The actual SQL query that was executed, with parameter values injected.
+
+**Example**:
+```sql
+SELECT engagement_score 
+FROM table0 
+WHERE event_type LIKE '%login%' 
+ORDER BY engagement_score DESC
+```
+
+**What it tells you**: 
+- Exact query that ran
+- Parameter values that were used
+- How parameters were injected into the query
+
+<Info>
+The Query Executed field shows the query after parameter injection. This is the actual query that ran against your database.
+</Info>
+
+### Invocation Status
+
+**What it shows**: Whether the tool call succeeded or failed.
+
+**Values**:
+- **Success**: Tool executed successfully
+- **Error**: Tool execution failed
+
+**What it tells you**: Overall success/failure for each invocation.
+
+### Timestamp
+
+**What it shows**: When the tool invocation occurred.
+
+**Example**: `2024-11-05 14:23:45`
+
+**What it tells you**: 
+- When tools are being used
+- Time patterns in usage
+- Correlation with errors or performance issues
+
+### Error Message
+
+**What it shows**: Detailed error information if the invocation failed. Empty when successful.
+
+**Example**: `Error: Parameter 'event_type' not found in query`
+
+**What it tells you**: 
+- Why the invocation failed
+- What needs to be fixed
+- Common error patterns
+
+<Warning>
+Error messages are your best source of information for understanding failures. Always review them when investigating issues.
+</Warning>
+
+## Analyzing Logs
+
+### Finding Successful Invocations
+
+Look for entries with:
+- Status: **Success**
+- Empty error message field
+- Valid query results
+
+These show what's working correctly.
+
+### Finding Failed Invocations
+
+Look for entries with:
+- Status: **Error**
+- Non-empty error message
+- Failed query execution
+
+These show what needs to be fixed.
+
+### Pattern Analysis
+
+Review logs to identify patterns:
+
+- **Time Patterns**: Do errors occur at specific times?
+- **Query Patterns**: Do certain queries fail more often?
+- **Parameter Patterns**: Do certain parameter values cause errors?
+- **Tool Patterns**: Do specific tools fail more than others?
+
+## Using Logs for Debugging
+
+### Step 1: Identify the Problem
+
+1. Find failed invocations in logs
+2. Review error messages
+3. Note which tool failed
+4. Check what parameters were used
+
+### Step 2: Understand the Context
+
+1. Look at the query that was executed
+2. Review parameter values
+3. Check timestamp (when did it fail?)
+4. Compare with successful invocations
+
+### Step 3: Reproduce the Issue
+
+1. Copy the query from the log
+2. Test it manually in SQL IDE
+3. Use the same parameter values
+4. See if you can reproduce the error
+
+### Step 4: Fix the Issue
+
+1. Identify the root cause
+2. Fix the tool or query
+3. Test the fix
+4. Monitor logs to confirm it's resolved
+
+## Common Log Patterns
+
+### Pattern 1: Parameter Mismatch
+
+**Log Entry**:
+```
+Tool: fetch_engagement_scores_by_event_type
+Query: SELECT engagement_score FROM table0 WHERE event_type = '{event_type_param}'
+Status: Error
+Error: Parameter 'event_type_param' not found
+```
+
+**Issue**: Parameter placeholder doesn't match parameter name
+
+**Fix**: Update query to use correct parameter name
+
+### Pattern 2: SQL Syntax Error
+
+**Log Entry**:
+```
+Tool: fetch_engagement_scores_by_event_type
+Query: SELECT engagement_score FROM table0 WHERE event_type LIKE '%login%' ORDER BY
+Status: Error
+Error: SQL syntax error near 'ORDER BY'
+```
+
+**Issue**: Incomplete or invalid SQL
+
+**Fix**: Complete the SQL query properly
+
+### Pattern 3: Timeout
+
+**Log Entry**:
+```
+Tool: fetch_engagement_scores_by_event_type
+Query: SELECT * FROM table0 WHERE event_type LIKE '%login%'
+Status: Error
+Error: Query execution timeout
+```
+
+**Issue**: Query takes too long
+
+**Fix**: Add LIMIT, optimize query, or refine filters
+
+## Best Practices
+
+### Regular Review
+
+- ✅ Review logs regularly (weekly or daily)
+- ✅ Focus on errors first
+- ✅ Look for patterns over time
+- ✅ Track improvements
+
+### Log Analysis
+
+- Use filters to find specific issues
+- Sort by timestamp to see recent activity
+- Filter by status to focus on errors
+- Search for specific error messages
+
+### Documentation
+
+- Document common errors and fixes
+- Note patterns you discover
+- Share findings with team
+- Create runbooks for frequent issues
+
+## Navigating Large Logs
+
+### Scrolling
+
+- Scroll down to see older entries
+- New entries appear at the top
+- Use browser find/search to locate specific entries
+
+### Filtering
+
+If filters are available:
+- Filter by tool name
+- Filter by status (success/error)
+- Filter by date range
+- Filter by error message
+
+### Searching
+
+Use browser search (Cmd+F or Ctrl+F) to:
+- Find specific tool names
+- Search for error messages
+- Locate specific timestamps
+- Find parameter values
+
+<Tip>
+For large log files, use browser search to quickly find specific entries. This is much faster than scrolling through everything.
+</Tip>
+
+## Next Steps
+
+Now that you understand query logs:
+
+- [Analyzing Errors](/learn/evals/analyzing-errors) - Use logs to identify and fix errors
+- [Improving Tools with Evals](/learn/evals/improving-tools-with-evals) - Use log insights to optimize tools
+- [Evals Best Practices](/learn/evals/evals-best-practices) - Learn best practices for using Evals
+
+<Card
+  title="Improve Your Tools"
+  icon="wand-magic-sparkles"
+  href="/learn/evals/improving-tools-with-evals"
+>
+  Use log insights to optimize your MCP tools
+</Card>
+

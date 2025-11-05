@@ -1,0 +1,237 @@
+---
+title: "Customer Wiki Agent"
+description: "Build an AI agent that creates and maintains a customer knowledge base from support interactions and product data"
+---
+
+## Overview
+
+A Customer Wiki Agent powered by Pylar automatically generates and maintains a comprehensive knowledge base by analyzing support tickets, customer interactions, product documentation, and frequently asked questions.
+
+## What the Agent Needs to Accomplish
+
+The agent must:
+- Analyze support tickets and customer interactions to identify common questions
+- Extract key information from product documentation and manuals
+- Generate and update knowledge base articles
+- Answer FAQs using existing knowledge base
+- Identify knowledge gaps and suggest new articles
+- Track article effectiveness and update recommendations
+
+## How Pylar Helps
+
+Pylar enables the agent by:
+- **Unified Data Access**: Combining support tickets, product docs, and knowledge base in one view
+- **Pattern Recognition**: Analyzing ticket patterns to identify common issues
+- **Content Analysis**: Querying product documentation and existing articles
+- **Real-time Updates**: Keeping knowledge base current with latest interactions
+- **Governed Access**: Ensuring only appropriate content is accessible
+
+## Without Pylar vs With Pylar
+
+### Without Pylar
+
+**Challenges**:
+- ❌ Multiple systems to query (Zendesk, Confluence, Notion, product docs)
+- ❌ Complex API integrations for each system
+- ❌ Manual analysis of ticket patterns
+- ❌ Difficult to correlate support data with product documentation
+- ❌ No unified view of knowledge gaps
+- ❌ Time-consuming content updates
+- ❌ Limited ability to track article effectiveness
+
+**Implementation Complexity**:
+- 3-4 different API integrations
+- Custom analytics for ticket patterns
+- Manual content curation
+- Complex data correlation logic
+- ~3-4 weeks development time
+
+### With Pylar
+
+**Benefits**:
+- ✅ Single endpoint for all knowledge sources
+- ✅ SQL views combine tickets, docs, and articles
+- ✅ Easy pattern analysis through SQL queries
+- ✅ Real-time knowledge base updates
+- ✅ Built-in analytics on article effectiveness
+- ✅ Simple content updates via view modifications
+
+**Implementation Complexity**:
+- Connect 3-4 data sources (1 hour)
+- Create knowledge base views (2 hours)
+- Build MCP tools with AI (1 hour)
+- Connect to agent builder (15 minutes)
+- **Total: ~4-5 hours**
+
+## Step-by-Step Implementation
+
+### Step 1: Connect Data Sources
+
+Connect your knowledge sources:
+
+1. **Connect Zendesk** (Support tickets, articles)
+2. **Connect Confluence/Notion** (Product documentation)
+3. **Connect Product Analytics** (Feature usage, user behavior)
+4. **Connect Knowledge Base** (Existing articles, FAQs)
+
+### Step 2: Create Knowledge Base Views
+
+**Support Ticket Patterns View**:
+```sql
+CREATE VIEW support_ticket_patterns AS
+SELECT 
+  t.category,
+  t.subject,
+  COUNT(*) as frequency,
+  AVG(t.resolution_time_hours) as avg_resolution_time,
+  GROUP_CONCAT(DISTINCT t.tags) as common_tags,
+  MAX(t.created_date) as last_occurrence
+FROM zendesk.tickets t
+WHERE t.status = 'resolved'
+GROUP BY t.category, t.subject
+HAVING COUNT(*) >= 5
+ORDER BY frequency DESC;
+```
+
+**Knowledge Gap Analysis View**:
+```sql
+CREATE VIEW knowledge_gaps AS
+SELECT 
+  t.subject,
+  t.category,
+  COUNT(*) as ticket_count,
+  CASE 
+    WHEN kb.article_id IS NULL THEN 'No Article'
+    ELSE 'Article Exists'
+  END as article_status,
+  AVG(t.resolution_time_hours) as avg_resolution_time
+FROM zendesk.tickets t
+LEFT JOIN knowledge_base.articles kb 
+  ON LOWER(t.subject) LIKE LOWER(CONCAT('%', kb.title, '%'))
+WHERE t.created_date >= DATE_SUB(CURRENT_DATE, INTERVAL 90 DAY)
+GROUP BY t.subject, t.category, kb.article_id
+HAVING COUNT(*) >= 3 AND kb.article_id IS NULL
+ORDER BY ticket_count DESC;
+```
+
+**Article Effectiveness View**:
+```sql
+CREATE VIEW article_effectiveness AS
+SELECT 
+  kb.article_id,
+  kb.title,
+  kb.category,
+  kb.view_count,
+  COUNT(DISTINCT t.ticket_id) as related_tickets,
+  AVG(t.resolution_time_hours) as avg_resolution_time,
+  CASE 
+    WHEN kb.view_count > 0 
+    THEN (COUNT(DISTINCT t.ticket_id) / kb.view_count) * 100
+    ELSE 0
+  END as ticket_to_view_ratio
+FROM knowledge_base.articles kb
+LEFT JOIN zendesk.tickets t 
+  ON LOWER(t.subject) LIKE LOWER(CONCAT('%', kb.title, '%'))
+GROUP BY kb.article_id, kb.title, kb.category, kb.view_count
+ORDER BY ticket_to_view_ratio DESC;
+```
+
+### Step 3: Create MCP Tools with AI
+
+**Tool 1: Identify Knowledge Gaps**
+- Prompt: "Create a tool to find topics with many support tickets but no knowledge base articles"
+- AI generates: `find_knowledge_gaps(min_tickets: number, days_back: number)`
+
+**Tool 2: Generate Article Suggestions**
+- Prompt: "Create a tool to suggest new knowledge base articles based on support ticket patterns"
+- AI generates: `suggest_articles(category: string, min_frequency: number)`
+
+**Tool 3: Analyze Article Effectiveness**
+- Prompt: "Create a tool to analyze how well articles are reducing support tickets"
+- AI generates: `analyze_article_effectiveness(article_id: string, days_back: number)`
+
+**Tool 4: Search Knowledge Base**
+- Prompt: "Create a tool to search knowledge base articles and product documentation"
+- AI generates: `search_knowledge_base(query: string, category: string)`
+
+**Tool 5: Get FAQ Answers**
+- Prompt: "Create a tool to retrieve FAQ answers from knowledge base"
+- AI generates: `get_faq_answer(question: string)`
+
+### Step 4: Test and Publish
+
+1. Test each tool with sample queries
+2. Verify knowledge gap identification
+3. Validate article suggestions
+4. Publish tools
+5. Connect to agent builder
+
+## Example Agent Interactions
+
+### Scenario 1: Knowledge Gap Identification
+
+**User**: "What topics should we create articles for?"
+
+**Agent** (using Pylar tools):
+1. Calls `find_knowledge_gaps(5, 90)` - finds topics with 5+ tickets in last 90 days
+2. Analyzes results and responds:
+   - "I found 12 topics that need articles:
+     1. 'Password Reset Issues' - 23 tickets, avg resolution 2.5 hours
+     2. 'Payment Processing Errors' - 18 tickets, avg resolution 4.2 hours
+     3. ..."
+
+### Scenario 2: FAQ Answering
+
+**User**: "How do I reset my password?"
+
+**Agent** (using Pylar tools):
+1. Calls `search_knowledge_base("password reset", null)`
+2. Finds relevant article
+3. Responds: "To reset your password: 1. Go to login page, 2. Click 'Forgot Password', 3. Enter your email, 4. Check your inbox for reset link..."
+
+### Scenario 3: Article Effectiveness Analysis
+
+**User**: "Which articles are most effective?"
+
+**Agent** (using Pylar tools):
+1. Calls `analyze_article_effectiveness(null, 30)`
+2. Analyzes results:
+   - "Top performing articles: 'Account Setup Guide' has 0.5% ticket-to-view ratio, 'Billing FAQ' has 0.8% ratio..."
+
+## Outcomes
+
+### Knowledge Base Quality
+
+- **Article Coverage**: 40% increase in topics covered
+- **Article Effectiveness**: 35% reduction in related support tickets
+- **Update Frequency**: 3x faster article updates
+- **Content Relevance**: 50% improvement in article relevance scores
+
+### Support Efficiency
+
+- **Self-Service Rate**: 60% of common questions answered via knowledge base
+- **Ticket Reduction**: 25% reduction in support tickets
+- **Resolution Time**: 30% faster resolution for topics with articles
+- **Agent Productivity**: More time for complex issues
+
+### Data-Driven Insights
+
+- **Gap Identification**: Automated identification of knowledge gaps
+- **Content Strategy**: Data-driven article prioritization
+- **Effectiveness Tracking**: Continuous monitoring of article performance
+- **Trend Analysis**: Identification of emerging support patterns
+
+## Best Practices
+
+1. **Regular Updates**: Schedule weekly knowledge gap analysis
+2. **Content Quality**: Review and update articles based on effectiveness metrics
+3. **User Feedback**: Incorporate user feedback into article improvements
+4. **Categorization**: Maintain clear article categories for better search
+5. **Analytics**: Use Evals to track agent knowledge base usage patterns
+
+## Next Steps
+
+- [Customer Support Agent Example](/examples/customer-support-agent) - Build a support agent
+- [Product Feedback Analyzer Example](/examples/product-feedback-analyzer) - Analyze user feedback
+- [Content Performance Analyzer Example](/examples/content-performance-analyzer) - Analyze content effectiveness
+

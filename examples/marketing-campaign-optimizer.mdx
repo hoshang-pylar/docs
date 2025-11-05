@@ -1,0 +1,140 @@
+---
+title: "Marketing Campaign Optimizer"
+description: "Build an AI agent that analyzes campaign performance, identifies high-value segments, and optimizes marketing spend"
+---
+
+## Overview
+
+A Marketing Campaign Optimizer powered by Pylar analyzes campaign performance across channels, identifies high-value customer segments, and provides data-driven recommendations to optimize marketing spend and ROI.
+
+## What the Agent Needs to Accomplish
+
+The agent must:
+- Analyze campaign performance across channels
+- Identify high-value customer segments
+- Calculate ROI and conversion metrics
+- Optimize marketing spend allocation
+- Track campaign effectiveness over time
+- Recommend campaign adjustments
+
+## How Pylar Helps
+
+Pylar enables the agent by:
+- **Unified Campaign View**: Combining campaign data, customer segments, and conversion metrics
+- **Real-time Analysis**: Querying current campaign performance
+- **Multi-Channel Integration**: Joining data from multiple marketing channels
+- **ROI Calculation**: Automated ROI and conversion rate calculations
+- **Segment Analysis**: Identifying profitable customer segments
+
+## Without Pylar vs With Pylar
+
+### Without Pylar
+
+**Challenges**:
+- ❌ Multiple marketing platforms (Google Ads, Facebook, email, etc.)
+- ❌ Complex API integrations for each channel
+- ❌ Manual campaign analysis
+- ❌ Difficult to correlate campaigns with conversions
+- ❌ Time-consuming ROI calculations
+- ❌ Limited real-time insights
+
+**Implementation Complexity**: ~5-6 weeks
+
+### With Pylar
+
+**Benefits**:
+- ✅ Single endpoint for all campaign data
+- ✅ Real-time campaign analysis
+- ✅ Automated ROI calculations
+- ✅ Unified conversion tracking
+- ✅ Easy campaign optimization
+
+**Implementation Complexity**: ~6-7 hours
+
+## Step-by-Step Implementation
+
+### Step 1: Connect Data Sources
+
+1. **Connect Marketing Platforms** (Google Ads, Facebook Ads, LinkedIn Ads)
+2. **Connect Email Platform** (Email campaigns, open rates)
+3. **Connect Analytics** (Website traffic, conversions)
+4. **Connect CRM** (Customer segments, conversion data)
+
+### Step 2: Create Campaign Views
+
+**Campaign Performance View**:
+```sql
+CREATE VIEW campaign_performance AS
+SELECT 
+  c.campaign_id,
+  c.campaign_name,
+  c.channel,
+  c.start_date,
+  c.end_date,
+  c.spend,
+  c.impressions,
+  c.clicks,
+  c.conversions,
+  -- Metrics
+  (c.clicks / NULLIF(c.impressions, 0)) * 100 as ctr,
+  (c.conversions / NULLIF(c.clicks, 0)) * 100 as conversion_rate,
+  c.revenue,
+  (c.revenue - c.spend) as profit,
+  ((c.revenue - c.spend) / NULLIF(c.spend, 0)) * 100 as roi_percent
+FROM marketing.campaigns c;
+```
+
+**Segment Performance View**:
+```sql
+CREATE VIEW segment_performance AS
+SELECT 
+  s.segment_name,
+  s.channel,
+  COUNT(DISTINCT c.customer_id) as customers,
+  SUM(c.spend) as total_spend,
+  SUM(c.revenue) as total_revenue,
+  AVG(c.conversion_rate) as avg_conversion_rate,
+  AVG(c.roi_percent) as avg_roi
+FROM marketing.segments s
+JOIN marketing.campaigns c ON s.campaign_id = c.campaign_id
+GROUP BY s.segment_name, s.channel;
+```
+
+### Step 3: Create MCP Tools
+
+**Tool 1: Analyze Campaign Performance**
+- `analyze_campaign_performance(campaign_id: string, start_date: date, end_date: date)`
+
+**Tool 2: Identify High-Value Segments**
+- `identify_high_value_segments(min_roi: number, channel: string)`
+
+**Tool 3: Optimize Marketing Spend**
+- `optimize_marketing_spend(budget: number, channels: array)`
+
+**Tool 4: Campaign ROI Analysis**
+- `analyze_campaign_roi(period: string, channel: string)`
+
+## Example Agent Interactions
+
+**User**: "Which campaigns should we increase budget for?"
+
+**Agent**: "Top Performing Campaigns (ROI > 200%):
+1. LinkedIn B2B Campaign: 285% ROI, $50K revenue from $13K spend
+2. Email Product Launch: 240% ROI, $72K revenue from $30K spend
+3. Google Search - Enterprise: 210% ROI, $105K revenue from $50K spend
+
+Recommendation: Increase budget by 30% for LinkedIn B2B campaign"
+
+## Outcomes
+
+- **ROI Improvement**: 35% increase in average ROI
+- **Spend Efficiency**: 25% better budget allocation
+- **Conversion Rate**: 20% improvement in conversion rates
+- **Campaign Performance**: 40% reduction in underperforming campaigns
+
+## Next Steps
+
+- [Content Performance Analyzer Example](/examples/content-performance-analyzer)
+- [A/B Testing Assistant Example](/examples/ab-testing-assistant)
+- [Marketing Attribution Analyzer Example](/examples/marketing-attribution-analyzer)
+

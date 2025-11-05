@@ -1,0 +1,376 @@
+---
+title: "VS Code"
+description: "Connect Pylar MCP tools to VS Code using Python scripts for programmatic data access"
+---
+
+## Overview
+
+VS Code can connect to Pylar MCP tools using Python scripts. This allows you to programmatically access your data views from VS Code or any Python environment.
+
+## Prerequisites
+
+- ✅ VS Code installed
+- ✅ Python installed
+- ✅ `requests` library installed (`pip install requests`)
+- ✅ Pylar project with published MCP tools
+- ✅ MCP HTTP Stream URL and Bearer Token from Pylar
+
+## Step 1: Get Your Pylar Credentials
+
+1. In Pylar, navigate to your project
+2. Click **"Publish"** in the right sidebar
+3. Copy both:
+   - **MCP HTTP Stream URL**: `https://mcp.publish.pylar.ai/mcp`
+   - **Authorization Bearer Token**: Your unique token
+
+## Step 2: Create Python Script
+
+Create a new Python file in VS Code (e.g., `mcp_jsonrpc_client.py`) and add the following code:
+
+```python
+# mcp_jsonrpc_client.py
+AUTH_TOKEN = "Bearer xxxx"  # replace with your token
+import json
+import uuid
+import requests 
+
+MCP_URL = "https://mcp.publish.pylar.ai/mcp"
+AUTH = AUTH_TOKEN
+
+HEADERS = {
+    "Authorization": AUTH,
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+}
+
+def rpc_call(method: str, params=None):
+    payload = {
+        "jsonrpc": "2.0",
+        "id": str(uuid.uuid4()),
+        "method": method,
+    }
+    if params is not None:
+        payload["params"] = params
+    r = requests.post(MCP_URL, headers=HEADERS, data=json.dumps(payload), timeout=30)
+    r.raise_for_status()
+    resp = r.json()
+    if "error" in resp:
+        raise RuntimeError(f"RPC error {resp['error'].get('code')}: {resp['error'].get('message')}")
+    return resp["result"]
+
+def initialize():
+    # Many MCP servers accept initialize but some don't strictly require it.
+    params = {
+        "clientInfo": {"name": "mcp-jsonrpc-python", "version": "0.1.0"},
+        "capabilities": {},  # add if you advertise anything specific
+    }
+    try:
+        return rpc_call("initialize", params)
+    except Exception as e:
+        # If initialize isn't supported, it's fine to continue.
+        print(f"(initialize skipped: {e})")
+
+def list_tools():
+    result = rpc_call("tools/list", {})
+    # Expected shape: {"tools":[{"name":"...","description":"...","inputSchema":{...}}, ...]}
+    tools = result.get("tools", [])
+    for i, t in enumerate(tools, 1):
+        desc = t.get("description") or ""
+        print(f"{i}. {t.get('name')}  {('- ' + desc) if desc else ''}")
+    return tools
+
+def get_tool_input_schema(tool):
+    """Extract the input schema for a tool and return required parameters."""
+    schema = tool.get("inputSchema", {})
+    properties = schema.get("properties", {})
+    required = schema.get("required", [])
+    return properties, required
+
+def prompt_for_tool_arguments(tool):
+    """Prompt user for tool arguments based on the tool's input schema."""
+    properties, required = get_tool_input_schema(tool)
+    
+    if not properties:
+        # Fallback to generic input if no schema
+        user_text = input("Enter input for the tool: ").strip()
+        return {"input": user_text}
+    
+    arguments = {}
+    print(f"\nTool '{tool['name']}' requires the following parameters:")
+    
+    for param_name, param_info in properties.items():
+        param_type = param_info.get("type", "string")
+        param_desc = param_info.get("description", "")
+        is_required = param_name in required
+        
+        prompt = f"  {param_name} ({param_type})"
+        if is_required:
+            prompt += " [REQUIRED]"
+        if param_desc:
+            prompt += f" - {param_desc}"
+        print(prompt)
+        
+        if is_required:
+            while True:
+                value = input(f"Enter {param_name}: ").strip()
+                if value:
+                    # Try to convert to appropriate type
+                    if param_type == "integer":
+                        try:
+                            arguments[param_name] = int(value)
+                            break
+                        except ValueError:
+                            print("Please enter a valid integer.")
+                            continue
+                    elif param_type == "number":
+                        try:
+                            arguments[param_name] = float(value)
+                            break
+                        except ValueError:
+                            print("Please enter a valid number.")
+                            continue
+                    elif param_type == "boolean":
+                        if value.lower() in ["true", "1", "yes", "y"]:
+                            arguments[param_name] = True
+                            break
+                        elif value.lower() in ["false", "0", "no", "n"]:
+                            arguments[param_name] = False
+                            break
+                        else:
+                            print("Please enter true/false, yes/no, or 1/0.")
+                            continue
+                    else:
+                        arguments[param_name] = value
+                        break
+                else:
+                    print("This parameter is required.")
+        else:
+            value = input(f"Enter {param_name} (optional, press Enter to skip): ").strip()
+            if value:
+                # Try to convert to appropriate type
+                if param_type == "integer":
+                    try:
+                        arguments[param_name] = int(value)
+                    except ValueError:
+                        arguments[param_name] = value
+                elif param_type == "number":
+                    try:
+                        arguments[param_name] = float(value)
+                    except ValueError:
+                        arguments[param_name] = value
+                elif param_type == "boolean":
+                    if value.lower() in ["true", "1", "yes", "y"]:
+                        arguments[param_name] = True
+                    elif value.lower() in ["false", "0", "no", "n"]:
+                        arguments[param_name] = False
+                    else:
+                        arguments[param_name] = value
+                else:
+                    arguments[param_name] = value
+    
+    return arguments
+
+def call_tool(name: str, arguments: dict):
+    # Arguments must match the tool's inputSchema.
+    # If you don't know the schema, try a single-field convention like {"input": "<text>"}.
+    params = {"name": name, "arguments": arguments}
+    result = rpc_call("tools/call", params)
+    # Expected shape: {"content":[{"type":"text","text":"..."}], "isError": false}
+    return result
+
+def main():
+    initialize()
+    tools = list_tools()
+    if not tools:
+        print("No tools available.")
+        return
+
+    choice = input("\nSelect a tool by number or name: ").strip()
+    if choice.isdigit():
+        idx = int(choice) - 1
+        if idx < 0 or idx >= len(tools):
+            print("Invalid index.")
+            return
+        tool = tools[idx]
+    else:
+        matches = [t for t in tools if t.get("name","").lower() == choice.lower()]
+        tool = matches[0] if matches else None
+        if not tool:
+            print("Tool not found.")
+            return
+
+    tool_name = tool["name"]
+    print(f"Selected: {tool_name}")
+    
+    # Show the tool's input schema
+    properties, required = get_tool_input_schema(tool)
+    if properties:
+        print(f"\nInput Schema for '{tool_name}':")
+        print(json.dumps(tool.get("inputSchema", {}), indent=2))
+
+    # Get proper arguments based on schema
+    arguments = prompt_for_tool_arguments(tool)
+    
+    print(f"\nCalling tool with arguments: {json.dumps(arguments, indent=2)}")
+
+    try:
+        result = call_tool(tool_name, arguments)
+        print("\n=== Tool Result ===")
+        if result.get("isError"):
+            print("ERROR:", result)
+        else:
+            # Handle different content types
+            content = result.get("content", [])
+            for item in content:
+                if item.get("type") == "text":
+                    print(item.get("text", ""))
+                else:
+                    print(json.dumps(item, indent=2))
+    except Exception as e:
+        print(f"Error calling tool: {e}")
+        print("Full error details:")
+        import traceback
+        traceback.print_exc()
+
+if __name__ == "__main__":
+    main()
+```
+
+## Step 3: Add Your Bearer Token
+
+Replace `"Bearer xxxx"` on line 2 with your actual Bearer Token:
+
+```python
+AUTH_TOKEN = "Bearer YOUR_ACTUAL_TOKEN_HERE"
+```
+
+<Warning>
+The MCP URL is already in the code. You only need to add your Authorization Bearer Token.
+</Warning>
+
+## Step 4: Run the Script
+
+1. In VS Code, open the terminal
+2. Run the script:
+   ```bash
+   python mcp_jsonrpc_client.py
+   ```
+
+The script will:
+1. Initialize the connection to Pylar
+2. List all available tools
+3. Prompt you to select a tool
+4. Ask for tool parameters
+5. Call the tool and display results
+
+## Using the Script
+
+### List Available Tools
+
+When you run the script, it will automatically list all available Pylar tools:
+
+```
+1. fetch_engagement_scores_by_event_type  - Fetches engagement scores...
+2. get_customer_revenue  - Gets customer revenue data...
+```
+
+### Select and Use a Tool
+
+1. Enter the tool number or name when prompted
+2. The script will show the tool's input schema
+3. Enter required parameters
+4. The tool will be called and results displayed
+
+## Example Usage
+
+```bash
+$ python mcp_jsonrpc_client.py
+
+1. fetch_engagement_scores_by_event_type  - Fetches engagement scores...
+2. get_customer_revenue  - Gets customer revenue...
+
+Select a tool by number or name: 1
+
+Selected: fetch_engagement_scores_by_event_type
+
+Input Schema for 'fetch_engagement_scores_by_event_type':
+{
+  "type": "object",
+  "properties": {
+    "event_type": {
+      "type": "string",
+      "description": "Event type to filter by"
+    }
+  },
+  "required": ["event_type"]
+}
+
+Tool 'fetch_engagement_scores_by_event_type' requires the following parameters:
+  event_type (string) [REQUIRED] - Event type to filter by
+Enter event_type: login
+
+Calling tool with arguments: {
+  "event_type": "login"
+}
+
+=== Tool Result ===
+[Results from your tool...]
+```
+
+## Integrating into Your Code
+
+You can also use the functions directly in your Python code:
+
+```python
+from mcp_jsonrpc_client import rpc_call, list_tools, call_tool
+
+# List tools
+tools = list_tools()
+
+# Call a tool programmatically
+result = call_tool(
+    "fetch_engagement_scores_by_event_type",
+    {"event_type": "login"}
+)
+
+print(result)
+```
+
+## Benefits
+
+- ✅ **Programmatic Access**: Use Pylar tools from Python code
+- ✅ **Interactive Testing**: Test tools from command line
+- ✅ **Easy Integration**: Use functions in your projects
+- ✅ **Type Safety**: Automatic parameter type conversion
+- ✅ **Full Control**: Access all MCP protocol features
+
+## Troubleshooting
+
+### Issue: "Module not found" error
+
+**Solution**: Install required packages:
+```bash
+pip install requests
+```
+
+### Issue: Connection errors
+
+**Solutions**:
+- Verify Bearer Token is correct
+- Check MCP URL is correct
+- Ensure network connectivity
+- Test connection with curl first
+
+### Issue: Tool not found
+
+**Solutions**:
+- Verify tool name matches exactly
+- Check tools are published in Pylar
+- List tools first to see available options
+
+## Next Steps
+
+- [Publishing Tools](/learn/publishing-tools/publishing-your-tools) - Publish your tools
+- [Evals](/learn/evals/overview) - Monitor tool usage
+- [Other Builders](/learn/connecting-agent-builders/overview) - Connect to other platforms
+

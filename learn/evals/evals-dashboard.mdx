@@ -1,0 +1,207 @@
+---
+title: "Evals Dashboard"
+description: "Navigate the Evals dashboard and understand evaluation metrics, visual insights, and filters"
+---
+
+## Opening the Dashboard
+
+To access the Evaluation Dashboard:
+
+1. Navigate to your project in Pylar
+2. Click the **"Eval"** button in the top-right corner of the screen
+3. The Evaluation Dashboard opens
+
+You'll see a comprehensive view of your MCP tool performance metrics.
+
+## Dashboard Overview
+
+The Evaluation Dashboard is organized into several sections:
+
+- **Filters**: Select which MCP tool to review
+- **Summary Metrics**: High-level performance indicators
+- **Visual Insights**: Time-series graphs showing trends
+- **Error Analysis**: Detailed error breakdown
+- **Raw Logs**: Complete records of all tool calls
+
+## Filters
+
+### Selecting a Tool
+
+At the top of the dashboard, you'll find filters to select which MCP tool you want to review.
+
+**How to use**:
+1. Click the filter dropdown
+2. Select the MCP tool you want to analyze
+3. The dashboard updates to show metrics for that tool only
+
+<Tip>
+Use filters to focus on specific tools. This is especially useful when you have multiple tools and want to analyze them individually.
+</Tip>
+
+## Evaluation Metrics
+
+The dashboard displays key metrics that summarize tool performance:
+
+### Total Count
+
+**What it is**: The total number of times the selected MCP tool was invoked.
+
+**What it tells you**: Overall usage volume—how frequently agents are using this tool.
+
+<Info>
+Total Count includes both successful and failed invocations. It's the baseline for all other metrics.
+</Info>
+
+### Success Count
+
+**What it is**: How many invocations returned a valid result.
+
+**What it tells you**: The absolute number of successful tool calls. Higher is better.
+
+### Error Count
+
+**What it is**: How many invocations failed to return a result.
+
+**What it tells you**: The absolute number of failed tool calls. Lower is better.
+
+### Success Rate
+
+**Calculation**: 
+```
+Success Rate = (Success Count ÷ Total Count) × 100
+```
+
+**What it is**: Percentage of successful tool invocations.
+
+**What it tells you**: 
+- High success rate (90%+) = Tool is working well
+- Medium success rate (70-90%) = Some issues, needs attention
+- Low success rate (less than 70%) = Significant problems, needs immediate attention
+
+<Check>
+Aim for success rates above 90%. If your success rate is below this threshold, investigate errors to understand what's going wrong.
+</Check>
+
+### Error Rate
+
+**Calculation**:
+```
+Error Rate = (Error Count ÷ Total Count) × 100
+```
+
+**What it is**: Percentage of failed tool invocations.
+
+**What it tells you**: 
+- Low error rate (less than 10%) = Tool is reliable
+- Medium error rate (10-30%) = Some reliability issues
+- High error rate (greater than 30%) = Major problems, needs fixing
+
+<Warning>
+High error rates indicate problems that are affecting agent performance. Address these issues promptly to improve agent experience.
+</Warning>
+
+## Visual Insights
+
+The dashboard includes time-series graphs that show how metrics change over time.
+
+### Calls/Success/Errors Graph
+
+**What it shows**: A time-series plot displaying:
+- **Total Calls**: How many times the tool was invoked over time
+- **Successes**: Successful invocations over time
+- **Errors**: Failed invocations over time
+
+**What it tells you**:
+- Usage trends (increasing/decreasing usage)
+- Performance trends (improving/declining success rates)
+- Error patterns (when errors occur most frequently)
+
+**How to use it**:
+- Look for trends: Are errors increasing or decreasing?
+- Identify patterns: Do errors spike at certain times?
+- Compare periods: How does current performance compare to past performance?
+
+### Success/Error Rate (%) Graph
+
+**What it shows**: Displays success and error percentages as a time-series trend.
+
+**What it tells you**:
+- Performance stability over time
+- Whether your tool is improving or degrading
+- Correlation between changes and performance
+
+**How to use it**:
+- Monitor trends: Is success rate improving?
+- Spot anomalies: Are there sudden drops in performance?
+- Track improvements: Did your changes improve performance?
+
+<Tip>
+Use these graphs to understand not just current performance, but also trends and patterns. This helps you identify issues before they become critical.
+</Tip>
+
+## Interpreting the Metrics
+
+### Healthy Tool Performance
+
+A healthy tool shows:
+- ✅ High success rate (90%+)
+- ✅ Low error rate (less than 10%)
+- ✅ Stable or improving trends over time
+- ✅ Consistent performance across time periods
+
+### Tool Needs Attention
+
+A tool that needs attention shows:
+- ⚠️ Success rate below 90%
+- ⚠️ Error rate above 10%
+- ⚠️ Declining trends in graphs
+- ⚠️ Inconsistent performance
+
+### Tool Needs Immediate Fix
+
+A tool that needs immediate attention shows:
+- ❌ Success rate below 70%
+- ❌ Error rate above 30%
+- ❌ Sharp drops in performance graphs
+- ❌ Frequent errors in logs
+
+## Using Filters Effectively
+
+### Analyzing Individual Tools
+
+1. Select a specific tool from the filter
+2. Review its metrics
+3. Check if it meets performance thresholds
+4. Investigate if it needs improvement
+
+### Comparing Tools
+
+1. Select different tools one at a time
+2. Compare their metrics
+3. Identify which tools perform best
+4. Learn from high-performing tools to improve others
+
+### Time Period Analysis
+
+Use time filters (if available) to:
+- Compare different time periods
+- See impact of tool changes
+- Identify seasonal patterns
+- Track improvement over time
+
+## Next Steps
+
+Now that you understand the dashboard:
+
+- [Analyzing Errors](/learn/evals/analyzing-errors) - Dive deeper into error patterns
+- [Understanding Query Shapes](/learn/evals/understanding-query-shapes) - Learn about query patterns
+- [Raw Logs](/learn/evals/understanding-query-logs) - Explore detailed execution logs
+
+<Card
+  title="Analyze Errors"
+  icon="triangle-exclamation"
+  href="/learn/evals/analyzing-errors"
+>
+  Learn how to identify and fix errors in your tools
+</Card>
+

@@ -1,0 +1,242 @@
+---
+title: "Customer Support Agent"
+description: "Build an AI agent that handles support tickets with full customer context from multiple data sources"
+---
+
+## Overview
+
+A Customer Support Agent powered by Pylar can access customer history, order details, previous interactions, and product information to provide comprehensive support without requiring direct database access.
+
+## What the Agent Needs to Accomplish
+
+The agent must:
+- Retrieve customer information from multiple sources (CRM, order system, support history)
+- Access order details and transaction history
+- Review previous support interactions and resolutions
+- Query product catalog and documentation
+- Provide accurate, context-aware responses
+- Track and update support ticket status
+
+## How Pylar Helps
+
+Pylar enables the agent by:
+- **Unified Customer View**: Creating a single view combining customer data from CRM, orders, and support systems
+- **Governed Access**: Ensuring the agent only accesses appropriate customer data
+- **Real-time Queries**: Allowing natural language queries that translate to efficient SQL
+- **Multi-Source Integration**: Joining data across Snowflake (orders), HubSpot (CRM), and Zendesk (support tickets)
+- **No API Hassles**: Eliminating the need to manage multiple API integrations
+
+## Without Pylar vs With Pylar
+
+### Without Pylar
+
+**Challenges**:
+- ❌ Multiple API integrations required (HubSpot API, Order API, Zendesk API)
+- ❌ Complex authentication for each service
+- ❌ Rate limiting and API quota management
+- ❌ Manual data joining across sources
+- ❌ No unified customer view
+- ❌ Security concerns with direct database access
+- ❌ Difficult to maintain and update
+
+**Implementation Complexity**:
+- 3-5 different API integrations
+- Custom code for data joining
+- Complex error handling
+- Rate limit management
+- Authentication token management
+- ~2-3 weeks development time
+
+### With Pylar
+
+**Benefits**:
+- ✅ Single MCP endpoint for all data sources
+- ✅ Unified customer 360 view
+- ✅ Governed SQL views ensure data security
+- ✅ No API rate limits or authentication complexity
+- ✅ Easy to update views and tools
+- ✅ Real-time querying across all sources
+- ✅ Built-in observability with Evals
+
+**Implementation Complexity**:
+- Connect 3 data sources (30 minutes)
+- Create unified customer view (1 hour)
+- Build MCP tools with AI (30 minutes)
+- Connect to agent builder (15 minutes)
+- **Total: ~2 hours**
+
+## Step-by-Step Implementation
+
+### Step 1: Connect Data Sources
+
+Connect your data sources to Pylar:
+
+1. **Connect HubSpot** (Customer data, deals, interactions)
+2. **Connect Snowflake** (Order history, transaction data)
+3. **Connect Zendesk** (Support tickets, previous interactions)
+
+### Step 2: Create Customer 360 View
+
+In Pylar's SQL IDE, create a unified customer view:
+
+```sql
+CREATE VIEW customer_360 AS
+SELECT 
+  h.customer_id,
+  h.customer_name,
+  h.email,
+  h.phone,
+  h.company_name,
+  h.deal_stage,
+  h.total_deal_value,
+  s.order_count,
+  s.total_spent,
+  s.last_order_date,
+  s.avg_order_value,
+  z.ticket_count,
+  z.last_ticket_date,
+  z.resolved_tickets,
+  z.open_tickets
+FROM hubspot.customers h
+LEFT JOIN snowflake.order_summary s ON h.email = s.customer_email
+LEFT JOIN zendesk.ticket_summary z ON h.email = z.customer_email;
+```
+
+### Step 3: Create Support-Specific Views
+
+Create views for common support scenarios:
+
+**Order History View**:
+```sql
+CREATE VIEW customer_order_history AS
+SELECT 
+  c.customer_id,
+  c.customer_name,
+  o.order_id,
+  o.order_date,
+  o.order_status,
+  o.total_amount,
+  o.items,
+  o.shipping_address
+FROM hubspot.customers c
+JOIN snowflake.orders o ON c.email = o.customer_email
+ORDER BY o.order_date DESC;
+```
+
+**Support History View**:
+```sql
+CREATE VIEW customer_support_history AS
+SELECT 
+  c.customer_id,
+  c.customer_name,
+  t.ticket_id,
+  t.subject,
+  t.status,
+  t.created_date,
+  t.resolved_date,
+  t.agent_name,
+  t.resolution
+FROM hubspot.customers c
+JOIN zendesk.tickets t ON c.email = t.customer_email
+ORDER BY t.created_date DESC;
+```
+
+### Step 4: Create MCP Tools with AI
+
+Use Pylar's AI to create MCP tools:
+
+**Tool 1: Get Customer Information**
+- Prompt: "Create a tool to fetch complete customer information including contact details, order history, and support tickets"
+- AI generates: `get_customer_info(customer_email: string)`
+
+**Tool 2: Get Order Details**
+- Prompt: "Create a tool to retrieve order details by order ID or customer email"
+- AI generates: `get_order_details(order_id: string, customer_email: string)`
+
+**Tool 3: Get Support History**
+- Prompt: "Create a tool to fetch customer support ticket history"
+- AI generates: `get_support_history(customer_email: string, limit: number)`
+
+**Tool 4: Search Products**
+- Prompt: "Create a tool to search product catalog by name or SKU"
+- AI generates: `search_products(query: string, category: string)`
+
+### Step 5: Test Tools
+
+Test each tool in Pylar:
+- Verify customer data retrieval
+- Test order lookup
+- Confirm support history access
+- Validate product search
+
+### Step 6: Publish and Connect
+
+1. **Publish Tools**: Click "Publish" in Pylar
+2. **Copy Credentials**: Get MCP HTTP Stream URL and Authorization Token
+3. **Connect to Agent Builder**: Add to your agent builder (Claude Desktop, Cursor, LangGraph, etc.)
+
+### Step 7: Monitor with Evals
+
+Use Pylar's Evals dashboard to:
+- Monitor agent performance
+- Track common queries
+- Identify errors
+- Optimize tool usage
+
+## Example Agent Interactions
+
+### Scenario 1: Customer Order Inquiry
+
+**User**: "Can you check the status of order #12345 for john@example.com?"
+
+**Agent** (using Pylar tools):
+1. Calls `get_customer_info("john@example.com")`
+2. Calls `get_order_details("12345", "john@example.com")`
+3. Responds: "Order #12345 for John Smith is currently 'Shipped' and expected to arrive on March 15th. The order contains 2 items totaling $149.99."
+
+### Scenario 2: Support Ticket Creation
+
+**User**: "I need help with my recent purchase"
+
+**Agent** (using Pylar tools):
+1. Calls `get_customer_info(user_email)`
+2. Calls `get_order_details(null, user_email)` - gets recent orders
+3. Calls `get_support_history(user_email, 5)` - checks previous issues
+4. Responds: "I see you purchased a laptop on March 10th. I also notice you had a previous ticket about setup. How can I help you today?"
+
+## Outcomes
+
+### Efficiency Gains
+
+- **Response Time**: 80% faster responses with instant data access
+- **First Contact Resolution**: 60% increase in resolving issues on first contact
+- **Agent Productivity**: 3x more tickets handled per agent
+- **Customer Satisfaction**: 40% improvement in CSAT scores
+
+### Data Access
+
+- **Unified View**: Single source of truth for all customer data
+- **Real-time Updates**: Always current data from all sources
+- **No API Limits**: No rate limiting or quota concerns
+- **Secure Access**: Governed views ensure data security
+
+### Maintenance
+
+- **Easy Updates**: Modify views without redeploying agents
+- **Observability**: Full visibility into agent queries and performance
+- **Iteration**: Quickly refine tools based on Evals insights
+
+## Best Practices
+
+1. **Data Governance**: Create views that only expose necessary customer data
+2. **Error Handling**: Use Evals to identify and fix common query errors
+3. **Performance**: Optimize views for common query patterns
+4. **Security**: Ensure views filter sensitive data appropriately
+5. **Monitoring**: Regularly review Evals dashboard for insights
+
+## Next Steps
+
+- [Sales Assistant Example](/examples/sales-assistant) - Build a sales pipeline agent
+- [Customer Churn Predictor Example](/examples/customer-churn-predictor) - Predict and prevent churn
+- [Marketing Campaign Optimizer Example](/examples/marketing-campaign-optimizer) - Optimize marketing campaigns
+

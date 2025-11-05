@@ -1,0 +1,119 @@
+---
+title: "Feature Flag Manager"
+description: "Build an AI agent that manages feature rollouts, analyzes flag performance, and recommends rollback decisions"
+---
+
+## Overview
+
+A Feature Flag Manager powered by Pylar monitors feature flag performance, analyzes user impact, and provides data-driven recommendations for rollouts and rollbacks.
+
+## What the Agent Needs to Accomplish
+
+The agent must:
+- Monitor feature flag status
+- Analyze flag performance metrics
+- Track error rates and user impact
+- Recommend rollback decisions
+- Optimize rollout percentages
+- Track feature flag effectiveness
+
+## How Pylar Helps
+
+Pylar enables the agent by:
+- **Unified Flag View**: Combining flag data, error rates, and user metrics
+- **Real-time Monitoring**: Querying current flag performance
+- **Impact Analysis**: Automated impact calculations
+- **Decision Support**: Data-driven rollout recommendations
+
+## Without Pylar vs With Pylar
+
+### Without Pylar
+
+**Challenges**:
+- ❌ Manual flag monitoring
+- ❌ Complex error correlation
+- ❌ Time-consuming impact analysis
+- ❌ Limited real-time visibility
+
+**Implementation Complexity**: ~3-4 weeks
+
+### With Pylar
+
+**Benefits**:
+- ✅ Automated flag monitoring
+- ✅ Real-time performance tracking
+- ✅ Instant impact analysis
+- ✅ Clear rollback recommendations
+
+**Implementation Complexity**: ~4-5 hours
+
+## Step-by-Step Implementation
+
+### Step 1: Connect Data Sources
+
+1. **Connect Feature Flag Platform** (LaunchDarkly, Split.io)
+2. **Connect Error Tracking** (Sentry, Bugsnag)
+3. **Connect Product Analytics** (User behavior, engagement)
+
+### Step 2: Create Flag Views
+
+**Feature Flag Performance View**:
+```sql
+CREATE VIEW flag_performance AS
+SELECT 
+  f.flag_name,
+  f.enabled_percentage,
+  f.status,
+  COUNT(DISTINCT u.user_id) as users_affected,
+  e.error_count,
+  e.error_rate,
+  a.engagement_score,
+  -- Risk score
+  (e.error_rate * 50 + 
+   CASE WHEN a.engagement_score < 50 THEN 30 ELSE 0 END +
+   CASE WHEN f.enabled_percentage > 50 AND e.error_rate > 0.05 THEN 20 ELSE 0 END) as risk_score
+FROM feature_flags.flags f
+LEFT JOIN errors.error_summary e ON f.flag_name = e.flag_name
+LEFT JOIN analytics.user_engagement a ON f.flag_name = a.flag_name
+GROUP BY f.flag_name, f.enabled_percentage, f.status, e.error_count, e.error_rate, a.engagement_score;
+```
+
+### Step 3: Create MCP Tools
+
+**Tool 1: Monitor Feature Flag**
+- `monitor_feature_flag(flag_name: string)`
+
+**Tool 2: Analyze Flag Performance**
+- `analyze_flag_performance(flag_name: string, hours_back: number)`
+
+**Tool 3: Recommend Rollback**
+- `recommend_rollback(flag_name: string, threshold: number)`
+
+**Tool 4: Optimize Rollout**
+- `optimize_rollout(flag_name: string, target_percentage: number)`
+
+## Example Agent Interactions
+
+**User**: "Should we rollback the new checkout feature?"
+
+**Agent**: "Feature Flag Analysis: 'new_checkout'
+- Status: 35% enabled
+- Error Rate: 2.1% (Threshold: 1%)
+- User Impact: 1,200 users affected
+- Engagement: -15% vs baseline
+- Risk Score: 68 (High)
+
+Recommendation: ROLLBACK - Error rate exceeds threshold and engagement is declining"
+
+## Outcomes
+
+- **Incident Detection**: 60% faster detection
+- **Rollback Decisions**: 50% more accurate decisions
+- **User Impact**: 40% reduction in negative impact
+- **Feature Success**: 25% improvement in successful rollouts
+
+## Next Steps
+
+- [Product Usage Analyst Example](/examples/product-usage-analyst)
+- [Product Feedback Analyzer Example](/examples/product-feedback-analyzer)
+

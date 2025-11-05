@@ -1,0 +1,295 @@
+---
+title: "Customer Churn Predictor"
+description: "Build an AI agent that identifies at-risk customers and recommends retention actions using usage and engagement data"
+---
+
+## Overview
+
+A Customer Churn Predictor agent powered by Pylar analyzes customer usage patterns, engagement metrics, support history, and billing data to identify customers at risk of churning and recommend proactive retention actions.
+
+## What the Agent Needs to Accomplish
+
+The agent must:
+- Analyze customer usage patterns and engagement metrics
+- Track support ticket frequency and sentiment
+- Monitor billing and payment history
+- Identify churn risk indicators
+- Generate churn risk scores
+- Recommend specific retention actions
+- Track retention campaign effectiveness
+
+## How Pylar Helps
+
+Pylar enables the agent by:
+- **Unified Customer Data**: Combining usage, engagement, support, and billing data
+- **Real-time Analysis**: Querying current customer behavior patterns
+- **Multi-Source Integration**: Joining data from product analytics, CRM, support, and billing systems
+- **Pattern Recognition**: SQL views identify churn indicators
+- **Actionable Insights**: Generating retention recommendations based on data
+
+## Without Pylar vs With Pylar
+
+### Without Pylar
+
+**Challenges**:
+- ❌ Data scattered across multiple systems (analytics, CRM, support, billing)
+- ❌ Complex ETL pipelines to combine data
+- ❌ Difficult to get real-time churn risk scores
+- ❌ Manual analysis of churn indicators
+- ❌ No unified customer view
+- ❌ Time-consuming to update models
+- ❌ Limited ability to track retention actions
+
+**Implementation Complexity**:
+- 4-5 different data source integrations
+- Complex data pipeline setup
+- Custom ML model development
+- Churn scoring infrastructure
+- ~6-8 weeks development time
+
+### With Pylar
+
+**Benefits**:
+- ✅ Single endpoint for all customer data
+- ✅ Real-time churn risk calculation
+- ✅ Easy to update churn indicators
+- ✅ Unified customer 360 view
+- ✅ Built-in analytics on retention actions
+- ✅ Simple query-based risk scoring
+
+**Implementation Complexity**:
+- Connect 4-5 data sources (1.5 hours)
+- Create churn analysis views (3 hours)
+- Build MCP tools with AI (1.5 hours)
+- Connect to agent builder (15 minutes)
+- **Total: ~6-7 hours**
+
+## Step-by-Step Implementation
+
+### Step 1: Connect Data Sources
+
+Connect all customer data sources:
+
+1. **Connect Product Analytics** (Usage metrics, feature adoption, engagement)
+2. **Connect CRM** (Account data, contract info, renewal dates)
+3. **Connect Support System** (Ticket history, satisfaction scores)
+4. **Connect Billing System** (Payment history, invoices, subscription status)
+
+### Step 2: Create Churn Analysis Views
+
+**Customer Engagement Score View**:
+```sql
+CREATE VIEW customer_engagement_score AS
+SELECT 
+  c.customer_id,
+  c.customer_name,
+  c.subscription_tier,
+  c.contract_start_date,
+  c.contract_end_date,
+  DATEDIFF(CURRENT_DATE, c.contract_end_date) as days_until_renewal,
+  -- Usage metrics
+  u.active_days_last_30,
+  u.features_used_count,
+  u.total_actions_last_30,
+  u.last_activity_date,
+  DATEDIFF(CURRENT_DATE, u.last_activity_date) as days_since_last_activity,
+  -- Support metrics
+  s.ticket_count_last_30,
+  s.avg_satisfaction_score,
+  s.avg_resolution_time_hours,
+  -- Billing metrics
+  b.total_invoices,
+  b.payment_failures_count,
+  b.days_overdue,
+  -- Engagement score calculation
+  CASE 
+    WHEN u.active_days_last_30 >= 20 THEN 100
+    WHEN u.active_days_last_30 >= 15 THEN 75
+    WHEN u.active_days_last_30 >= 10 THEN 50
+    WHEN u.active_days_last_30 >= 5 THEN 25
+    ELSE 0
+  END as usage_score,
+  CASE 
+    WHEN s.avg_satisfaction_score >= 4.5 THEN 100
+    WHEN s.avg_satisfaction_score >= 4.0 THEN 75
+    WHEN s.avg_satisfaction_score >= 3.5 THEN 50
+    ELSE 25
+  END as satisfaction_score
+FROM crm.customers c
+LEFT JOIN analytics.user_usage u ON c.customer_id = u.customer_id
+LEFT JOIN support.ticket_summary s ON c.customer_id = s.customer_id
+LEFT JOIN billing.payment_summary b ON c.customer_id = b.customer_id;
+```
+
+**Churn Risk Score View**:
+```sql
+CREATE VIEW churn_risk_score AS
+SELECT 
+  e.*,
+  -- Risk indicators
+  CASE 
+    WHEN e.days_since_last_activity > 30 THEN 1 ELSE 0
+  END as low_activity_flag,
+  CASE 
+    WHEN e.ticket_count_last_30 > 5 THEN 1 ELSE 0
+  END as high_support_flag,
+  CASE 
+    WHEN e.payment_failures_count > 0 THEN 1 ELSE 0
+  END as payment_issue_flag,
+  CASE 
+    WHEN e.days_until_renewal < 30 THEN 1 ELSE 0
+  END as renewal_approaching_flag,
+  -- Churn risk score (0-100, higher = more risk)
+  (
+    (CASE WHEN e.days_since_last_activity > 30 THEN 30 ELSE 0 END) +
+    (CASE WHEN e.active_days_last_30 < 10 THEN 25 ELSE 0 END) +
+    (CASE WHEN e.ticket_count_last_30 > 5 THEN 20 ELSE 0 END) +
+    (CASE WHEN e.payment_failures_count > 0 THEN 15 ELSE 0 END) +
+    (CASE WHEN e.avg_satisfaction_score < 3.5 THEN 10 ELSE 0 END)
+  ) as churn_risk_score,
+  -- Risk level
+  CASE 
+    WHEN (
+      (CASE WHEN e.days_since_last_activity > 30 THEN 30 ELSE 0 END) +
+      (CASE WHEN e.active_days_last_30 < 10 THEN 25 ELSE 0 END) +
+      (CASE WHEN e.ticket_count_last_30 > 5 THEN 20 ELSE 0 END) +
+      (CASE WHEN e.payment_failures_count > 0 THEN 15 ELSE 0 END) +
+      (CASE WHEN e.avg_satisfaction_score < 3.5 THEN 10 ELSE 0 END)
+    ) >= 50 THEN 'High Risk'
+    WHEN (
+      (CASE WHEN e.days_since_last_activity > 30 THEN 30 ELSE 0 END) +
+      (CASE WHEN e.active_days_last_30 < 10 THEN 25 ELSE 0 END) +
+      (CASE WHEN e.ticket_count_last_30 > 5 THEN 20 ELSE 0 END) +
+      (CASE WHEN e.payment_failures_count > 0 THEN 15 ELSE 0 END) +
+      (CASE WHEN e.avg_satisfaction_score < 3.5 THEN 10 ELSE 0 END)
+    ) >= 25 THEN 'Medium Risk'
+    ELSE 'Low Risk'
+  END as risk_level
+FROM customer_engagement_score e;
+```
+
+**Retention Action Recommendations View**:
+```sql
+CREATE VIEW retention_actions AS
+SELECT 
+  r.*,
+  CASE 
+    WHEN r.low_activity_flag = 1 THEN 'Send re-engagement email campaign'
+    WHEN r.high_support_flag = 1 THEN 'Schedule success manager call'
+    WHEN r.payment_issue_flag = 1 THEN 'Contact billing team for payment assistance'
+    WHEN r.renewal_approaching_flag = 1 AND r.churn_risk_score > 30 THEN 'Offer renewal discount'
+    WHEN r.avg_satisfaction_score < 3.5 THEN 'Request feedback and address concerns'
+    ELSE 'Monitor closely'
+  END as recommended_action,
+  CASE 
+    WHEN r.churn_risk_score >= 50 THEN 'Urgent'
+    WHEN r.churn_risk_score >= 25 THEN 'High Priority'
+    ELSE 'Normal'
+  END as action_priority
+FROM churn_risk_score r
+WHERE r.churn_risk_score > 20;
+```
+
+### Step 3: Create MCP Tools with AI
+
+**Tool 1: Get Churn Risk Score**
+- Prompt: "Create a tool to get churn risk score for a customer by customer ID"
+- AI generates: `get_churn_risk(customer_id: string)`
+
+**Tool 2: List High-Risk Customers**
+- Prompt: "Create a tool to list customers with high churn risk scores"
+- AI generates: `get_high_risk_customers(risk_level: string, limit: number)`
+
+**Tool 3: Get Retention Recommendations**
+- Prompt: "Create a tool to get recommended retention actions for at-risk customers"
+- AI generates: `get_retention_recommendations(customer_id: string)`
+
+**Tool 4: Analyze Churn Patterns**
+- Prompt: "Create a tool to analyze churn patterns and identify common indicators"
+- AI generates: `analyze_churn_patterns(days_back: number, min_risk_score: number)`
+
+### Step 4: Test and Publish
+
+1. Test churn risk calculation
+2. Verify high-risk customer identification
+3. Validate retention recommendations
+4. Publish tools
+5. Connect to agent builder
+
+## Example Agent Interactions
+
+### Scenario 1: High-Risk Customer Identification
+
+**User**: "Show me customers at high risk of churning"
+
+**Agent** (using Pylar tools):
+1. Calls `get_high_risk_customers("High Risk", 50)`
+2. Analyzes results:
+   - "I found 23 high-risk customers:
+     - Acme Corp: 65 risk score, last active 42 days ago, 3 payment failures
+     - TechCo: 58 risk score, 8 support tickets last month, low satisfaction
+     - ..."
+
+### Scenario 2: Retention Action Recommendation
+
+**User**: "What should we do about customer ID 12345?"
+
+**Agent** (using Pylar tools):
+1. Calls `get_churn_risk("12345")`
+2. Calls `get_retention_recommendations("12345")`
+3. Responds:
+   - "Customer 12345 has a 72 churn risk score (High Risk)
+   - Indicators: No activity for 38 days, 6 support tickets, payment failure
+   - Recommended action: Schedule success manager call + offer renewal discount
+   - Priority: Urgent"
+
+### Scenario 3: Churn Pattern Analysis
+
+**User**: "What are the common patterns in churned customers?"
+
+**Agent** (using Pylar tools):
+1. Calls `analyze_churn_patterns(90, 50)`
+2. Analyzes patterns:
+   - "Common churn indicators in last 90 days:
+     1. 68% had no activity for 30+ days
+     2. 45% had payment failures
+     3. 52% had low satisfaction scores (less than 3.5)
+     4. 38% had 5+ support tickets"
+
+## Outcomes
+
+### Churn Prevention
+
+- **Early Detection**: 40% earlier identification of at-risk customers
+- **Retention Rate**: 25% improvement in customer retention
+- **Proactive Actions**: 3x increase in proactive retention outreach
+- **Churn Reduction**: 30% reduction in overall churn rate
+
+### Data-Driven Decisions
+
+- **Risk Scoring**: Automated, real-time churn risk scores
+- **Action Recommendations**: Data-driven retention strategies
+- **Pattern Recognition**: Identification of common churn indicators
+- **Effectiveness Tracking**: Monitor retention campaign success
+
+### Business Impact
+
+- **Revenue Protection**: Save $500K+ in annual revenue through retention
+- **Customer Lifetime Value**: 20% increase in average CLV
+- **Customer Satisfaction**: Improved satisfaction through proactive outreach
+- **Team Efficiency**: 50% reduction in manual churn analysis time
+
+## Best Practices
+
+1. **Regular Monitoring**: Check churn risk scores weekly
+2. **Action Follow-up**: Track retention action effectiveness
+3. **Model Refinement**: Update risk indicators based on outcomes
+4. **Communication**: Integrate with CRM for automatic outreach
+5. **Analytics**: Use Evals to track agent churn prediction accuracy
+
+## Next Steps
+
+- [Customer Support Agent Example](/examples/customer-support-agent) - Build a support agent
+- [Sales Assistant Example](/examples/sales-assistant) - Analyze sales pipeline
+- [Revenue Operations Agent Example](/examples/revenue-operations-agent) - Track revenue metrics
+

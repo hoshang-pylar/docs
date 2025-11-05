@@ -1,0 +1,168 @@
+---
+title: "Supported Data Sources"
+description: "Complete list of data sources supported by Pylar, including databases, data warehouses, and business applications"
+---
+
+## Overview
+
+Pylar supports a wide range of data sources, from databases and data warehouses to business applications. This page provides a comprehensive list of all supported sources.
+
+## Databases and Data Warehouses
+
+These sources are indexed for querying while your data remains in its original location:
+
+### Cloud Data Warehouses
+
+- **BigQuery** - Google's serverless data warehouse
+- **Snowflake** - Cloud data platform
+- **Amazon Redshift** - AWS data warehouse
+- **MotherDuck** - Serverless analytics platform
+- **Databricks** - Unified analytics platform
+
+### Relational Databases
+
+- **PostgreSQL** - Open-source relational database
+- **MySQL** - Popular open-source database
+- **AlloyDB** - Google Cloud's PostgreSQL-compatible database
+- **Supabase** - Hosted PostgreSQL service
+
+### Additional Databases
+
+- **Microsoft SQL Server**
+- **Oracle Database**
+- And more...
+
+<Info>
+For databases and data warehouses, your data stays in its original location. Pylar indexes it for easier querying and executes queries on your infrastructure.
+</Info>
+
+## Business Applications
+
+These sources sync data to Pylar Warehouse:
+
+### CRM and Sales
+
+- **Salesforce** - Customer relationship management
+- **HubSpot** - Marketing and sales platform
+
+### Collaboration and Productivity
+
+- **Google Sheets** - Spreadsheet application
+- **Airtable** - Database and collaboration platform
+
+### Analytics and Marketing
+
+- **Amplitude** - Product analytics
+- **Mixpanel** - Product analytics
+- **Segment** - Customer data platform
+
+### Additional Applications
+
+- And many more business applications...
+
+<Info>
+Business Applications sync their data to Pylar Warehouse, enabling fast querying and analysis within Pylar's infrastructure.
+</Info>
+
+## Connection Types Comparison
+
+| Feature | Business Applications | Databases/Data Warehouses |
+|---------|----------------------|---------------------------|
+| Data Location | Synced to Pylar Warehouse | Stays in original location |
+| Query Execution | On Pylar infrastructure | On your infrastructure |
+| Data Freshness | Periodic syncs | Real-time queries |
+| Cross-Source Joins | Supported | Supported |
+| Setup Complexity | Simple (OAuth usually) | Requires credentials |
+| IP Whitelisting | Usually not required | Often required |
+
+## IP Address for Whitelisting
+
+For databases and data warehouses that require IP whitelisting:
+
+**Pylar IP Address**: `34.122.205.142`
+
+This is a permanently assigned IP address. Whitelist it in your database firewall settings to allow Pylar to connect.
+
+<Warning>
+Most databases and data warehouses require whitelisting Pylar's IP address (34.122.205.142) in your firewall settings. This is crucial for establishing a secure connection.
+</Warning>
+
+## Connection Guides
+
+### Databases and Data Warehouses
+
+- [BigQuery](/learn/making-connections/connecting-bigquery) - Google Cloud data warehouse
+- [Snowflake](/learn/making-connections/connecting-snowflake) - Cloud data platform
+- [PostgreSQL](/learn/making-connections/connecting-postgresql) - Open-source database
+- [MySQL](/learn/making-connections/connecting-mysql) - Popular database
+- [Redshift](/learn/making-connections/connecting-redshift) - AWS data warehouse
+- [MotherDuck](/learn/making-connections/connecting-motherduck) - Serverless analytics
+- [Supabase](/learn/making-connections/connecting-supabase) - Hosted PostgreSQL
+
+### Advanced Connections
+
+- [SSH Connections](/learn/making-connections/connecting-via-ssh) - Secure SSH tunnel connections
+
+## Choosing the Right Source Type
+
+### Use Business Applications When
+
+- You want data synced to Pylar for fast querying
+- You need simple, OAuth-based authentication
+- You're working with SaaS application data
+- You want automated data refreshes
+
+### Use Databases/Data Warehouses When
+
+- You want to query data in place
+- You need real-time data access
+- You have existing database infrastructure
+- You want to avoid data duplication
+- You need to join across multiple sources
+
+## Connection Naming
+
+When connecting sources, follow these naming rules:
+
+- ✅ **Allowed**: Lowercase letters, numbers, underscores
+- ❌ **Not Allowed**: Capital letters, special characters, spaces
+
+**Examples**:
+- ✅ `production_db`
+- ✅ `snowflake_analytics`
+- ✅ `customer_data_v2`
+- ❌ `Production DB`
+- ❌ `snowflake-analytics`
+- ❌ `Customer Data`
+
+<Tip>
+Use descriptive names that indicate the source and purpose. This name will be used in SQL queries to reference the connection.
+</Tip>
+
+## Multiple Connections
+
+You can connect:
+
+- **Multiple instances** of the same source type (e.g., multiple Google Sheets)
+- **Different sources** to the same workspace
+- **Same source** to different workspaces
+
+Each connection must have a **unique name** within your workspace.
+
+## Next Steps
+
+Ready to connect a specific source?
+
+- [Connecting BigQuery](/learn/making-connections/connecting-bigquery) - Step-by-step BigQuery guide
+- [Connecting Snowflake](/learn/making-connections/connecting-snowflake) - Step-by-step Snowflake guide
+- [Connecting PostgreSQL](/learn/making-connections/connecting-postgresql) - Step-by-step PostgreSQL guide
+- [Connection Security](/learn/making-connections/connection-security) - Security best practices
+
+<Card
+  title="Connect BigQuery"
+  icon="database"
+  href="/learn/making-connections/connecting-bigquery"
+>
+  Get started with connecting your first database
+</Card>
+

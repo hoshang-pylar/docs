@@ -1,0 +1,207 @@
+---
+title: "Managing Connections"
+description: "Learn how to view, edit, test, and manage your database connections in Pylar"
+---
+
+## Overview
+
+Once you've created connections in Pylar, you can manage them from the Connections page. This includes viewing connection details, testing connections, editing configurations, and removing connections when no longer needed.
+
+## Accessing Connections
+
+1. In your Pylar workspace, click on the **"Connections"** tab in the sidebar
+2. You'll see a list of all your connections
+3. Each connection shows its status and basic information
+
+## Viewing Connections
+
+### Connection List
+
+The Connections page displays:
+
+- **Connection Name**: The schema name you assigned
+- **Type**: Database type (BigQuery, Snowflake, PostgreSQL, etc.)
+- **Status**: Connection status (Active, Indexing, Error, etc.)
+- **Last Sync**: When data was last synced (for Business Applications)
+- **Last Indexed**: When data was last indexed (for Databases)
+
+### Connection Details
+
+Click on a connection to view:
+
+- **Connection Information**: Host, database name, credentials (masked)
+- **Sync Status**: Current sync/indexing progress
+- **Data Statistics**: Number of tables, schemas indexed
+- **Usage Information**: How often the connection is used
+
+## Testing Connections
+
+### Test Existing Connection
+
+1. Go to the Connections page
+2. Find the connection you want to test
+3. Click **"Test Connection"** or similar button
+4. Pylar will verify the connection is working
+
+### What Gets Tested
+
+- **Network Connectivity**: Can Pylar reach your database?
+- **Authentication**: Are credentials valid?
+- **Permissions**: Does the user have necessary access?
+- **Database Access**: Can Pylar query the database?
+
+<Check>
+Regular testing helps identify connection issues before they affect your workflows. Test connections periodically or after making changes.
+</Check>
+
+## Editing Connections
+
+### When to Edit
+
+You may need to edit connections to:
+- Update credentials (password changed)
+- Modify connection settings
+- Change database name
+- Update host or port information
+
+### How to Edit
+
+1. Go to the Connections page
+2. Find the connection you want to edit
+3. Click **"Edit"** or the connection name
+4. Modify the settings you need to change
+5. **Test the connection** after making changes
+6. Save your changes
+
+<Warning>
+Editing connection credentials may temporarily interrupt data access. Test the connection after making changes to ensure it still works.
+</Warning>
+
+## Connection Health Monitoring
+
+### Status Indicators
+
+Connections show status indicators:
+
+- ✅ **Active**: Connection is working correctly
+- ⏳ **Indexing**: Data is being indexed (for databases)
+- ⏳ **Syncing**: Data is being synced (for Business Applications)
+- ⚠️ **Warning**: Connection has issues but still works
+- ❌ **Error**: Connection has failed
+
+### Monitoring Health
+
+- **Regular Checks**: Pylar periodically checks connection health
+- **Notifications**: You'll be notified if connections fail
+- **Status Updates**: Connection status updates automatically
+- **Logs**: Review connection logs for issues
+
+## Removing Connections
+
+### When to Remove
+
+Remove connections when:
+- You no longer need the data source
+- The database has been decommissioned
+- You're consolidating connections
+- Cleaning up unused connections
+
+### How to Remove
+
+1. Go to the Connections page
+2. Find the connection you want to remove
+3. Click **"Delete"** or **"Remove"**
+4. Confirm the deletion
+
+<Warning>
+Removing a connection will:
+- Break any views that depend on it
+- Remove the connection from your workspace
+- Stop all syncing/indexing
+
+Make sure you no longer need the connection before removing it.
+</Warning>
+
+## Connection Status
+
+### Active Connections
+
+- **Working correctly**: Can query data
+- **Synced/Indexed**: Data is available
+- **Ready to use**: Can be used in views and queries
+
+### Indexing/Syncing
+
+- **In progress**: Data is being processed
+- **Wait for completion**: You'll be notified when done
+- **Can't query yet**: Wait for process to complete
+
+### Error Status
+
+- **Connection failed**: Check credentials and network
+- **Authentication error**: Verify username/password
+- **Network error**: Check IP whitelisting and firewall
+
+## Best Practices
+
+### Regular Monitoring
+
+- ✅ Check connection status regularly
+- ✅ Test connections after credential changes
+- ✅ Monitor connection health
+- ✅ Review error notifications promptly
+
+### Connection Organization
+
+- ✅ Use descriptive names
+- ✅ Include environment (prod, staging, dev)
+- ✅ Group related connections
+- ✅ Document connection purposes
+
+### Maintenance
+
+- ✅ Update credentials before they expire
+- ✅ Test connections after infrastructure changes
+- ✅ Remove unused connections
+- ✅ Review connection permissions periodically
+
+## Troubleshooting Connection Issues
+
+### Connection Appears Offline
+
+**Solutions**:
+- Test the connection
+- Check network connectivity
+- Verify credentials haven't changed
+- Review connection logs
+
+### Sync/Index Never Completes
+
+**Solutions**:
+- Check for very large datasets
+- Verify connection is still active
+- Review error messages
+- Contact support if needed
+
+### Can't Query Data
+
+**Solutions**:
+- Verify connection status is "Active"
+- Check if indexing/syncing is complete
+- Review database permissions
+- Test connection manually
+
+## Next Steps
+
+- [Connection Security](/learn/making-connections/connection-security) - Secure your connections
+- [Troubleshooting Connections](/learn/making-connections/troubleshooting-connections) - Resolve connection issues
+- [Creating Data Views](/learn/creating-data-views/overview) - Use your connections to create views
+
+<Card
+  title="Secure Your Connections"
+  icon="shield"
+  href="/learn/making-connections/connection-security"
+>
+  Learn security best practices for your connections
+</Card>
+

@@ -1,0 +1,231 @@
+---
+title: "Understanding Query Shapes"
+description: "Learn how to analyze query patterns and shapes from Evals to understand how agents use your tools"
+---
+
+## What Are Query Shapes?
+
+Query shapes represent patterns in the types of queries executed by your MCP tools. They show you how agents are interacting with your data—what filters they use, what parameters they pass, and what patterns emerge.
+
+## Why Query Shapes Matter
+
+Understanding query shapes helps you:
+
+- ✅ **Optimize Queries**: See what queries are most common
+- ✅ **Improve Tools**: Understand how agents actually use your tools
+- ✅ **Identify Patterns**: Find common query patterns
+- ✅ **Optimize Performance**: Focus optimization on frequent patterns
+- ✅ **Enhance Tools**: Add tools for common query patterns
+
+<Info>
+Query shapes reveal the real-world usage patterns of your tools. They show you what agents actually need, not just what you thought they would need.
+</Info>
+
+## Accessing Query Shapes
+
+In the Evaluation Dashboard:
+
+1. Select the tool you want to analyze
+2. Scroll to the **Error Analysis** section
+3. Find the **Query Shape** section
+4. Review the query patterns displayed
+
+## Understanding Query Patterns
+
+### Common Query Patterns
+
+Query shapes show patterns like:
+
+- **Simple Filters**: Queries with single WHERE conditions
+- **Date Ranges**: Queries filtering by date ranges
+- **Multiple Filters**: Queries with multiple WHERE conditions
+- **Aggregations**: Queries with GROUP BY or aggregations
+- **Sorting Patterns**: How results are ordered
+
+### Example Query Shapes
+
+**Pattern 1: Single Filter**
+```
+Most common: WHERE event_type = '{value}'
+Frequency: 45% of queries
+```
+
+**Pattern 2: Date Range**
+```
+Most common: WHERE date >= '{start}' AND date <= '{end}'
+Frequency: 30% of queries
+```
+
+**Pattern 3: Multiple Filters**
+```
+Most common: WHERE type = '{type}' AND status = '{status}'
+Frequency: 15% of queries
+```
+
+## Analyzing Query Shapes
+
+### What to Look For
+
+1. **Most Common Patterns**: What queries are executed most frequently?
+2. **Parameter Usage**: Which parameters are used most often?
+3. **Filter Combinations**: What combinations of filters appear?
+4. **Sort Patterns**: How are results typically ordered?
+
+### Identifying Optimization Opportunities
+
+High-frequency patterns indicate optimization opportunities:
+
+- **Add Indexes**: If certain filters are common, ensure indexes exist
+- **Create Specialized Tools**: If a pattern is frequent, consider a dedicated tool
+- **Optimize Queries**: Focus performance improvements on common patterns
+- **Simplify Tools**: If agents always use specific parameters, make them defaults
+
+<Tip>
+If a query pattern appears frequently (30%+ of queries), consider creating a dedicated tool optimized for that pattern. This can improve performance and agent experience.
+</Tip>
+
+## Using Query Shapes to Improve Tools
+
+### Scenario 1: Common Filter Pattern
+
+**Observation**: 60% of queries filter by `event_type`
+
+**Action**: 
+- Ensure `event_type` filtering is optimized
+- Consider making `event_type` a required parameter
+- Add tool description emphasizing event_type filtering
+
+### Scenario 2: Date Range Pattern
+
+**Observation**: Many queries use date ranges
+
+**Action**:
+- Create a dedicated tool for date range queries
+- Add date range parameters to existing tools
+- Optimize date filtering in queries
+
+### Scenario 3: Multiple Parameter Combinations
+
+**Observation**: Agents frequently combine specific parameters
+
+**Action**:
+- Create tools optimized for common combinations
+- Add default values for frequently used parameters
+- Update tool descriptions to highlight common use cases
+
+## Query Shape Examples
+
+### Example 1: Engagement Score Queries
+
+**Common Pattern**:
+```sql
+SELECT engagement_score 
+FROM table0 
+WHERE event_type LIKE '%{event_type}%'
+ORDER BY engagement_score DESC
+```
+
+**Insights**:
+- Agents always filter by event_type
+- Always sorted by engagement_score descending
+- Uses LIKE pattern matching
+
+**Optimization**:
+- Make event_type a required parameter
+- Consider exact match instead of LIKE if pattern is consistent
+- Add LIMIT if results are always large
+
+### Example 2: Date Range Queries
+
+**Common Pattern**:
+```sql
+SELECT * 
+FROM transactions 
+WHERE date >= '{start_date}' 
+  AND date <= '{end_date}'
+ORDER BY date DESC
+```
+
+**Insights**:
+- Always uses date range filtering
+- Always sorted by date
+- Returns all columns
+
+**Optimization**:
+- Create dedicated date range tool
+- Add default date range (e.g., last 30 days)
+- Consider selecting specific columns instead of *
+
+### Example 3: Multi-Filter Queries
+
+**Common Pattern**:
+```sql
+SELECT * 
+FROM customers 
+WHERE region = '{region}' 
+  AND status = '{status}'
+  AND revenue > {min_revenue}
+```
+
+**Insights**:
+- Always combines region, status, and revenue filters
+- Revenue threshold is common
+
+**Optimization**:
+- Create tool specifically for this combination
+- Make min_revenue optional with default
+- Add indexes on region, status, revenue columns
+
+## Best Practices
+
+### Regular Review
+
+- ✅ Review query shapes weekly
+- ✅ Look for new patterns emerging
+- ✅ Identify optimization opportunities
+- ✅ Track changes over time
+
+### Pattern Documentation
+
+- Document common query patterns
+- Note which patterns are most frequent
+- Track how patterns change over time
+- Share insights with team
+
+### Optimization Strategy
+
+1. **Identify** high-frequency patterns (30%+ of queries)
+2. **Analyze** if patterns can be optimized
+3. **Create** specialized tools for common patterns
+4. **Monitor** if optimizations improve performance
+
+## Using Query Shapes with Raw Logs
+
+Combine query shapes with raw logs for deeper insights:
+
+1. Identify a pattern from Query Shapes
+2. Go to Raw Logs
+3. Filter for queries matching that pattern
+4. Analyze specific examples
+5. Understand how agents use that pattern
+
+<Info>
+Query shapes give you the big picture, while raw logs give you the details. Use both together for comprehensive analysis.
+</Info>
+
+## Next Steps
+
+Now that you understand query shapes:
+
+- [Understanding Query Logs](/learn/evals/understanding-query-logs) - Dive into detailed execution logs
+- [Improving Tools with Evals](/learn/evals/improving-tools-with-evals) - Use query shape insights to optimize tools
+- [Improving Views with Evals](/learn/evals/improving-views-with-evals) - Optimize views based on query patterns
+
+<Card
+  title="Explore Raw Logs"
+  icon="file-lines"
+  href="/learn/evals/understanding-query-logs"
+>
+  Learn how to analyze detailed query logs
+</Card>
+

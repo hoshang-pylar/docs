@@ -1,0 +1,214 @@
+---
+title: "Connection Security"
+description: "Learn about data security in Pylar and best practices for securing your database connections"
+---
+
+## Data Security at Pylar
+
+At Pylar, we understand the importance of data security. Our platform employs multiple layers of security to protect your data and credentials.
+
+### Default Encryption
+
+Pylar servers employ **default encryption** to safeguard your data:
+- Data at rest is encrypted
+- Data in transit is encrypted via HTTPS
+- All API interactions use HTTPS protocol
+
+### Secret Management
+
+Sensitive information is stored securely:
+
+- **Database Credentials**: Stored in Google Cloud Platform's (GCP) Secret Key Manager
+- **SQL Query Outputs**: Protected with robust access controls
+- **Stringent Access Control**: Multiple layers of security
+
+### HTTPS Protocol
+
+All API interactions are fortified with HTTPS:
+- **Encryption in Transit**: Data is encrypted during transmission
+- **Protection Against Unauthorized Access**: Prevents interception and tampering
+- **Secure Communication**: All connections use industry-standard encryption
+
+<Info>
+Pylar uses Google Cloud Platform's Secret Key Manager, which provides enterprise-grade security for storing and managing sensitive credentials.
+</Info>
+
+## Enhancing Your Data Privacy
+
+While Pylar provides a secure environment, you can take additional steps to further boost your data privacy.
+
+### Creating a Dedicated User Account
+
+For more granular control, consider setting up a **dedicated Pylar user account** in your database environment.
+
+**Benefits**:
+- ✅ **Assign Specific Access Rights**: Give Pylar only the permissions it needs
+- ✅ **Establish Limited Views**: Control exactly what data Pylar can access
+- ✅ **Utilize Audit Logging**: Monitor all queries executed by Pylar
+
+**How to implement**:
+
+1. Create a new database user specifically for Pylar
+2. Grant only necessary permissions:
+   ```sql
+   -- Example for PostgreSQL
+   CREATE USER pylar_user WITH PASSWORD 'secure_password';
+   GRANT SELECT ON specific_schema.specific_table TO pylar_user;
+   ```
+3. Use this dedicated user when connecting to Pylar
+4. Set up audit logging to track all Pylar queries
+
+<Tip>
+A dedicated user account with limited permissions is a security best practice. It follows the principle of least privilege—giving only the minimum access needed.
+</Tip>
+
+## IP Whitelisting
+
+### Pylar IP Address
+
+**Pylar IP Address**: `34.122.205.142`
+
+This is a permanently assigned IP address. Whitelist it in your database firewall settings.
+
+### Why Whitelist?
+
+- **Security**: Restricts access to only Pylar's IP
+- **Stability**: Ensures reliable connectivity
+- **Control**: You control who can access your database
+
+### How to Whitelist
+
+The process varies by database provider:
+
+- **AWS RDS**: Add to security group inbound rules
+- **Google Cloud SQL**: Add to authorized networks
+- **Azure Database**: Add to firewall rules
+- **Self-hosted**: Configure server firewall (iptables, ufw, etc.)
+
+<Warning>
+Whitelisting the IP address is crucial for most database connections. Without it, Pylar may not be able to connect, and you may encounter network or security blocks.
+</Warning>
+
+## Network Security Best Practices
+
+### Firewall Configuration
+
+- ✅ **Whitelist Only**: Only allow Pylar's IP address
+- ✅ **Restrict Ports**: Only open necessary database ports
+- ✅ **Review Regularly**: Periodically review firewall rules
+- ✅ **Monitor Access**: Log and monitor connection attempts
+
+### VPN and Private Networks
+
+For enhanced security:
+- Use VPN connections when possible
+- Configure private network access
+- Use SSH tunnels for additional security (see SSH Connections guide)
+
+## Credential Management
+
+### Secure Storage
+
+- ✅ **Never Share**: Don't share credentials publicly
+- ✅ **Use Password Managers**: Store credentials securely
+- ✅ **Rotate Regularly**: Change passwords periodically
+- ✅ **Limit Access**: Only share with authorized team members
+
+### Service Account Best Practices
+
+For cloud databases (BigQuery, etc.):
+
+- ✅ **Dedicated Accounts**: Create service accounts specifically for Pylar
+- ✅ **Minimal Permissions**: Grant only necessary permissions
+- ✅ **Key Rotation**: Rotate service account keys regularly
+- ✅ **Monitor Usage**: Review service account activity logs
+
+## Access Control
+
+### Database-Level Security
+
+- ✅ **User Permissions**: Use dedicated users with limited permissions
+- ✅ **Schema-Level Access**: Restrict access to specific schemas
+- ✅ **Table-Level Access**: Grant access only to necessary tables
+- ✅ **View-Based Access**: Use database views to limit data exposure
+
+### Audit Logging
+
+Enable audit logging to monitor:
+
+- **All Queries**: Track every query Pylar executes
+- **Access Patterns**: Understand how data is being accessed
+- **Security Events**: Identify suspicious activity
+- **Compliance**: Maintain audit trails for compliance
+
+## Views as Security Layer
+
+### Views Are the Only Access Level
+
+Remember: **Views are the only access level agents get**. This means:
+
+- ✅ **No Raw Access**: Agents never access raw database tables
+- ✅ **Controlled Data**: You define exactly what data is available
+- ✅ **Additional Security Layer**: Views provide an extra security boundary
+
+### Best Practices for Views
+
+- ✅ **Filter Sensitive Data**: Exclude PII, financial data, etc.
+- ✅ **Row-Level Security**: Implement filters based on context
+- ✅ **Column-Level Security**: Select only necessary columns
+- ✅ **Documentation**: Document what each view exposes
+
+## Compliance and Auditing
+
+### Compliance Requirements
+
+Pylar helps you meet regulatory requirements:
+
+- **SOC 2**: Security controls and audit trails
+- **GDPR**: Data access controls and logging
+- **HIPAA**: Protected health information controls
+- **Other Regulations**: Customizable access controls
+
+### Audit Trails
+
+Pylar provides:
+
+- **Query Logs**: Every query is logged
+- **Access Logs**: Who accessed what and when
+- **Evals**: Comprehensive usage analytics
+- **Export Capabilities**: Export logs for compliance reviews
+
+## Security Checklist
+
+Before connecting databases:
+
+- ✅ Create dedicated user account for Pylar
+- ✅ Grant only necessary permissions (read-only if possible)
+- ✅ Whitelist Pylar IP address (`34.122.205.142`)
+- ✅ Enable audit logging in your database
+- ✅ Use strong passwords
+- ✅ Store credentials securely
+- ✅ Review access regularly
+
+After connecting:
+
+- ✅ Monitor connection logs
+- ✅ Review Evals for usage patterns
+- ✅ Update credentials if compromised
+- ✅ Audit user permissions periodically
+- ✅ Review firewall rules regularly
+
+## Next Steps
+
+- [Managing Connections](/learn/making-connections/managing-connections) - Manage and monitor your connections
+- [SSH Connections](/learn/making-connections/connecting-via-ssh) - Enhanced security with SSH tunnels
+- [Troubleshooting Connections](/learn/making-connections/troubleshooting-connections) - Resolve connection issues
+
+<Card
+  title="Enhanced Security"
+  icon="shield"
+  href="/learn/making-connections/connecting-via-ssh"
+>
+  Learn about SSH tunnel connections for enhanced security
+</Card>
+

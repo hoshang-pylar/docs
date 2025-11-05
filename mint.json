@@ -1,13 +1,13 @@
 {
   "$schema": "https://mintlify.com/docs.json",
   "theme": "venus",
-  "name": "Mint Starter Kit",
+  "name": "Pylar",
   "colors": {
-    "primary": "#16A34A",
-    "light": "#07C983",
-    "dark": "#15803D"
+    "primary": "#FF4017",
+    "light": "#FF6B4A",
+    "dark": "#CC3300"
   },
-  "favicon": "/favicon.svg",
+  "favicon": "/favicon.png",
   "navigation": [
     {
       "group": "Introduction",
@@ -18,78 +18,134 @@
       ]
     },
     {
-      "group": "Getting started",
+      "group": "Learn",
       "pages": [
-        "index",
-        "quickstart",
-        "development"
+        {
+          "group": "Making Connections",
+          "pages": [
+            "learn/making-connections/overview",
+            "learn/making-connections/supported-data-sources",
+            "learn/making-connections/connecting-bigquery",
+            "learn/making-connections/connecting-snowflake",
+            "learn/making-connections/connecting-postgresql",
+            "learn/making-connections/connecting-mysql",
+            "learn/making-connections/connecting-redshift",
+            "learn/making-connections/connecting-motherduck",
+            "learn/making-connections/connecting-supabase",
+            "learn/making-connections/connection-security",
+            "learn/making-connections/managing-connections",
+            "learn/making-connections/troubleshooting-connections",
+            "learn/making-connections/connecting-via-ssh"
+          ]
+        },
+        {
+          "group": "Creating Data Views",
+          "pages": [
+            "learn/creating-data-views/overview",
+            "learn/creating-data-views/sql-ide-basics",
+            "learn/creating-data-views/writing-your-first-view",
+            "learn/creating-data-views/cross-database-joins"
+          ]
+        },
+        {
+          "group": "Building MCP Tools",
+          "pages": [
+            "learn/building-mcp-tools/overview",
+            "learn/building-mcp-tools/creating-tools-with-ai",
+            "learn/building-mcp-tools/understanding-tool-structure",
+            "learn/building-mcp-tools/editing-mcp-tools",
+            "learn/building-mcp-tools/testing-your-tools"
+          ]
+        },
+        {
+          "group": "Publishing Tools to Agents",
+          "pages": [
+            "learn/publishing-tools/overview",
+            "learn/publishing-tools/publishing-your-tools"
+          ]
+        },
+        {
+          "group": "Connecting Agent Builders",
+          "pages": [
+            "learn/connecting-agent-builders/overview",
+            "learn/connecting-agent-builders/claude-desktop",
+            "learn/connecting-agent-builders/cursor",
+            "learn/connecting-agent-builders/windsurf",
+            "learn/connecting-agent-builders/vs-code",
+            "learn/connecting-agent-builders/langgraph",
+            "learn/connecting-agent-builders/openai-platform",
+            "learn/connecting-agent-builders/zapier",
+            "learn/connecting-agent-builders/make",
+            "learn/connecting-agent-builders/n8n"
+          ]
+        },
+        {
+          "group": "Evals",
+          "pages": [
+            "learn/evals/overview",
+            "learn/evals/evals-dashboard",
+            "learn/evals/analyzing-errors",
+            "learn/evals/understanding-query-shapes",
+            "learn/evals/understanding-query-logs"
+          ]
+        }
       ]
     },
     {
-      "group": "Customization",
+      "group": "Examples",
       "pages": [
-        "essentials/settings",
-        "essentials/navigation"
+        "examples/customer-support-agent",
+        "examples/customer-wiki-agent",
+        "examples/customer-churn-predictor",
+        "examples/customer-onboarding-assistant",
+        "examples/sales-assistant",
+        "examples/revenue-operations-agent",
+        "examples/lead-qualification-agent",
+        "examples/sales-territory-optimizer",
+        "examples/marketing-campaign-optimizer",
+        "examples/content-performance-analyzer",
+        "examples/ab-testing-assistant",
+        "examples/marketing-attribution-analyzer",
+        "examples/product-usage-analyst",
+        "examples/product-feedback-analyzer",
+        "examples/feature-flag-manager",
+        "examples/financial-analyst",
+        "examples/invoice-billing-assistant",
+        "examples/expense-auditor",
+        "examples/supply-chain-coordinator",
+        "examples/it-operations-monitor"
       ]
     },
     {
-      "group": "Writing content",
+      "group": "Help",
       "pages": [
-        "essentials/markdown",
-        "essentials/code",
-        "essentials/images",
-        "essentials/reusable-snippets"
-      ]
-    },
-    {
-      "group": "AI tools",
-      "pages": [
-        "ai-tools/cursor",
-        "ai-tools/claude-code",
-        "ai-tools/windsurf"
-      ]
-    },
-    {
-      "group": "API documentation",
-      "pages": [
-        "api-reference/introduction"
-      ]
-    },
-    {
-      "group": "Endpoint examples",
-      "pages": [
-        "api-reference/endpoint/get",
-        "api-reference/endpoint/create",
-        "api-reference/endpoint/delete",
-        "api-reference/endpoint/webhook"
+        "help/faq",
+        "help/troubleshooting"
       ]
     }
   ],
   "topbarLinks": [
     {
-      "name": "Documentation",
-      "url": "https://mintlify.com/docs"
+      "name": "Website",
+      "url": "https://www.pylar.ai"
     },
     {
-      "name": "Blog",
-      "url": "https://mintlify.com/blog"
+      "name": "Sign Up",
+      "url": "https://app.pylar.ai/signup"
     }
   ],
-  "logo": {
-    "light": "/logo/light.svg",
-    "dark": "/logo/dark.svg"
-  },
+  "logo": "/logo/light.svg",
   "navbar": {
     "links": [
       {
         "label": "Support",
-        "href": "mailto:hi@mintlify.com"
+        "href": "mailto:support@pylar.ai"
       }
     ],
     "primary": {
       "type": "button",
-      "label": "Dashboard",
-      "href": "https://dashboard.mintlify.com"
+      "label": "Get Started",
+      "href": "https://app.pylar.ai/signup"
     }
   },
   "contextual": {
@@ -105,10 +161,6 @@
    ]
   },
   "footer": {
-    "socials": {
-      "x": "https://x.com/mintlify",
-      "github": "https://github.com/mintlify",
-      "linkedin": "https://linkedin.com/company/mintlify"
-    }
+    "socials": {}
   }
 }

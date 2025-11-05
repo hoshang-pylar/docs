@@ -1,0 +1,336 @@
+---
+title: "Writing Your First View"
+description: "Step-by-step guide to creating your first data view in Pylar, including cross-database joins from Snowflake, HubSpot, and Salesforce"
+---
+
+## Overview
+
+This tutorial walks you through creating your first data view in Pylar. You'll learn how to join data from multiple sources—Snowflake, HubSpot, and Salesforce—into a unified view that an AI agent can use to answer complex business questions.
+
+## Use Case: Customer 360 View
+
+We'll create a **Customer 360 View** that combines:
+- **Customer transaction data** from Snowflake
+- **Marketing engagement data** from HubSpot
+- **Sales pipeline data** from Salesforce
+
+This unified view will enable an AI agent to answer questions like:
+- "What's the total revenue for customers who engaged with our Q4 campaign?"
+- "Show me customers who have deals in Salesforce but haven't made a purchase yet"
+- "Which HubSpot contacts have the highest lifetime value in Snowflake?"
+
+## Prerequisites
+
+Before you begin, ensure you have:
+
+- ✅ A Pylar account with access to create views
+- ✅ Active connections to:
+  - Snowflake (with transaction data)
+  - HubSpot (with marketing engagement data)
+  - Salesforce (with sales pipeline data)
+- ✅ A project created in Pylar to organize your views
+
+<Info>
+If you haven't connected your data sources yet, check out the [Making Connections](/learn/making-connections/overview) section to set them up first.
+</Info>
+
+## Step 1: Create a New View
+
+1. Navigate to your project in the Pylar dashboard
+2. Click **"Create View"** or **"New View"**
+3. The SQL IDE will appear in the center of your screen
+
+## Step 2: Understand the Data Structure
+
+Before writing your query, understand what data you're working with:
+
+### Snowflake Data (Transaction Database)
+- **Table**: `transactions`
+- **Key Columns**: `customer_id`, `transaction_date`, `amount`, `product_id`
+
+### HubSpot Data (Marketing Platform)
+- **Table**: `contacts`
+- **Key Columns**: `contact_id`, `email`, `campaign_engagement`, `last_contacted`
+
+### Salesforce Data (CRM)
+- **Table**: `opportunities`
+- **Key Columns**: `account_id`, `opportunity_name`, `stage`, `amount`, `close_date`
+
+<Warning>
+The exact table and column names may vary based on your specific setup. Adjust the query to match your actual schema.
+</Warning>
+
+## Step 3: Write Your Cross-Database Query
+
+Now we'll create a query that joins data from all three sources. Here's the complete view:
+
+```sql
+-- Customer 360 View
+-- Combines transaction data, marketing engagement, and sales pipeline
+-- for a complete customer picture
+
+SELECT 
+  -- Customer identifiers
+  COALESCE(sf.customer_id, hs.contact_id, sfdc.account_id) AS unified_customer_id,
+  
+  -- Transaction data from Snowflake
+  sf.total_revenue,
+  sf.transaction_count,
+  sf.first_transaction_date,
+  sf.last_transaction_date,
+  sf.avg_transaction_value,
+  
+  -- Marketing data from HubSpot
+  hs.email,
+  hs.campaign_engagement,
+  hs.last_contacted_date,
+  hs.marketing_score,
+  
+  -- Sales data from Salesforce
+  sfdc.active_opportunities,
+  sfdc.total_pipeline_value,
+  sfdc.largest_deal_amount,
+  sfdc.deal_stage,
+  sfdc.expected_close_date,
+  
+  -- Calculated fields
+  CASE 
+    WHEN sf.total_revenue > 0 AND sfdc.total_pipeline_value > 0 
+    THEN 'Customer with Revenue & Pipeline'
+    WHEN sf.total_revenue > 0 
+    THEN 'Existing Customer'
+    WHEN sfdc.total_pipeline_value > 0 
+    THEN 'Prospect with Pipeline'
+    ELSE 'Lead'
+  END AS customer_segment
+
+FROM (
+  -- Aggregate transaction data from Snowflake
+  SELECT 
+    customer_id,
+    SUM(amount) AS total_revenue,
+    COUNT(*) AS transaction_count,
+    MIN(transaction_date) AS first_transaction_date,
+    MAX(transaction_date) AS last_transaction_date,
+    AVG(amount) AS avg_transaction_value
+  FROM snowflake.production.transactions
+  WHERE transaction_date >= DATEADD(month, -12, CURRENT_DATE())
+  GROUP BY customer_id
+) sf
+
+FULL OUTER JOIN (
+  -- Marketing engagement from HubSpot
+  SELECT 
+    contact_id,
+    email,
+    campaign_engagement,
+    last_contacted AS last_contacted_date,
+    hs_analytics_source_data_1 AS marketing_score
+  FROM hubspot.marketing.contacts
+  WHERE is_active = true
+) hs ON sf.customer_id = hs.contact_id
+
+FULL OUTER JOIN (
+  -- Sales pipeline from Salesforce
+  SELECT 
+    account_id,
+    COUNT(CASE WHEN stage NOT IN ('Closed Won', 'Closed Lost') THEN 1 END) AS active_opportunities,
+    SUM(CASE WHEN stage NOT IN ('Closed Won', 'Closed Lost') THEN amount ELSE 0 END) AS total_pipeline_value,
+    MAX(CASE WHEN stage NOT IN ('Closed Won', 'Closed Lost') THEN amount END) AS largest_deal_amount,
+    MAX(CASE WHEN stage NOT IN ('Closed Won', 'Closed Lost') THEN stage END) AS deal_stage,
+    MIN(CASE WHEN stage NOT IN ('Closed Won', 'Closed Lost') THEN close_date END) AS expected_close_date
+  FROM salesforce.sales.opportunities
+  WHERE is_deleted = false
+  GROUP BY account_id
+) sfdc ON COALESCE(sf.customer_id, hs.contact_id) = sfdc.account_id
+
+WHERE 
+  -- Filter for active customers or prospects
+  (sf.total_revenue > 0 OR sfdc.total_pipeline_value > 0 OR hs.marketing_score > 50)
+ORDER BY 
+  sf.total_revenue DESC NULLS LAST,
+  sfdc.total_pipeline_value DESC NULLS LAST;
+```
+
+## Step 4: Understanding the Query
+
+Let's break down what this query does:
+
+### Data Aggregation
+
+**Snowflake Subquery**:
+- Aggregates transaction data by customer
+- Calculates total revenue, transaction count, and dates
+- Filters to last 12 months of data
+
+**HubSpot Subquery**:
+- Retrieves marketing engagement data
+- Includes email and campaign interaction history
+- Filters to active contacts only
+
+**Salesforce Subquery**:
+- Aggregates sales pipeline data
+- Calculates active opportunities and pipeline value
+- Excludes closed deals from pipeline calculations
+
+### Cross-Database Joins
+
+The query uses `FULL OUTER JOIN` to:
+- Include customers who have transactions but no marketing data
+- Include prospects who have sales pipeline but no transactions yet
+- Include contacts who have marketing engagement but no sales activity
+- Combine all three sources into a unified customer view
+
+### Customer Segmentation
+
+The `CASE` statement creates a customer segment based on:
+- Whether they have revenue (Snowflake)
+- Whether they have active pipeline (Salesforce)
+- Combining both signals for a complete picture
+
+<Tip>
+Using `FULL OUTER JOIN` ensures you capture all customers, prospects, and leads regardless of which systems they appear in. This is perfect for a comprehensive 360-degree view.
+</Tip>
+
+## Step 5: Select Your Primary Data Source
+
+1. In the SQL IDE, locate the **"Select Datasource"** dropdown
+2. Since we're joining across multiple sources, select your **primary source** (Snowflake in this example)
+3. The query will execute using that connection, but can reference other sources
+
+<Info>
+Pylar handles cross-database joins automatically. You can reference tables from different sources using the format: `datasource.schema.table`.
+</Info>
+
+## Step 6: Run and Test Your Query
+
+1. Review your query in the SQL IDE
+2. Click **"Run Query"** in the top right
+3. Wait for the query to execute (you'll see a loader)
+4. Review the results:
+   - Check the row count
+   - Verify data looks correct
+   - Ensure joins worked as expected
+   - Review the customer segments
+
+<Check>
+If your query runs successfully, you'll see a table with all the combined customer data. The row count should reflect customers from all three sources.
+</Check>
+
+## Step 7: Save Your View
+
+Once you've verified the query works:
+
+1. Click **"Save View"** or **"Save"**
+2. Enter a descriptive name: `customer_360_view`
+3. Add a description:
+   ```
+   Unified customer view combining transaction data (Snowflake), 
+   marketing engagement (HubSpot), and sales pipeline (Salesforce). 
+   Enables 360-degree customer analysis for AI agents.
+   ```
+4. Click **"Save"** to finalize
+
+## How an AI Agent Uses This View
+
+Once you create MCP tools on this view and publish them, an AI agent can use it to answer complex questions:
+
+### Example Agent Interactions
+
+**Question**: *"Show me customers who have engaged with our Q4 campaign but haven't made a purchase yet"*
+
+**Agent Process**:
+1. Agent queries the view with filters:
+   - `campaign_engagement` contains "Q4"
+   - `total_revenue` is NULL or 0
+   - `customer_segment` = "Prospect with Pipeline" or "Lead"
+2. Returns customers who are marketing-qualified but haven't converted
+3. Can provide actionable insights for sales follow-up
+
+**Question**: *"What's the average revenue for customers with active opportunities in Salesforce?"*
+
+**Agent Process**:
+1. Agent queries the view filtering for:
+   - `active_opportunities` > 0
+   - `total_revenue` is not NULL
+2. Calculates average revenue from the results
+3. Provides both the average and context about pipeline value
+
+**Question**: *"Find customers with high lifetime value who haven't been contacted recently"*
+
+**Agent Process**:
+1. Agent queries the view with:
+   - `total_revenue` > threshold (high value)
+   - `last_contacted_date` is old or NULL
+2. Identifies high-value customers needing re-engagement
+3. Can suggest next steps for marketing team
+
+### Why This Works
+
+The unified view enables the agent to:
+
+- **Answer Complex Questions**: Questions requiring data from multiple sources can be answered in a single query
+- **Understand Context**: Customer segments provide context for better responses
+- **Make Connections**: The agent can see relationships between transactions, marketing, and sales
+- **Provide Insights**: Combined data enables more sophisticated analysis
+
+<Info>
+This view becomes a single source of truth for customer data. The AI agent doesn't need to know about Snowflake, HubSpot, or Salesforce—it just queries this unified view.
+</Info>
+
+## Next Steps
+
+Now that you've created your first view:
+
+1. **Create MCP Tools**: Build tools on this view that agents can use
+   - [Building MCP Tools Overview](/learn/building-mcp-tools/overview)
+   - [Creating Tools with AI](/learn/building-mcp-tools/creating-tools-with-ai)
+
+2. **Test Your View**: Use Evals to see how agents interact with it
+   - [Evals Overview](/learn/evals/overview)
+
+3. **Optimize**: Refine based on agent usage patterns
+   - [View Best Practices](/learn/creating-data-views/view-best-practices)
+
+## Common Issues and Solutions
+
+### Issue: Query Fails with "Table Not Found"
+
+**Solution**: Verify your table references are correct:
+- Check datasource names match your connections
+- Verify schema and table names are exact
+- Ensure you have access permissions
+
+### Issue: Join Returns Unexpected Results
+
+**Solution**: 
+- Verify join keys match across sources
+- Check for NULL values that might affect joins
+- Use `COALESCE` to handle mismatched identifiers
+- Test joins incrementally (start with two sources)
+
+### Issue: Query Runs Slowly
+
+**Solution**:
+- Add filters to reduce data volume early
+- Use aggregated subqueries (as in our example)
+- Limit date ranges to recent data
+- Consider materializing frequently-used views
+
+## Best Practices Recap
+
+- **Use Descriptive Names**: `customer_360_view` is clear and specific
+- **Add Comments**: Document your query logic
+- **Test Incrementally**: Start with one source, then add joins
+- **Aggregate When Possible**: Pre-calculate metrics in subqueries
+- **Handle NULLs**: Use `COALESCE` for unified identifiers
+- **Filter Early**: Apply WHERE clauses in subqueries
+
+<Card
+  title="Build MCP Tools"
+  icon="tools"
+  href="/learn/building-mcp-tools/overview"
+>
+  Next: Create MCP tools so agents can query this view
+</Card>
+

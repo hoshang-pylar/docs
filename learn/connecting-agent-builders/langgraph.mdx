@@ -1,0 +1,205 @@
+---
+title: "LangGraph"
+description: "Connect Pylar MCP tools to LangGraph for building stateful agent workflows with data access"
+---
+
+## Overview
+
+LangGraph is a framework for building stateful, multi-actor applications with LLMs. Connect your Pylar MCP tools to LangGraph to give your agents access to your data through governed views.
+
+## Prerequisites
+
+- ✅ Python environment with LangGraph installed
+- ✅ Pylar project with published MCP tools
+- ✅ MCP HTTP Stream URL and Bearer Token from Pylar
+
+## Installation
+
+Install the MCP Python client:
+
+```bash
+pip install mcp
+```
+
+## Step 1: Get Your Pylar Credentials
+
+1. In Pylar, navigate to your project
+2. Click **"Publish"** in the right sidebar
+3. Copy both:
+   - **MCP HTTP Stream URL**: `https://mcp.publish.pylar.ai/mcp`
+   - **Authorization Bearer Token**: Your unique token
+
+## Step 2: Connect to Pylar in LangGraph
+
+Create an MCP client connection:
+
+```python
+from mcp import ClientSession, StdioServerParameters
+from mcp.client.stdio import stdio_client
+import httpx
+
+# Pylar MCP server configuration
+PYLAR_MCP_URL = "https://mcp.publish.pylar.ai/mcp"
+PYLAR_BEARER_TOKEN = "YOUR_BEARER_TOKEN_HERE"
+
+# Create HTTP client with authentication
+async def create_pylar_client():
+    async with httpx.AsyncClient() as client:
+        headers = {
+            "Authorization": f"Bearer {PYLAR_BEARER_TOKEN}",
+            "Content-Type": "application/json"
+        }
+        
+        # Connect to Pylar MCP server
+        response = await client.post(
+            f"{PYLAR_MCP_URL}/tools/list",
+            headers=headers
+        )
+        
+        if response.status_code == 200:
+            tools = response.json()
+            return tools
+        else:
+            raise Exception(f"Failed to connect: {response.status_code}")
+
+# Use in your LangGraph agent
+async def call_pylar_tool(tool_name, arguments):
+    async with httpx.AsyncClient() as client:
+        headers = {
+            "Authorization": f"Bearer {PYLAR_BEARER_TOKEN}",
+            "Content-Type": "application/json"
+        }
+        
+        response = await client.post(
+            f"{PYLAR_MCP_URL}/tools/call",
+            headers=headers,
+            json={
+                "name": tool_name,
+                "arguments": arguments
+            }
+        )
+        
+        return response.json()
+```
+
+## Step 3: Integrate with LangGraph Agent
+
+Add Pylar tools to your LangGraph agent:
+
+```python
+from langgraph.graph import StateGraph, END
+from langchain_core.tools import tool
+
+# Define Pylar tools as LangChain tools
+@tool
+async def get_engagement_scores(event_type: str):
+    """Get engagement scores for a given event type."""
+    result = await call_pylar_tool(
+        "fetch_engagement_scores_by_event_type",
+        {"event_type": event_type}
+    )
+    return result
+
+# Add to your agent's tool list
+tools = [get_engagement_scores]
+
+# Use in LangGraph workflow
+def create_agent():
+    workflow = StateGraph(AgentState)
+    
+    workflow.add_node("agent", your_agent_node)
+    workflow.add_node("tools", execute_tools)
+    
+    workflow.set_entry_point("agent")
+    workflow.add_edge("agent", "tools")
+    workflow.add_edge("tools", END)
+    
+    return workflow.compile()
+```
+
+## Step 4: Use in Your Workflow
+
+Your LangGraph agent can now use Pylar tools:
+
+```python
+# Agent can call Pylar tools
+result = await agent.invoke({
+    "messages": [("user", "Get engagement scores for login events")]
+})
+
+# Tools are called automatically based on agent decisions
+```
+
+## Benefits
+
+- ✅ **Stateful Workflows**: Build complex agent workflows with data access
+- ✅ **Type Safety**: Use typed tools in your Python code
+- ✅ **Centralized Control**: Update views in Pylar, agents get updates
+- ✅ **Full Visibility**: Monitor agent usage through Pylar Evals
+- ✅ **No SQL in Code**: Keep SQL in Pylar, not in your agent code
+
+## Best Practices
+
+### Error Handling
+
+```python
+try:
+    result = await call_pylar_tool(tool_name, arguments)
+except Exception as e:
+    # Handle errors gracefully
+    logger.error(f"Pylar tool error: {e}")
+    return {"error": str(e)}
+```
+
+### Caching
+
+Cache tool results when appropriate:
+
+```python
+from functools import lru_cache
+
+@lru_cache(maxsize=100)
+async def get_cached_data(tool_name, arguments):
+    return await call_pylar_tool(tool_name, arguments)
+```
+
+### Type Validation
+
+Validate tool arguments:
+
+```python
+from pydantic import BaseModel
+
+class EngagementScoreArgs(BaseModel):
+    event_type: str
+    
+async def get_engagement_scores(args: EngagementScoreArgs):
+    return await call_pylar_tool(
+        "fetch_engagement_scores_by_event_type",
+        args.dict()
+    )
+```
+
+## Troubleshooting
+
+### Issue: Connection errors
+
+**Solutions**:
+- Verify Bearer Token is correct
+- Check network connectivity
+- Ensure MCP URL is correct
+- Test connection with curl first
+
+### Issue: Tool not found
+
+**Solutions**:
+- Verify tool name matches exactly
+- Check tools are published in Pylar
+- List available tools first
+
+## Next Steps
+
+- [Publishing Tools](/learn/publishing-tools/publishing-your-tools) - Publish your tools
+- [Evals](/learn/evals/overview) - Monitor LangGraph agent usage
+- [Other Builders](/learn/connecting-agent-builders/overview) - Connect to other platforms
+

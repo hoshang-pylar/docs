@@ -1,0 +1,141 @@
+---
+title: "Windsurf"
+description: "Connect Pylar MCP tools to Windsurf for AI-powered coding assistance with data access"
+---
+
+## Overview
+
+Windsurf is an AI-powered code editor that supports MCP tools. Connect your Pylar tools to Windsurf to give the AI assistant access to your data through governed views while coding.
+
+## Prerequisites
+
+- ✅ Windsurf editor installed
+- ✅ Pylar project with published MCP tools
+- ✅ MCP HTTP Stream URL and Bearer Token from Pylar
+
+## Step 1: Get Your Pylar Credentials
+
+1. In Pylar, navigate to your project
+2. Click **"Publish"** in the right sidebar
+3. Generate your token if needed
+4. Copy both:
+   - **MCP HTTP Stream URL**: `https://mcp.publish.pylar.ai/mcp`
+   - **Authorization Bearer Token**: Your unique token
+
+## Step 2: Open Windsurf Command Palette
+
+1. Open Windsurf
+2. Press the keyboard shortcut:
+   - **Mac**: `Cmd + Shift + P`
+   - **Windows/Linux**: `Ctrl + Shift + P`
+3. Type and select: **"Windsurf: Open MCP Configuration"**
+
+This opens or creates your MCP config file, usually located at:
+```
+~/.codeium/windsurf/mcp_config.json
+```
+
+## Step 3: Add Your MCP Server Configuration
+
+Inside the JSON file, add a new entry under `"mcpServers"`:
+
+```json
+{
+  "mcpServers": {
+    "view-mcp-node": {
+      "serverUrl": "https://mcp.publish.pylar.ai/mcp",
+      "headers": {
+        "Authorization": "Bearer xxxxx"
+      }
+    }
+  }
+}
+```
+
+**Important**:
+- Replace `xxxxx` with your actual Bearer Token from Pylar
+- The name `"view-mcp-node"` is a local alias—you can rename it to anything you prefer
+- If the `"headers"` key is unsupported in your Windsurf build, omit it and use a proxy or environment variable instead
+
+<Info>
+The config file location may vary. Windsurf will create it if it doesn't exist when you open the MCP Configuration.
+</Info>
+
+## Step 4: Save and Reload MCP Servers
+
+1. Save the `mcp_config.json` file
+2. Back in Windsurf, open the command palette again:
+   - **Mac**: `Cmd + Shift + P`
+   - **Windows/Linux**: `Ctrl + Shift + P`
+3. Run: **"Windsurf: Reload MCP Servers"**
+
+You'll see a success toast notification, and your new MCP server will appear in the MCP sidebar under the name you used (e.g., `view-mcp-node`).
+
+<Check>
+If you see the success toast and your MCP server appears in the sidebar, the connection is successful!
+</Check>
+
+## Step 5: Test the MCP Tools
+
+1. Go to the chat in Windsurf
+2. Write a question that requires the agent to use the MCP tool
+
+**Example**: *"Use the engagement score tool to get scores for login events"*
+
+The AI assistant will:
+1. Recognize it needs to use your Pylar tool
+2. Call the tool with appropriate parameters
+3. Execute the query and return results
+4. Use the data to answer your question
+
+## Using Your Tools in Windsurf
+
+Once connected, you can use Pylar tools while coding:
+
+- Ask questions about your data
+- Have the AI use tools to retrieve information
+- Build applications with real data from your views
+- Get insights while coding
+
+## Troubleshooting
+
+### Issue: MCP server not appearing
+
+**Solutions**:
+- Verify the JSON syntax is correct
+- Check that you saved the config file
+- Ensure you ran "Reload MCP Servers" command
+- Verify Bearer Token is correct
+- Check Windsurf version supports MCP
+
+### Issue: Headers not supported
+
+If headers are unsupported in your Windsurf build:
+
+**Alternative Solutions**:
+- Use a proxy server to add authentication
+- Set authentication via environment variables
+- Check for Windsurf updates
+
+### Issue: Tools not working
+
+**Solutions**:
+- Verify tools are published in Pylar
+- Check tool names match exactly
+- Review error messages in Windsurf
+- Test tools in Pylar first
+
+## Benefits
+
+- ✅ **AI-Powered Coding**: Access your data while coding
+- ✅ **Natural Language**: Ask questions in plain English
+- ✅ **Secure Access**: Through governed views only
+- ✅ **Automatic Updates**: View changes reflect immediately
+- ✅ **Full Control**: Manage everything from Pylar
+
+## Next Steps
+
+- [Publishing Tools](/learn/publishing-tools/publishing-your-tools) - Publish your tools
+- [Evals](/learn/evals/overview) - Monitor tool usage
+- [Other Builders](/learn/connecting-agent-builders/overview) - Connect to other platforms
+

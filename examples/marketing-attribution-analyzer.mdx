@@ -1,0 +1,129 @@
+---
+title: "Marketing Attribution Analyzer"
+description: "Build an AI agent that tracks customer journey, attributes conversions, and measures channel effectiveness"
+---
+
+## Overview
+
+A Marketing Attribution Analyzer powered by Pylar tracks the complete customer journey across touchpoints, attributes conversions to marketing channels, and measures channel effectiveness.
+
+## What the Agent Needs to Accomplish
+
+The agent must:
+- Track customer journey across touchpoints
+- Attribute conversions to marketing channels
+- Measure channel effectiveness
+- Analyze multi-touch attribution
+- Compare attribution models
+- Optimize channel mix
+
+## How Pylar Helps
+
+Pylar enables the agent by:
+- **Unified Journey View**: Combining touchpoints, channels, and conversions
+- **Multi-Touch Analysis**: Tracking all customer interactions
+- **Attribution Models**: Multiple attribution model calculations
+- **Channel Comparison**: Side-by-side channel effectiveness
+
+## Without Pylar vs With Pylar
+
+### Without Pylar
+
+**Challenges**:
+- ❌ Complex journey tracking across systems
+- ❌ Manual attribution calculations
+- ❌ Limited multi-touch visibility
+- ❌ Time-consuming analysis
+
+**Implementation Complexity**: ~6-8 weeks
+
+### With Pylar
+
+**Benefits**:
+- ✅ Automated journey tracking
+- ✅ Multiple attribution models
+- ✅ Real-time channel analysis
+- ✅ Easy model comparison
+
+**Implementation Complexity**: ~7-8 hours
+
+## Step-by-Step Implementation
+
+### Step 1: Connect Data Sources
+
+1. **Connect Marketing Channels** (Ads, email, social)
+2. **Connect Analytics** (Website touchpoints)
+3. **Connect CRM** (Conversions, customer data)
+
+### Step 2: Create Attribution Views
+
+**Customer Journey View**:
+```sql
+CREATE VIEW customer_journey AS
+SELECT 
+  c.customer_id,
+  c.conversion_date,
+  t.touchpoint_id,
+  t.channel,
+  t.touchpoint_date,
+  t.touchpoint_type,
+  ROW_NUMBER() OVER (PARTITION BY c.customer_id ORDER BY t.touchpoint_date) as touchpoint_order
+FROM conversions c
+JOIN touchpoints t ON c.customer_id = t.customer_id
+WHERE t.touchpoint_date <= c.conversion_date;
+```
+
+**Attribution Analysis View**:
+```sql
+CREATE VIEW attribution_analysis AS
+SELECT 
+  channel,
+  COUNT(DISTINCT customer_id) as conversions,
+  -- First touch
+  SUM(CASE WHEN touchpoint_order = 1 THEN 1 ELSE 0 END) as first_touch,
+  -- Last touch
+  SUM(CASE WHEN touchpoint_order = max_touchpoint THEN 1 ELSE 0 END) as last_touch,
+  -- Linear
+  COUNT(DISTINCT customer_id) / max_touchpoint as linear_attribution
+FROM customer_journey
+GROUP BY channel;
+```
+
+### Step 3: Create MCP Tools
+
+**Tool 1: Track Customer Journey**
+- `track_customer_journey(customer_id: string)`
+
+**Tool 2: Attribute Conversion**
+- `attribute_conversion(conversion_id: string, model: string)`
+
+**Tool 3: Analyze Channel Effectiveness**
+- `analyze_channel_effectiveness(model: string, period: string)`
+
+**Tool 4: Compare Attribution Models**
+- `compare_attribution_models(conversion_id: string)`
+
+## Example Agent Interactions
+
+**User**: "Which channels drive the most conversions?"
+
+**Agent**: "Channel Attribution Analysis (Last Touch):
+- Google Ads: 35% of conversions ($420K revenue)
+- Email Marketing: 28% ($336K revenue)
+- LinkedIn Ads: 22% ($264K revenue)
+- Organic Search: 15% ($180K revenue)
+
+Multi-touch analysis shows Google Ads + Email drives 45% of conversions"
+
+## Outcomes
+
+- **Attribution Accuracy**: 40% improvement
+- **Channel Optimization**: 25% better budget allocation
+- **Journey Visibility**: 100% touchpoint tracking
+- **ROI Improvement**: 30% increase in marketing ROI
+
+## Next Steps
+
+- [Marketing Campaign Optimizer Example](/examples/marketing-campaign-optimizer)
+- [Content Performance Analyzer Example](/examples/content-performance-analyzer)
+

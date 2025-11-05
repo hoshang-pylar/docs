@@ -1,0 +1,124 @@
+---
+title: "IT Operations Monitor"
+description: "Build an AI agent that monitors system health, analyzes performance metrics, and generates incident reports"
+---
+
+## Overview
+
+An IT Operations Monitor powered by Pylar monitors system health, analyzes performance metrics, tracks errors, and generates incident reports to ensure reliable infrastructure.
+
+## What the Agent Needs to Accomplish
+
+The agent must:
+- Monitor system health and status
+- Analyze performance metrics
+- Track errors and incidents
+- Generate incident reports
+- Identify performance degradation
+- Recommend optimizations
+
+## How Pylar Helps
+
+Pylar enables the agent by:
+- **Unified Operations View**: Combining system logs, metrics, and error data
+- **Real-time Monitoring**: Querying current system status
+- **Automated Analysis**: Performance and error analysis
+- **Incident Management**: Automated incident detection and reporting
+
+## Without Pylar vs With Pylar
+
+### Without Pylar
+
+**Challenges**:
+- ❌ Multiple monitoring tools
+- ❌ Manual log analysis
+- ❌ Time-consuming incident detection
+- ❌ Limited correlation
+
+**Implementation Complexity**: ~5-6 weeks
+
+### With Pylar
+
+**Benefits**:
+- ✅ Single endpoint for operations data
+- ✅ Real-time monitoring
+- ✅ Automated incident detection
+- ✅ Comprehensive visibility
+
+**Implementation Complexity**: ~6-7 hours
+
+## Step-by-Step Implementation
+
+### Step 1: Connect Data Sources
+
+1. **Connect System Logs** (Application logs, server logs)
+2. **Connect Metrics** (Performance metrics, system stats)
+3. **Connect Error Tracking** (Error logs, exceptions)
+
+### Step 2: Create Operations Views
+
+**System Health View**:
+```sql
+CREATE VIEW system_health AS
+SELECT 
+  s.server_id,
+  s.server_name,
+  s.status,
+  m.cpu_usage,
+  m.memory_usage,
+  m.disk_usage,
+  e.error_count_last_hour,
+  e.critical_errors,
+  -- Health score
+  CASE 
+    WHEN s.status = 'Down' THEN 0
+    WHEN e.critical_errors > 0 THEN 25
+    WHEN m.cpu_usage > 90 OR m.memory_usage > 90 THEN 50
+    WHEN e.error_count_last_hour > 100 THEN 75
+    ELSE 100
+  END as health_score
+FROM infrastructure.servers s
+LEFT JOIN metrics.server_metrics m ON s.server_id = m.server_id
+LEFT JOIN errors.error_summary e ON s.server_id = e.server_id;
+```
+
+### Step 3: Create MCP Tools
+
+**Tool 1: Monitor System Health**
+- `monitor_system_health(server_id: string, service_name: string)`
+
+**Tool 2: Analyze Performance**
+- `analyze_performance(server_id: string, hours_back: number)`
+
+**Tool 3: Track Errors**
+- `track_errors(server_id: string, error_type: string, hours_back: number)`
+
+**Tool 4: Generate Incident Report**
+- `generate_incident_report(incident_id: string, include_metrics: boolean)`
+
+## Example Agent Interactions
+
+**User**: "What's the system health status?"
+
+**Agent**: "System Health Report:
+- Overall Status: Healthy (95/100)
+- Servers: 12/12 online
+- Issues:
+  - Server DB-02: High memory usage (92%)
+  - API-01: Increased error rate (150 errors/hour)
+- Recommendations:
+  - Scale DB-02 memory
+  - Investigate API-01 error spike"
+
+## Outcomes
+
+- **Incident Detection**: 70% faster
+- **Uptime**: 99.9% uptime achieved
+- **MTTR**: 40% reduction in mean time to repair
+- **Efficiency**: 60% improvement in operations efficiency
+
+## Next Steps
+
+- [Supply Chain Coordinator Example](/examples/supply-chain-coordinator)
+- [Product Usage Analyst Example](/examples/product-usage-analyst)
+

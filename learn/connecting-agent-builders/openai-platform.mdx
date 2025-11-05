@@ -1,0 +1,137 @@
+---
+title: "OpenAI Platform"
+description: "Connect Pylar MCP tools to OpenAI's platform for AI agent development"
+---
+
+## Overview
+
+OpenAI Platform provides tools for building AI agents and assistants. Connect your Pylar MCP tools to give your OpenAI agents access to your data through governed views.
+
+## Prerequisites
+
+- ✅ OpenAI Platform account
+- ✅ Access to OpenAI agent builder features
+- ✅ Pylar project with published MCP tools
+- ✅ MCP HTTP Stream URL and Bearer Token from Pylar
+
+## Step 1: Get Your Pylar Credentials
+
+1. In Pylar, navigate to your project
+2. Click **"Publish"** in the right sidebar
+3. Generate your token if needed
+4. Copy both:
+   - **MCP HTTP Stream URL**: `https://mcp.publish.pylar.ai/mcp`
+   - **Authorization Bearer Token**: Your unique token
+
+## Step 2: Connect Pylar to OpenAI Platform
+
+1. In the OpenAI Platform, navigate to your agent builder
+2. Look for **"Connect"** or **"Add Tool"** button
+3. Click **"Connect"** to add your MCP server
+
+## Step 3: Configure MCP Connection
+
+When you click "Connect", you'll need to provide:
+
+- **MCP Server URL**: `https://mcp.publish.pylar.ai/mcp`
+- **Authorization Token**: Your Bearer Token from Pylar
+
+After connecting, you'll see your MCP tools appear in the platform.
+
+## Step 4: Configure Tool Access
+
+Once your MCP tools appear, you can:
+
+1. **Modify Approval Status**: Set which tools require approval before use
+2. **Select Tools**: Choose which tools you want the agent to have access to
+3. **Configure Permissions**: Set access levels for different tools
+
+Click the **"Add"** button to confirm your selections.
+
+<Tip>
+You can selectively enable tools based on what your agent needs. Not all tools need to be available to every agent.
+</Tip>
+
+## Step 5: Test Your Tools
+
+1. Click the **"Preview"** button in the top right corner
+2. Ask a question that requires the agent to use your MCP tool
+
+**Example**: *"Get engagement scores for login events"*
+
+The agent will:
+1. Recognize it needs to use your Pylar tool
+2. Call the tool with appropriate parameters
+3. Execute the query against your view
+4. Return the results and use them to answer your question
+
+<Check>
+The Preview feature lets you test how the agent uses your MCP tools before deploying to production.
+</Check>
+
+## Using Your Tools
+
+Once connected and configured, your OpenAI agents can:
+
+- Access your data through governed views
+- Use tools automatically when needed
+- Combine multiple tools for complex queries
+- Provide answers based on real-time data
+
+## Tool Management
+
+### Approval Status
+
+You can set approval requirements for tools:
+
+- **Auto-approve**: Tools run automatically
+- **Require approval**: Tools need manual approval before execution
+
+### Tool Selection
+
+Select which tools are available to your agent:
+
+- Enable only tools your agent needs
+- Disable tools that aren't relevant
+- Update selections anytime
+
+## Benefits
+
+- ✅ **OpenAI Integration**: Use OpenAI's powerful models with your data
+- ✅ **Selective Access**: Choose which tools agents can use
+- ✅ **Approval Controls**: Require approval for sensitive operations
+- ✅ **Centralized Updates**: Update views in Pylar, agents get updates
+- ✅ **Full Visibility**: Monitor usage through Pylar Evals
+
+## Troubleshooting
+
+### Issue: Tools not appearing after connect
+
+**Solutions**:
+- Verify Bearer Token is correct
+- Check MCP URL is correct
+- Ensure tools are published in Pylar
+- Refresh the connection
+
+### Issue: Agent can't use tools
+
+**Solutions**:
+- Verify tools are selected/enabled
+- Check approval status settings
+- Review tool permissions
+- Test tools in Preview mode first
+
+## Next Steps
+
+- [Publishing Tools](/learn/publishing-tools/publishing-your-tools) - Publish your tools
+- [Evals](/learn/evals/overview) - Monitor agent usage
+- [Other Builders](/learn/connecting-agent-builders/overview) - Connect to other platforms
+
+<Card
+  title="Monitor Usage"
+  icon="chart-bar"
+  href="/learn/evals/overview"
+>
+  See how OpenAI agents use your tools through Evals
+</Card>
+

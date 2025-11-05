@@ -1,0 +1,230 @@
+---
+title: "Connecting MySQL"
+description: "Step-by-step guide to connecting your MySQL database to Pylar"
+---
+
+## Overview
+
+Connecting MySQL to Pylar allows you to query and analyze your MySQL data directly from Pylar. Your data remains in MySQL—Pylar indexes it for easier querying and executes queries on your MySQL infrastructure.
+
+## Prerequisites
+
+- ✅ Pylar account with Analyst role or higher
+- ✅ MySQL database access
+- ✅ Database credentials (host, port, database name, username, password)
+- ✅ Ability to whitelist IP addresses in MySQL firewall
+
+## Step 1: Navigate to Connections
+
+1. In your Pylar workspace, click on the **"Connections"** tab located in the sidebar
+2. You'll see the list of available data sources
+
+## Step 2: Select MySQL
+
+From the list of available data sources, select **"MySQL"**.
+
+The connection setup screen will open.
+
+## Step 3: Enter Connection Details
+
+You'll need the following information to connect:
+
+### Host
+
+The hostname or IP address of your MySQL server.
+
+**Examples**:
+- `mysql.example.com`
+- `192.168.1.100`
+- `db.example.com`
+
+### Port
+
+The port number for MySQL.
+
+**Default**: `3306`
+
+**Note**: If your MySQL server uses a non-standard port, enter that port number.
+
+### Database Name
+
+The name of the database you want to connect to.
+
+**Example**: `production`, `analytics`, `customer_data`
+
+### Username
+
+Your MySQL username that has access to the database.
+
+**Best Practice**: Create a dedicated user for Pylar with read-only permissions.
+
+### Password
+
+The corresponding password for your MySQL username.
+
+<Warning>
+Use a dedicated MySQL user account for Pylar with read-only permissions when possible. This enhances security and allows for better access control.
+</Warning>
+
+## Step 4: Whitelist Pylar IP Address
+
+**Critical Step**: Whitelist Pylar's IP address to ensure seamless connectivity.
+
+**Pylar IP Address**: `34.122.205.142`
+
+**How to whitelist**:
+
+### Option 1: MySQL User Host Restrictions
+
+1. Connect to MySQL as administrator
+2. Create or modify user to allow connections from Pylar's IP:
+   ```sql
+   CREATE USER 'pylar_user'@'34.122.205.142' IDENTIFIED BY 'password';
+   GRANT SELECT ON database_name.* TO 'pylar_user'@'34.122.205.142';
+   ```
+
+### Option 2: Cloud Provider Firewall
+
+If using a cloud-hosted MySQL (AWS RDS, Google Cloud SQL, Azure Database):
+
+**AWS RDS**:
+1. Go to RDS Security Groups
+2. Add inbound rule: Allow MySQL (port 3306) from IP `34.122.205.142`
+
+**Google Cloud SQL**:
+1. Go to Cloud SQL instance
+2. Add authorized network: `34.122.205.142/32`
+
+**Azure Database**:
+1. Go to Azure Portal → Firewall settings
+2. Add client IP: `34.122.205.142`
+
+### Option 3: Server Firewall
+
+If hosting MySQL yourself:
+1. Configure your server's firewall (iptables, ufw, etc.)
+2. Allow port 3306 from IP `34.122.205.142`
+
+<Warning>
+Whitelisting the IP address is crucial for establishing a secure and stable connection. Without it, Pylar will not be able to connect to your MySQL database, and you may encounter network or security blocks.
+</Warning>
+
+## Step 5: Test Connection
+
+1. Click the **"Submit"** button
+2. Pylar will test the connection to your MySQL database
+3. If successful, you'll see a success message
+4. If it fails, you'll be prompted to make corrections to your database credentials
+
+<Check>
+A successful connection test means Pylar can reach your MySQL server and authenticate. Verify all details are correct before proceeding.
+</Check>
+
+## Step 6: Save and Connect
+
+Once the connection test is successful:
+
+1. Click **"Save"** to save your configuration
+2. You'll be prompted to give the connection a **schema name**
+3. Enter a descriptive name (e.g., `mysql_production` or `analytics_db`)
+4. Save the configuration
+
+**Naming Rules**:
+- Lowercase letters only
+- Numbers and underscores allowed
+- No spaces or special characters
+
+## Using Your MySQL Connection
+
+### Query MySQL Data
+
+Reference your connection by the schema name you provided:
+
+```sql
+SELECT * 
+FROM mysql_production.customers 
+WHERE is_active = 1;
+```
+
+### Join with Other Sources
+
+Join MySQL data with other connected sources:
+
+```sql
+SELECT 
+  mysql.customer_id,
+  mysql.customer_name,
+  hs.email,
+  sf.revenue
+FROM mysql_production.customers mysql
+JOIN hubspot.contacts hs ON mysql.email = hs.email
+JOIN snowflake.transactions sf ON mysql.customer_id = sf.customer_id;
+```
+
+## Troubleshooting
+
+### Issue: Connection test fails
+
+**Solutions**:
+- Verify host and port are correct
+- Check username and password
+- Ensure IP address `34.122.205.142` is whitelisted
+- Verify database name exists
+- Check MySQL is accessible from the internet
+
+### Issue: "Access denied" error
+
+**Solutions**:
+- Verify username and password are correct
+- Check user has permissions to access the database
+- Ensure user host is configured correctly (allow `34.122.205.142`)
+- Review MySQL user privileges
+
+### Issue: "Network or security block" error
+
+**Solutions**:
+- Confirm IP address `34.122.205.142` is whitelisted
+- Check firewall rules allow MySQL port (3306)
+- Review network security group settings
+- Verify MySQL `bind-address` allows remote connections
+
+### Issue: "Connection timeout" error
+
+**Solutions**:
+- Verify MySQL server is running
+- Check network connectivity
+- Ensure firewall allows connections
+- Verify port number is correct
+
+## Best Practices
+
+### User Account Security
+
+- ✅ Create a dedicated MySQL user for Pylar
+- ✅ Grant only SELECT permissions (read-only)
+- ✅ Restrict user to specific databases
+- ✅ Regularly audit user permissions
+
+### Network Security
+
+- ✅ Whitelist only Pylar's IP address
+- ✅ Use SSL connections when possible
+- ✅ Monitor connection logs
+- ✅ Review failed connection attempts
+
+## Next Steps
+
+Now that MySQL is connected:
+
+- [Creating Data Views](/learn/creating-data-views/overview) - Create views using MySQL data
+- [Cross-Database Joins](/learn/creating-data-views/cross-database-joins) - Join MySQL with other sources
+- [Connection Security](/learn/making-connections/connection-security) - Secure your connections
+
+<Card
+  title="Create Views"
+  icon="code"
+  href="/learn/creating-data-views/writing-your-first-view"
+>
+  Use your MySQL connection to create data views
+</Card>
+

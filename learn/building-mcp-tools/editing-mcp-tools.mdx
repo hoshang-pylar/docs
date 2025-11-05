@@ -1,0 +1,297 @@
+---
+title: "Editing MCP Tools"
+description: "Learn how to view, edit, and refine MCP tools in Pylar"
+---
+
+## Overview
+
+After creating an MCP tool (either with AI or manually), you'll often want to refine it. This guide shows you how to access, view, and edit your tools.
+
+## Accessing Your Tools
+
+To view and edit a tool:
+
+1. Navigate to your project in Pylar
+2. Look for the **"MCP Tools"** section in the right sidebar
+3. **Click on the tool** you want to view or edit
+
+The tool details will open, showing all its components.
+
+## Tool Components Overview
+
+When you open a tool, you'll see:
+
+### Function Name
+- Located at the top
+- Can be renamed by clicking and editing
+- Should be descriptive and unique
+
+### Description
+- Summary of what the tool does
+- Visible to AI agents
+- Can be edited inline
+
+### SQL Query
+- The query that retrieves data
+- Can be edited in the query editor
+- Supports parameter placeholders
+
+### Parameters
+- Input definitions for the tool
+- Can add, remove, or modify parameters
+- Define types and requirements
+
+### Tool Call Arguments
+- Test values (right side)
+- Used for testing
+- Can be modified
+
+## Editing Function Name
+
+To rename a tool:
+
+1. Click on the function name at the top
+2. Edit the name directly
+3. Save your changes
+
+<Tip>
+Choose names that clearly indicate the tool's purpose. Agents use function names to identify and call tools.
+</Tip>
+
+## Editing Description
+
+The description helps agents understand when to use your tool.
+
+**To edit**:
+1. Click on the description field
+2. Modify the text
+3. Save changes
+
+**Best Practices**:
+- Be specific about what data is returned
+- Mention any important behaviors (e.g., "supports partial matching")
+- Keep it concise but informative
+
+**Example**:
+- ❌ "Gets data" (too vague)
+- ✅ "Fetches engagement scores and related data filtered by event type" (clear and specific)
+
+## Editing SQL Query
+
+The SQL query is where you define how the tool retrieves data.
+
+### Accessing the Query Editor
+
+1. Find the **SQL Query** section in the tool view
+2. Click to edit (or use the edit button)
+3. Modify the query as needed
+4. Save your changes
+
+### Common Edits
+
+**Adding Filters**:
+```sql
+-- Original
+SELECT engagement_score FROM table0 WHERE event_type = '{event_type}'
+
+-- Enhanced
+SELECT engagement_score FROM table0 
+WHERE event_type = '{event_type}' 
+  AND date >= '{start_date}'
+  AND engagement_score > {min_score}
+```
+
+**Changing Sort Order**:
+```sql
+-- Ascending instead of descending
+ORDER BY engagement_score ASC
+```
+
+**Adding Columns**:
+```sql
+-- Original
+SELECT engagement_score FROM table0
+
+-- Enhanced
+SELECT engagement_score, event_id, timestamp, user_id 
+FROM table0
+```
+
+**Improving Performance**:
+```sql
+-- Add LIMIT for large result sets
+SELECT engagement_score FROM table0 
+WHERE event_type = '{event_type}'
+ORDER BY engagement_score DESC
+LIMIT 100
+```
+
+<Warning>
+When editing queries, ensure parameter placeholders match parameter names exactly. Mismatched names will cause errors.
+</Warning>
+
+## Modifying Parameters
+
+Parameters define what inputs your tool accepts.
+
+### Adding Parameters
+
+1. Go to the **Parameters** section
+2. Click **Add Parameter** or similar
+3. Define:
+   - Parameter name
+   - Type (string, number, etc.)
+   - Whether it's required
+   - Description
+
+4. Update your SQL query to use the new parameter
+
+**Example**: Adding a date range parameter
+
+```sql
+-- Query with new parameter
+SELECT * FROM table0 
+WHERE event_type = '{event_type}'
+  AND date >= '{start_date}'
+  AND date <= '{end_date}'
+```
+
+### Removing Parameters
+
+1. Find the parameter in the Parameters section
+2. Remove it
+3. Update your SQL query to remove the placeholder
+
+<Info>
+If you remove a parameter, make sure to also remove its placeholder from the SQL query. Otherwise, the query will fail when executed.
+</Info>
+
+### Modifying Parameter Properties
+
+You can change:
+- **Type**: string → number, etc.
+- **Required/Optional**: Make parameters required or optional
+- **Description**: Update what the parameter represents
+
+## Updating Tool Call Arguments
+
+Tool call arguments are test values used for verification.
+
+**To update**:
+1. Find the **Tool Call Arguments** section (right side)
+2. Modify the test values
+3. Use these values when testing the tool
+
+**Example**:
+```json
+{
+  "event_type": "login"  // Change to "purchase" to test different scenarios
+}
+```
+
+<Tip>
+Use varied test arguments to verify your tool handles different inputs correctly. Test edge cases like empty strings, special characters, etc.
+</Tip>
+
+## Common Editing Scenarios
+
+### Scenario 1: Refining an AI-Generated Tool
+
+After AI creates a tool, you might want to:
+
+1. **Add more filters**: Include additional WHERE conditions
+2. **Change sort order**: Modify ORDER BY clause
+3. **Add columns**: Return more data
+4. **Improve description**: Make it clearer for agents
+
+### Scenario 2: Fixing a Tool That's Not Working
+
+If a tool fails testing:
+
+1. **Check parameter names**: Ensure placeholders match parameter names
+2. **Verify SQL syntax**: Test query manually in SQL IDE
+3. **Check data types**: Ensure parameter types match query expectations
+4. **Review filters**: Make sure WHERE conditions are valid
+
+### Scenario 3: Optimizing Performance
+
+For slow queries:
+
+1. **Add LIMIT**: Restrict result set size
+2. **Refine filters**: Make WHERE conditions more selective
+3. **Remove unnecessary columns**: Select only needed data
+4. **Add indexes**: Ensure source views have proper indexes
+
+## Viewing JSON Structure
+
+To see the complete tool configuration:
+
+1. Click **"JSON view"** button
+2. View the structured JSON representation
+3. Useful for:
+   - Understanding complete configuration
+   - Debugging issues
+   - Copying tool structure
+
+**Example JSON View**:
+```json
+{
+  "function_name": "fetch_engagement_scores_by_event_type",
+  "description": "Fetches engagement scores and related data filtered by event type",
+  "query": "SELECT engagement_score FROM table0 WHERE event_type LIKE '%{event_type}%' \nORDER BY engagement_score DESC",
+  "parameters": {
+    "type": "object",
+    "required": ["event_type"],
+    "properties": {
+      "event_type": {
+        "type": "string",
+        "description": "Event type to filter by (supports partial matching)"
+      }
+    }
+  },
+  "tool_call": {
+    "name": "fetch_engagement_scores_by_event_type",
+    "args": {
+      "event_type": "login"
+    }
+  }
+}
+```
+
+## Best Practices
+
+### Before Editing
+
+- ✅ Test the current tool to understand its behavior
+- ✅ Review the SQL query in the SQL IDE
+- ✅ Check parameter usage in the query
+
+### While Editing
+
+- ✅ Make incremental changes
+- ✅ Test after each significant change
+- ✅ Keep parameter names consistent
+- ✅ Update descriptions when behavior changes
+
+### After Editing
+
+- ✅ Always test the tool after changes
+- ✅ Verify parameters work correctly
+- ✅ Check that results are as expected
+- ✅ Update descriptions if needed
+
+## Next Steps
+
+After editing your tool:
+
+- [Testing Your Tools](/learn/building-mcp-tools/testing-your-tools) - Verify your changes work correctly
+- [Publishing Tools](/learn/publishing-tools/overview) - Make your tools available to agents
+
+<Card
+  title="Test Your Changes"
+  icon="flask"
+  href="/learn/building-mcp-tools/testing-your-tools"
+>
+  Verify your edited tool works correctly
+</Card>
+

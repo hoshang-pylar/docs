@@ -1,0 +1,113 @@
+---
+title: "Sales Territory Optimizer"
+description: "Build an AI agent that allocates territories, balances workload, and identifies growth opportunities"
+---
+
+## Overview
+
+A Sales Territory Optimizer agent powered by Pylar analyzes sales performance, geographic data, and account information to optimize territory allocation and identify growth opportunities.
+
+## What the Agent Needs to Accomplish
+
+The agent must:
+- Analyze territory performance
+- Balance workload across territories
+- Identify growth opportunities
+- Optimize territory boundaries
+- Track account distribution
+- Recommend territory adjustments
+
+## How Pylar Helps
+
+Pylar enables the agent by:
+- **Unified Territory View**: Combining sales data, geographic data, and account information
+- **Performance Analysis**: Real-time territory performance metrics
+- **Workload Balancing**: Analyzing and optimizing rep workload
+- **Growth Identification**: Identifying untapped opportunities
+
+## Without Pylar vs With Pylar
+
+### Without Pylar
+
+**Challenges**:
+- ❌ Manual territory analysis
+- ❌ Complex data aggregation
+- ❌ Limited visibility into territory performance
+- ❌ Time-consuming optimization
+
+**Implementation Complexity**: ~5-6 weeks
+
+### With Pylar
+
+**Benefits**:
+- ✅ Automated territory analysis
+- ✅ Real-time performance tracking
+- ✅ Data-driven optimization
+- ✅ Easy territory adjustments
+
+**Implementation Complexity**: ~6-7 hours
+
+## Step-by-Step Implementation
+
+### Step 1: Connect Data Sources
+
+1. **Connect CRM** (Accounts, deals, rep assignments)
+2. **Connect Geographic Data** (Territory boundaries, regions)
+3. **Connect Sales Performance** (Rep performance, quota data)
+
+### Step 2: Create Territory Views
+
+**Territory Performance View**:
+```sql
+CREATE VIEW territory_performance AS
+SELECT 
+  t.territory_name,
+  t.region,
+  COUNT(DISTINCT a.account_id) as account_count,
+  SUM(d.amount) as total_pipeline,
+  SUM(CASE WHEN d.stage = 'Closed Won' THEN d.amount ELSE 0 END) as closed_won,
+  COUNT(DISTINCT r.rep_id) as rep_count,
+  AVG(r.quota_attainment) as avg_quota_attainment
+FROM territories t
+LEFT JOIN accounts a ON t.territory_id = a.territory_id
+LEFT JOIN deals d ON a.account_id = d.account_id
+LEFT JOIN reps r ON t.territory_id = r.territory_id
+GROUP BY t.territory_name, t.region;
+```
+
+### Step 3: Create MCP Tools
+
+**Tool 1: Analyze Territory Performance**
+- `analyze_territory_performance(territory_name: string)`
+
+**Tool 2: Optimize Territory Allocation**
+- `optimize_territory_allocation(criteria: string)`
+
+**Tool 3: Identify Growth Opportunities**
+- `identify_growth_opportunities(region: string, min_value: number)`
+
+**Tool 4: Balance Workload**
+- `balance_workload(territory_id: string)`
+
+## Example Agent Interactions
+
+**User**: "Analyze territory performance in the West region"
+
+**Agent**: "West Region Territory Analysis:
+- Top Territory: California (45 accounts, $2.1M pipeline)
+- Underperforming: Nevada (12 accounts, $300K pipeline)
+- Recommendation: Redistribute 8 accounts from CA to NV
+- Growth Opportunity: 15 untapped accounts in Oregon"
+
+## Outcomes
+
+- **Territory Balance**: 30% improvement
+- **Rep Utilization**: 25% better distribution
+- **Revenue Growth**: 20% increase in underperforming territories
+- **Planning Efficiency**: 70% reduction in planning time
+
+## Next Steps
+
+- [Sales Assistant Example](/examples/sales-assistant)
+- [Revenue Operations Agent Example](/examples/revenue-operations-agent)
+

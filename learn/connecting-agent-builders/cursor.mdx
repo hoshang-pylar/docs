@@ -1,0 +1,108 @@
+---
+title: "Cursor"
+description: "Connect Pylar MCP tools to Cursor for AI-powered coding assistance with data access"
+---
+
+## Overview
+
+Cursor is an AI-powered code editor that supports MCP tools. Connect your Pylar tools to Cursor to give the AI assistant access to your data through governed views while coding.
+
+## Prerequisites
+
+- ✅ Cursor editor installed
+- ✅ Pylar project with published MCP tools
+- ✅ MCP HTTP Stream URL and Bearer Token from Pylar
+
+## Step 1: Get Your Pylar Credentials
+
+1. In Pylar, navigate to your project
+2. Click **"Publish"** in the right sidebar
+3. Generate your token if needed
+4. Copy both:
+   - **MCP HTTP Stream URL**: `https://mcp.publish.pylar.ai/mcp`
+   - **Authorization Bearer Token**: Your unique token
+
+## Step 2: Configure Cursor
+
+1. Open Cursor
+2. Go to **Settings** → **Features** → **MCP**
+3. Or open Cursor settings file directly
+
+## Step 3: Add Pylar MCP Server
+
+Add Pylar to your MCP configuration:
+
+**Configuration Path**: `~/.cursor/mcp.json` or Cursor settings
+
+**Configuration**:
+```json
+{
+  "mcpServers": {
+    "pylar": {
+      "url": "https://mcp.publish.pylar.ai/mcp",
+      "headers": {
+        "Authorization": "Bearer YOUR_BEARER_TOKEN_HERE"
+      }
+    }
+  }
+}
+```
+
+Replace `YOUR_BEARER_TOKEN_HERE` with your actual Bearer Token.
+
+## Step 4: Restart Cursor
+
+1. Save the configuration
+2. Restart Cursor
+3. Cursor will connect to your Pylar MCP server
+
+## Step 5: Verify Connection
+
+1. Open a chat with Cursor's AI
+2. Ask: *"What MCP tools do you have available?"*
+3. Cursor should list your Pylar tools
+
+## Using Your Tools in Cursor
+
+Once connected, you can use Pylar tools while coding:
+
+**Example**: *"Use the customer revenue tool to get data for account ID 12345"*
+
+Cursor will:
+1. Call your Pylar MCP tool
+2. Retrieve data from your view
+3. Use the data in your code or conversation
+4. Help you build applications with real data
+
+## Benefits
+
+- ✅ **Code with Real Data**: Access your data while coding
+- ✅ **AI Assistance**: Cursor can use your tools to answer questions
+- ✅ **Secure**: Data access through governed views only
+- ✅ **Automatic Updates**: View changes reflect immediately
+- ✅ **Full Control**: Manage everything from Pylar
+
+## Troubleshooting
+
+### Issue: Cursor can't connect
+
+**Solutions**:
+- Verify configuration file location
+- Check Bearer Token format
+- Ensure tools are published
+- Restart Cursor
+
+### Issue: Tools not appearing
+
+**Solutions**:
+- Check MCP configuration syntax
+- Verify token is correct
+- Review Cursor logs for errors
+- Test connection in Pylar first
+
+## Next Steps
+
+- [Publishing Tools](/learn/publishing-tools/publishing-your-tools) - Publish your tools
+- [Evals](/learn/evals/overview) - Monitor tool usage
+- [Other Builders](/learn/connecting-agent-builders/overview) - Connect to other platforms
+

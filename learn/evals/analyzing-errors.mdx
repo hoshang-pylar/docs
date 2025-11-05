@@ -1,0 +1,267 @@
+---
+title: "Analyzing Errors"
+description: "Learn how to identify, understand, and fix errors in your MCP tools using Evals"
+---
+
+## Overview
+
+The Error Analysis section of Evals helps you understand what's going wrong with your tools. It shows error codes, frequencies, and patterns that help you diagnose and fix issues.
+
+## Accessing Error Analysis
+
+In the Evaluation Dashboard:
+
+1. Select the tool you want to analyze (using filters)
+2. Scroll to the **Error Analysis** section
+3. Review error codes and frequencies
+
+## Error Explorer
+
+The Error Explorer lists all error codes that occurred and how often each one happened.
+
+### Understanding Error Codes
+
+Error codes indicate different types of failures:
+
+- **400**: Bad Request - Invalid parameters or query syntax
+- **404**: Not Found - Resource doesn't exist
+- **500**: Internal Server Error - Server-side issues
+- **Timeout**: Query execution exceeded time limit
+- **Permission**: Access denied or insufficient permissions
+
+### Example Error Explorer
+
+```
+Error Code    Frequency
+400           3
+500           1
+Timeout       2
+```
+
+This shows:
+- Error code 400 occurred 3 times
+- Error code 500 occurred 1 time  
+- Timeout errors occurred 2 times
+
+<Info>
+The Error Explorer shows the most common errors first. Focus on fixing high-frequency errors first, as they have the biggest impact.
+</Info>
+
+## Understanding Error Types
+
+### Error Code 400: Bad Request
+
+**What it means**: The request was invalid.
+
+**Common causes**:
+- Invalid parameter values
+- SQL syntax errors in query
+- Parameter type mismatches
+- Missing required parameters
+
+**How to fix**:
+1. Check parameter definitions match query placeholders
+2. Verify parameter types are correct
+3. Test with valid parameter values
+4. Review SQL query syntax
+
+### Error Code 500: Internal Server Error
+
+**What it means**: Server-side error occurred.
+
+**Common causes**:
+- Database connection issues
+- Query execution failures
+- View definition problems
+- Data type mismatches
+
+**How to fix**:
+1. Verify view queries are correct
+2. Check database connections are active
+3. Test queries manually in SQL IDE
+4. Review error messages in raw logs
+
+### Timeout Errors
+
+**What it means**: Query took too long to execute.
+
+**Common causes**:
+- Large result sets
+- Complex joins
+- Missing indexes
+- Inefficient queries
+
+**How to fix**:
+1. Add LIMIT to restrict result size
+2. Optimize query performance
+3. Add indexes to source views
+4. Refine WHERE conditions
+
+### Permission Errors
+
+**What it means**: Access denied.
+
+**Common causes**:
+- Insufficient database permissions
+- View access restrictions
+- Token authentication issues
+
+**How to fix**:
+1. Verify database connection permissions
+2. Check view access controls
+3. Regenerate authentication tokens if needed
+
+## Error Frequency Analysis
+
+### High-Frequency Errors
+
+Errors that occur frequently need immediate attention:
+
+- **High impact**: Affect many agent interactions
+- **User experience**: Cause frustration for agents
+- **Priority**: Fix these first
+
+**Example**: If error 400 occurs 50 times out of 100 calls, that's a 50% error rate—critical issue.
+
+### Low-Frequency Errors
+
+Errors that occur occasionally:
+
+- **Lower priority**: But still worth fixing
+- **Edge cases**: May indicate boundary conditions
+- **Monitor**: Track to see if frequency increases
+
+**Example**: If error 500 occurs 2 times out of 1000 calls, investigate but lower priority.
+
+### Error Patterns
+
+Look for patterns in errors:
+
+- **Time-based**: Do errors occur at specific times?
+- **Parameter-based**: Do certain parameter values cause errors?
+- **Tool-based**: Do errors affect specific tools more?
+
+<Tip>
+Use the time-series graphs to see when errors spike. This can help identify patterns like specific times of day, after deployments, or related to usage volume.
+</Tip>
+
+## Using Raw Logs for Error Analysis
+
+Raw logs provide detailed error information:
+
+1. Scroll to **Raw Logs** at the bottom of the dashboard
+2. Filter for errors (look for non-empty error messages)
+3. Review error messages for each failed invocation
+4. Identify common patterns
+
+### What to Look For
+
+In raw logs, check:
+- **Error messages**: Detailed descriptions of what went wrong
+- **Query executed**: See the exact query that failed
+- **Parameters used**: What values caused the error
+- **Timestamp**: When the error occurred
+
+<Warning>
+Error messages in raw logs are your best source of information for understanding what went wrong. Always review them when investigating errors.
+</Warning>
+
+## Fixing Common Errors
+
+### Fix 1: Parameter Mismatch
+
+**Error**: Parameter placeholder doesn't match parameter name
+
+**Solution**:
+```sql
+-- Wrong
+WHERE event_type = '{event_type_param}'
+
+-- Correct (matches parameter name)
+WHERE event_type = '{event_type}'
+```
+
+### Fix 2: SQL Syntax Error
+
+**Error**: Invalid SQL in query
+
+**Solution**:
+1. Test query manually in SQL IDE
+2. Replace placeholders with actual values
+3. Fix syntax errors
+4. Update tool query
+
+### Fix 3: Type Mismatch
+
+**Error**: Parameter type doesn't match query expectations
+
+**Solution**:
+1. Check parameter type definition
+2. Ensure query handles type correctly
+3. Use CAST if needed for type conversion
+
+### Fix 4: Timeout
+
+**Error**: Query execution timeout
+
+**Solution**:
+```sql
+-- Add LIMIT to reduce result size
+SELECT * FROM view_name 
+WHERE conditions
+ORDER BY column
+LIMIT 100
+```
+
+## Monitoring Error Improvements
+
+After fixing errors:
+
+1. **Monitor Evals**: Check if error rates decrease
+2. **Verify Fixes**: Confirm specific error codes disappear
+3. **Track Trends**: Watch graphs to see improvement
+4. **Iterate**: Continue improving based on new errors
+
+<Check>
+After fixing errors, monitor Evals for a few days to confirm the fixes work and no new errors appear.
+</Check>
+
+## Best Practices
+
+### Regular Monitoring
+
+- ✅ Check Evals regularly (daily or weekly)
+- ✅ Set alerts for high error rates
+- ✅ Review error trends over time
+- ✅ Investigate spikes immediately
+
+### Error Prioritization
+
+1. **High-frequency errors**: Fix first (biggest impact)
+2. **Critical errors**: Address quickly (data loss, security)
+3. **Low-frequency errors**: Fix when convenient
+4. **Edge cases**: Document and monitor
+
+### Documentation
+
+- Document common errors and fixes
+- Share learnings with team
+- Update tool documentation based on errors
+- Create runbooks for frequent issues
+
+## Next Steps
+
+Now that you understand error analysis:
+
+- [Understanding Query Shapes](/learn/evals/understanding-query-shapes) - Learn about query patterns
+- [Understanding Query Logs](/learn/evals/understanding-query-logs) - Dive into detailed logs
+- [Improving Tools with Evals](/learn/evals/improving-tools-with-evals) - Use error insights to improve tools
+
+<Card
+  title="Understand Query Patterns"
+  icon="magnifying-glass-chart"
+  href="/learn/evals/understanding-query-shapes"
+>
+  Learn how to analyze query patterns from Evals
+</Card>
+

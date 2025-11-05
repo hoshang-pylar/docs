@@ -1,0 +1,601 @@
+---
+title: "Frequently Asked Questions"
+description: "Find answers to common questions about Pylar, connections, views, MCP tools, and more"
+---
+
+## General Questions
+
+### What is Pylar?
+
+Pylar is a secure data access layer for AI agents that enables interaction with structured data sources. It provides governed SQL views, AI-powered MCP tool creation, and seamless multi-database integration without requiring direct database access or complex API integrations.
+
+<Card
+  title="Learn More"
+  icon="book"
+  href="/introduction/what-is-pylar"
+>
+  Read our detailed introduction to understand Pylar's capabilities
+</Card>
+
+### How is Pylar different from connecting directly to databases?
+
+Pylar provides several key advantages:
+
+- **Governed Access**: Agents only access data through SQL views you create, never raw database access
+- **Unified Interface**: Single MCP endpoint for all data sources, eliminating API hassles
+- **Security**: Centralized security and governance with views as the only access level
+- **Easy Updates**: Modify views and tools without redeploying agents
+- **Observability**: Built-in Evals dashboard for monitoring agent interactions
+- **Multi-Database**: Join data across multiple databases and warehouses seamlessly
+
+<Card
+  title="Why Pylar?"
+  icon="lightbulb"
+  href="/introduction/why-pylar"
+>
+  Learn about the benefits of using Pylar
+</Card>
+
+### What data sources can I connect to Pylar?
+
+Pylar supports two types of data sources:
+
+**Business Applications** (synced to Pylar Warehouse):
+- Google Sheets, HubSpot, Salesforce, Airtable, and more
+
+**Databases and Data Warehouses** (indexed, data stays in place):
+- BigQuery, Snowflake, PostgreSQL, MySQL, Redshift, MotherDuck, Supabase, AlloyDB, Databricks, and more
+
+<Card
+  title="Supported Data Sources"
+  icon="database"
+  href="/learn/making-connections/supported-data-sources"
+>
+  See the complete list of supported data sources
+</Card>
+
+### Do I need to give Pylar direct database access?
+
+For databases and data warehouses, you need to:
+1. Provide connection credentials (host, database name, username, password)
+2. Whitelist Pylar's IP address: `34.122.205.142`
+
+However, Pylar only indexes your data for querying and autocompletion. Your data remains in its original location, and queries are executed on your infrastructure. Agents never get raw database access—only through views you create.
+
+<Card
+  title="Connection Security"
+  icon="shield"
+  href="/learn/making-connections/connection-security"
+>
+  Learn about security best practices
+</Card>
+
+## Getting Started
+
+### How do I get started with Pylar?
+
+The Pylar workflow is straightforward:
+
+1. **Connect Databases**: Connect your data sources to Pylar
+2. **Create a Project**: Organize your views in a project
+3. **Create Views**: Use the SQL IDE to create governed views
+4. **Create MCP Tools**: Use AI or manually create MCP tools on your views
+5. **Test Tools**: Test your tools before deploying
+6. **Publish**: Get your MCP HTTP Stream URL and Authorization Token
+7. **Connect to Agent Builder**: Paste credentials into your agent builder
+8. **Monitor with Evals**: Track performance and optimize
+
+<Card
+  title="Quick Start Guide"
+  icon="rocket"
+  href="/introduction/quick-start"
+>
+  Follow our step-by-step quick start guide
+</Card>
+
+### What role do I need to connect data sources?
+
+You need at least **Analyst role privileges** in Pylar to connect data sources. If you don't have the necessary database credentials, you can invite a team member who does have access.
+
+### How long does it take to set up Pylar?
+
+Setting up Pylar typically takes:
+- **Connecting data sources**: 30-60 minutes per source
+- **Creating views**: 1-2 hours depending on complexity
+- **Creating MCP tools**: 30 minutes to 1 hour (using AI)
+- **Testing and publishing**: 15-30 minutes
+
+**Total**: You can have your first agent running in 2-4 hours, compared to weeks of development without Pylar.
+
+## Connections
+
+### What IP address do I need to whitelist?
+
+Pylar's IP address is **34.122.205.142** (permanently assigned). Whitelist this IP in your database firewall settings to allow Pylar to connect.
+
+The process varies by database provider:
+- **AWS RDS**: Add to security group inbound rules
+- **Google Cloud SQL**: Add to authorized networks
+- **Azure Database**: Add to firewall rules
+- **Self-hosted**: Configure server firewall (iptables, ufw, etc.)
+
+<Card
+  title="Connecting Databases"
+  icon="plug"
+  href="/learn/making-connections/overview"
+>
+  Learn how to connect your databases
+</Card>
+
+### Can I connect multiple instances of the same data source?
+
+Yes! You can connect multiple instances of the same data source (e.g., multiple Google Sheets documents, multiple Snowflake databases). Each connection must have a unique name following these rules:
+- Lowercase letters only
+- Numbers and underscores allowed
+- No spaces or special characters
+
+### How do I name my connections?
+
+Connection names must follow these rules:
+- ✅ **Allowed**: Lowercase letters, numbers, underscores
+- ❌ **Not Allowed**: Capital letters, special characters, spaces
+
+**Good examples**: `production_db`, `snowflake_analytics`, `customer_data_v2`
+**Bad examples**: `Production DB`, `snowflake-analytics`, `Customer Data`
+
+This name will be used in SQL queries to reference the connection.
+
+### What happens after I connect a data source?
+
+After connecting:
+- **Business Applications**: Data syncs to Pylar Warehouse (may take time depending on data volume)
+- **Databases**: Data is indexed for querying (your data stays in place)
+
+You'll receive an email and in-app notification when the sync/indexing is complete and you can start querying.
+
+### Can I use SSH connections for enhanced security?
+
+Yes! Pylar supports SSH tunnel connections for enhanced security. This involves:
+1. Setting up a bastion VM in your VPC
+2. Installing the database auth proxy
+3. Configuring SSH key authentication
+4. Connecting through the SSH tunnel
+
+This provides maximum security for sensitive databases.
+
+<Card
+  title="SSH Connections"
+  icon="lock"
+  href="/learn/making-connections/connecting-via-ssh"
+>
+  Learn about SSH tunnel connections
+</Card>
+
+## Creating Views
+
+### What is a data view?
+
+A data view is a governed SQL query that defines what data agents can access. Views are the only level of access agents get—they never access raw database tables. Views provide:
+- **Security**: Control exactly what data is exposed
+- **Governance**: Scoped access to specific data
+- **Flexibility**: Easy to update without redeploying agents
+
+<Card
+  title="Creating Data Views"
+  icon="code"
+  href="/learn/creating-data-views/overview"
+>
+  Learn about creating data views
+</Card>
+
+### Can I join data from multiple databases?
+
+Yes! Pylar supports cross-database joins. You can join data from:
+- Different databases (Snowflake + PostgreSQL)
+- Different warehouses (BigQuery + Redshift)
+- Business applications (HubSpot + Salesforce)
+- Local dataframes loaded into Pylar
+
+This enables powerful unified views across all your data sources.
+
+<Card
+  title="Cross-Database Joins"
+  icon="link"
+  href="/learn/creating-data-views/cross-database-joins"
+>
+  Learn how to join data across multiple sources
+</Card>
+
+### How do I write my first view?
+
+1. Open the SQL IDE in Pylar
+2. Select your data source from the dropdown
+3. Write your SQL query
+4. Run the query to test
+5. Save it as a view
+
+Pylar provides autocompletion and syntax highlighting to help you write queries.
+
+<Card
+  title="Writing Your First View"
+  icon="pen"
+  href="/learn/creating-data-views/writing-your-first-view"
+>
+  Follow our tutorial to create your first view
+</Card>
+
+### Can I query local dataframes?
+
+Yes! You can load dataframes into Pylar and query them using SQL. This is useful for:
+- Testing queries with sample data
+- Joining local data with database data
+- Analyzing CSV/excel files
+- Prototyping before connecting production databases
+
+## MCP Tools
+
+### What is an MCP tool?
+
+An MCP (Machine-Consumable Protocol) tool is a function that AI agents can call to interact with your data views. Tools define:
+- **Function name**: What the agent calls
+- **Description**: What the tool does
+- **SQL query**: The query to execute
+- **Parameters**: Inputs the agent can provide
+
+<Card
+  title="Understanding Tool Structure"
+  icon="wrench"
+  href="/learn/building-mcp-tools/understanding-tool-structure"
+>
+  Learn about MCP tool components
+</Card>
+
+### How do I create MCP tools?
+
+You can create MCP tools in two ways:
+
+1. **AI-Powered Creation**: Describe what you want in natural language, and Pylar's AI generates the tool
+2. **Manual Creation**: Build tools manually with full control
+
+Most users start with AI-powered creation and then refine manually.
+
+<Card
+  title="Creating Tools with AI"
+  icon="sparkles"
+  href="/learn/building-mcp-tools/creating-tools-with-ai"
+>
+  Learn how to create tools using AI
+</Card>
+
+### Can I create multiple tools on the same view?
+
+Yes! You can create multiple MCP tools on the same data view. Each tool can:
+- Query different aspects of the view
+- Have different parameters
+- Serve different use cases
+
+For example, you might have:
+- `get_customer_info` - Get basic customer details
+- `get_customer_orders` - Get customer order history
+- `get_customer_support_tickets` - Get support history
+
+All using the same underlying customer 360 view.
+
+### How do I test my MCP tools?
+
+Pylar provides a built-in testing interface:
+1. Select the tool you want to test
+2. Enter test parameters
+3. Run the test
+4. Review the results
+5. Check the SQL query executed
+6. Verify the output
+
+<Card
+  title="Testing Your Tools"
+  icon="flask"
+  href="/learn/building-mcp-tools/testing-your-tools"
+>
+  Learn how to test your MCP tools
+</Card>
+
+### Can I edit MCP tools after creating them?
+
+Yes! You can edit MCP tools at any time:
+- Modify function names and descriptions
+- Update SQL queries
+- Add or remove parameters
+- View the JSON structure
+
+Changes take effect immediately—no redeployment needed.
+
+<Card
+  title="Editing MCP Tools"
+  icon="edit"
+  href="/learn/building-mcp-tools/editing-mcp-tools"
+>
+  Learn how to edit your tools
+</Card>
+
+## Publishing and Deployment
+
+### How do I publish my tools?
+
+1. After creating and testing your tools, click **"Publish"** in Pylar
+2. You'll receive:
+   - **MCP HTTP Stream URL**: The endpoint for your agent builder
+   - **Authorization Bearer Token**: Authentication token
+3. Copy these credentials to your agent builder
+
+<Card
+  title="Publishing Your Tools"
+  icon="upload"
+  href="/learn/publishing-tools/publishing-your-tools"
+>
+  Learn how to publish and deploy your tools
+</Card>
+
+### Do I need to redeploy when I update views or tools?
+
+No! That's one of Pylar's key benefits. When you:
+- Update a SQL view
+- Modify an MCP tool
+- Add or remove tools
+
+The changes are reflected immediately across all agent builders. No redeployment needed.
+
+### Which agent builders can I use?
+
+Pylar works with any agent builder that supports MCP (Machine-Consumable Protocol), including:
+
+**AI Coding Assistants**:
+- Claude Desktop
+- Cursor
+- Windsurf
+- VS Code (with MCP extension)
+
+**Agent Frameworks**:
+- LangGraph
+- OpenAI Platform
+- Custom Python/JavaScript agents
+
+**No-Code Platforms**:
+- Zapier
+- Make (Integromat)
+- n8n
+
+<Card
+  title="Connecting Agent Builders"
+  icon="link"
+  href="/learn/connecting-agent-builders/overview"
+>
+  See guides for connecting to different agent builders
+</Card>
+
+### How do I connect to Claude Desktop?
+
+1. Get your MCP credentials from Pylar (HTTP Stream URL and Bearer Token)
+2. Edit Claude Desktop's MCP configuration file
+3. Add Pylar as an MCP server
+4. Restart Claude Desktop
+5. Your tools will be available in Claude
+
+<Card
+  title="Claude Desktop Setup"
+  icon="claude"
+  href="/learn/connecting-agent-builders/claude-desktop"
+>
+  Step-by-step Claude Desktop connection guide
+</Card>
+
+## Monitoring and Evals
+
+### What is Evals?
+
+Evals is Pylar's built-in observability dashboard that provides:
+- **Performance Metrics**: Success rates, error rates, call counts
+- **Error Analysis**: Detailed error breakdown and patterns
+- **Query Shapes**: Understanding how agents query your data
+- **Raw Logs**: Complete audit trail of all tool calls
+
+<Card
+  title="Evals Overview"
+  icon="chart"
+  href="/learn/evals/overview"
+>
+  Learn about Pylar's Evals dashboard
+</Card>
+
+### How do I access the Evals dashboard?
+
+Click the **"Eval"** button in the top-right corner of your Pylar workspace. You'll see:
+- Overview metrics (Total Count, Success Count, Error Count)
+- Visual graphs (Calls/Success/Errors over time, Success/Error rates)
+- Error Explorer
+- Query Shape analysis
+- Raw Logs
+
+<Card
+  title="Evals Dashboard"
+  icon="dashboard"
+  href="/learn/evals/evals-dashboard"
+>
+  Learn how to use the Evals dashboard
+</Card>
+
+### How do I analyze errors?
+
+Use the Error Explorer in the Evals dashboard to:
+1. Filter by MCP tool
+2. View error codes and frequencies
+3. Analyze error patterns
+4. Review raw logs for specific errors
+5. Identify common issues
+
+<Card
+  title="Analyzing Errors"
+  icon="alert-circle"
+  href="/learn/evals/analyzing-errors"
+>
+  Learn how to analyze and fix errors
+</Card>
+
+### What are query shapes?
+
+Query shapes are patterns in how agents query your data. They show:
+- Common query patterns
+- Parameter usage
+- Data access patterns
+- Optimization opportunities
+
+Understanding query shapes helps you improve your tools and views.
+
+<Card
+  title="Understanding Query Shapes"
+  icon="search"
+  href="/learn/evals/understanding-query-shapes"
+>
+  Learn how to analyze query shapes
+</Card>
+
+## Security and Governance
+
+### How secure is my data with Pylar?
+
+Pylar employs multiple security layers:
+- **Encryption**: Default encryption for all data
+- **Secret Management**: Credentials stored in Google Cloud Platform's Secret Key Manager
+- **HTTPS**: All API interactions use HTTPS
+- **Governed Access**: Views are the only access level—agents never get raw database access
+- **Access Control**: Stringent access controls on all data
+
+<Card
+  title="Connection Security"
+  icon="shield"
+  href="/learn/making-connections/connection-security"
+>
+  Learn about Pylar's security features
+</Card>
+
+### Do agents have access to my raw database?
+
+No! Agents only access data through the SQL views you create. This means:
+- ✅ You control exactly what data is exposed
+- ✅ Agents never see raw database tables
+- ✅ You can filter sensitive data in views
+- ✅ Views provide an additional security layer
+
+### Can I use dedicated database users for Pylar?
+
+Yes! This is a security best practice:
+1. Create a dedicated database user for Pylar
+2. Grant only necessary permissions (read-only if possible)
+3. Limit access to specific schemas or tables
+4. Use audit logging to monitor all queries
+
+This provides granular control and better security.
+
+### How do I handle sensitive data in views?
+
+Filter sensitive data in your views:
+- Exclude PII, financial data, or other sensitive columns
+- Implement row-level security with WHERE clauses
+- Use column selection to only expose necessary data
+- Document what each view exposes
+
+## Troubleshooting
+
+### My connection is failing. What should I check?
+
+Common issues and solutions:
+
+1. **IP Whitelisting**: Ensure `34.122.205.142` is whitelisted
+2. **Credentials**: Verify username and password are correct
+3. **Network**: Check if database is publicly accessible
+4. **Firewall**: Review firewall rules and security groups
+5. **Database Status**: Verify database is running and accessible
+
+<Card
+  title="Troubleshooting Connections"
+  icon="tool"
+  href="/learn/making-connections/troubleshooting-connections"
+>
+  Get help troubleshooting connection issues
+</Card>
+
+### My data isn't showing up after connecting
+
+- **Wait for Indexing**: Databases need time to index (you'll get an email when complete)
+- **Check Permissions**: Verify user has SELECT permissions on tables
+- **Verify Connection**: Test the connection in Pylar
+- **Check Logs**: Review connection logs for errors
+
+### My MCP tool is returning errors
+
+1. **Check Evals Dashboard**: Review error details in Evals
+2. **Test the Tool**: Use Pylar's test interface
+3. **Verify SQL Query**: Check if the SQL query works directly
+4. **Check Parameters**: Ensure parameters are correctly defined
+5. **Review Logs**: Check raw logs for specific error messages
+
+### My agent can't access the tools
+
+1. **Verify Credentials**: Check MCP HTTP Stream URL and Bearer Token
+2. **Test Connection**: Ensure agent builder can reach Pylar
+3. **Check Authentication**: Verify Bearer Token is correct
+4. **Review Agent Builder Logs**: Check for connection errors
+5. **Validate Tools**: Ensure tools are published and active
+
+## Pricing and Limits
+
+### Is there a free tier?
+
+Contact Pylar support to learn about pricing plans and free tier availability.
+
+### Are there rate limits?
+
+Pylar is designed to handle high-volume queries. For databases, queries execute on your infrastructure, so limits depend on your database capacity. For Business Applications, check with Pylar support for specific limits.
+
+### Can I use Pylar for production workloads?
+
+Yes! Pylar is designed for production use with:
+- High availability
+- Scalability
+- Security and compliance
+- Enterprise-grade infrastructure
+
+## Support
+
+### Where can I get help?
+
+- **Documentation**: Browse our comprehensive guides
+- **Examples**: Check out our agent examples
+- **Support**: Contact Pylar support team
+
+### How do I report bugs or request features?
+
+Contact Pylar support with:
+- Bug descriptions
+- Feature requests
+- Feedback
+- Questions
+
+We're here to help!
+
+---
+
+## Still Have Questions?
+
+If you can't find the answer you're looking for, check out:
+- [Quick Start Guide](/introduction/quick-start) - Get started with Pylar
+- [All Examples](/examples/customer-support-agent) - See real-world use cases
+- [Documentation](/learn/making-connections/overview) - Comprehensive guides
+
+<Card
+  title="Get Started"
+  icon="rocket"
+  href="/introduction/quick-start"
+>
+  Start building your first agent with Pylar
+</Card>
+

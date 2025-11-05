@@ -1,0 +1,160 @@
+---
+title: "Claude Desktop"
+description: "Connect Pylar MCP tools to Claude Desktop for AI-powered data access"
+---
+
+## Overview
+
+Claude Desktop is Anthropic's desktop AI assistant that supports MCP (Machine-Consumable Protocol) tools. Connect your Pylar tools to Claude Desktop to give Claude access to your data through governed views.
+
+## Prerequisites
+
+- ✅ Claude Desktop app installed on your computer
+- ✅ Pylar project with published MCP tools
+- ✅ MCP HTTP Stream URL and Bearer Token from Pylar
+
+## Step 1: Get Your Pylar Credentials
+
+1. In Pylar, navigate to your project
+2. Click **"Publish"** in the right sidebar
+3. Generate your token if needed
+4. Copy both:
+   - **MCP HTTP Stream URL**: `https://mcp.publish.pylar.ai/mcp`
+   - **Authorization Bearer Token**: Your unique token
+
+<Warning>
+Keep your Bearer Token secure. It provides access to your published tools.
+</Warning>
+
+## Step 2: Open Claude Desktop Settings
+
+1. Open the **Claude Desktop** app
+2. Go to **Settings** → **Developer**
+3. Click **"Edit Config"**
+
+This will open the `claude_desktop_config.json` file on your system.
+
+## Step 3: Add Pylar MCP Server Configuration
+
+Add the following configuration to the `claude_desktop_config.json` file:
+
+```json
+{
+  "mcpServers": {
+    "view-mcp-node": {
+      "url": "https://mcp.publish.pylar.ai/mcp",
+      "headers": {
+        "Authorization": "Bearer xxxxx"
+      }
+    }
+  }
+}
+```
+
+**Important**:
+- Replace `xxxxx` with your actual Bearer Token from Pylar
+- The name `"view-mcp-node"` is a local alias—you can rename it to anything you prefer
+- Save the file after making changes
+
+<Info>
+If the "headers" key is unsupported in your Claude Desktop build, you may need to omit it and use a proxy or environment variable instead. Check your Claude Desktop version for MCP support.
+</Info>
+
+## Step 4: Restart Claude Desktop
+
+1. Save the `claude_desktop_config.json` file
+2. Restart Claude Desktop completely
+3. Claude Desktop will connect to your Pylar MCP server on startup
+
+## Step 5: Test the Connection
+
+1. Open a new conversation in Claude Desktop
+2. Ask Claude a question that requires using your MCP tool
+
+**Example**: *"Use the engagement score tool to get scores for login events"*
+
+Claude will:
+1. Recognize it needs to use your Pylar MCP tool
+2. Call the tool with appropriate parameters
+3. Execute the query against your view
+4. Return the results and use them to answer your question
+
+<Check>
+If Claude can successfully use your tools to answer questions, the connection is working correctly!
+</Check>
+
+## Using Your Tools
+
+Once connected, you can ask Claude to use your Pylar tools in natural language:
+
+- *"Get customer revenue data for the last quarter"*
+- *"Show me engagement scores for purchase events"*
+- *"What's the average order value for customers in North America?"*
+
+Claude will automatically:
+- Identify which tool to use
+- Call the tool with the right parameters
+- Return formatted results
+- Use the data to provide comprehensive answers
+
+## Troubleshooting
+
+### Issue: Claude can't see tools
+
+**Solutions**:
+- Verify Bearer Token is correct (no extra spaces)
+- Ensure token format: `Bearer YOUR_TOKEN` (replace YOUR_TOKEN with actual token)
+- Check that tools are published in Pylar
+- Restart Claude Desktop completely
+- Verify the JSON syntax in the config file is valid
+
+### Issue: "Connection failed" error
+
+**Solutions**:
+- Verify MCP HTTP Stream URL is correct: `https://mcp.publish.pylar.ai/mcp`
+- Check network connectivity
+- Ensure Bearer Token is valid and not expired
+- Regenerate token in Pylar if needed
+- Check Claude Desktop version supports MCP headers
+
+### Issue: Tools return errors
+
+**Solutions**:
+- Check Evals in Pylar to see detailed error information
+- Verify view queries are correct
+- Test tools in Pylar before using in Claude
+- Review tool parameters and ensure they're being passed correctly
+
+### Issue: Headers not supported
+
+If your Claude Desktop build doesn't support headers in the config:
+
+**Alternative Solutions**:
+- Use a proxy server to add authentication headers
+- Set authentication via environment variables (if supported)
+- Check for Claude Desktop updates that add header support
+
+## Benefits
+
+By connecting Claude Desktop to Pylar:
+
+- ✅ **Secure Access**: Claude only accesses data through your governed views
+- ✅ **Natural Language**: Ask Claude questions in plain English
+- ✅ **Centralized Control**: Update views in Pylar, Claude gets updates automatically
+- ✅ **Full Visibility**: Monitor Claude's usage through Pylar Evals
+- ✅ **No Code**: No need to write integration code
+- ✅ **Real-time Updates**: Changes to views and tools reflect immediately
+
+## Next Steps
+
+- [Publishing Tools](/learn/publishing-tools/publishing-your-tools) - Learn how to publish your tools
+- [Evals](/learn/evals/overview) - Monitor how Claude uses your tools
+- [Other Agent Builders](/learn/connecting-agent-builders/overview) - Connect to other platforms
+
+<Card
+  title="Monitor Usage"
+  icon="chart-bar"
+  href="/learn/evals/overview"
+>
+  See how Claude interacts with your tools through Evals
+</Card>

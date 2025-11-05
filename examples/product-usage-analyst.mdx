@@ -1,0 +1,132 @@
+---
+title: "Product Usage Analyst"
+description: "Build an AI agent that analyzes product usage, feature adoption, user engagement, and identifies trends"
+---
+
+## Overview
+
+A Product Usage Analyst powered by Pylar analyzes product usage patterns, feature adoption rates, user engagement metrics, and identifies trends to inform product decisions.
+
+## What the Agent Needs to Accomplish
+
+The agent must:
+- Analyze product usage patterns
+- Track feature adoption rates
+- Measure user engagement
+- Identify usage trends
+- Compare user segments
+- Recommend feature improvements
+
+## How Pylar Helps
+
+Pylar enables the agent by:
+- **Unified Usage View**: Combining product analytics, user data, and feature usage
+- **Real-time Analysis**: Querying current usage patterns
+- **Trend Identification**: Detecting usage trends over time
+- **Segment Comparison**: Comparing usage across user segments
+- **Data-Driven Insights**: Generating actionable product recommendations
+
+## Without Pylar vs With Pylar
+
+### Without Pylar
+
+**Challenges**:
+- ❌ Multiple analytics tools and data sources
+- ❌ Manual usage analysis
+- ❌ Difficult to correlate features with engagement
+- ❌ Time-consuming trend identification
+
+**Implementation Complexity**: ~4-5 weeks
+
+### With Pylar
+
+**Benefits**:
+- ✅ Single endpoint for all usage data
+- ✅ Automated usage analysis
+- ✅ Real-time trend detection
+- ✅ Easy feature comparison
+
+**Implementation Complexity**: ~5-6 hours
+
+## Step-by-Step Implementation
+
+### Step 1: Connect Data Sources
+
+1. **Connect Product Analytics** (User actions, events, feature usage)
+2. **Connect User Data** (User segments, subscription tiers)
+3. **Connect Product Catalog** (Features, releases)
+
+### Step 2: Create Usage Views
+
+**Feature Adoption View**:
+```sql
+CREATE VIEW feature_adoption AS
+SELECT 
+  f.feature_name,
+  f.release_date,
+  COUNT(DISTINCT u.user_id) as total_users,
+  COUNT(DISTINCT CASE WHEN u.feature_used THEN u.user_id END) as adopted_users,
+  (COUNT(DISTINCT CASE WHEN u.feature_used THEN u.user_id END) / 
+   NULLIF(COUNT(DISTINCT u.user_id), 0)) * 100 as adoption_rate,
+  AVG(u.usage_count) as avg_usage_per_user,
+  AVG(u.last_used_days_ago) as avg_days_since_last_use
+FROM product.features f
+LEFT JOIN analytics.feature_usage u ON f.feature_id = u.feature_id
+GROUP BY f.feature_name, f.release_date;
+```
+
+**User Engagement View**:
+```sql
+CREATE VIEW user_engagement AS
+SELECT 
+  u.user_id,
+  u.user_segment,
+  u.subscription_tier,
+  u.active_days_last_30,
+  u.features_used_count,
+  u.total_actions,
+  u.last_activity_date,
+  -- Engagement score
+  (u.active_days_last_30 * 0.4 + 
+   (u.features_used_count / 10) * 30 + 
+   (u.total_actions / 100) * 30) as engagement_score
+FROM analytics.user_usage u;
+```
+
+### Step 3: Create MCP Tools
+
+**Tool 1: Analyze Feature Adoption**
+- `analyze_feature_adoption(feature_name: string, days_back: number)`
+
+**Tool 2: Get Usage Trends**
+- `get_usage_trends(metric: string, period: string)`
+
+**Tool 3: Compare User Segments**
+- `compare_user_segments(segment1: string, segment2: string, metric: string)`
+
+**Tool 4: Identify Usage Patterns**
+- `identify_usage_patterns(feature_id: string, user_segment: string)`
+
+## Example Agent Interactions
+
+**User**: "How is the new dashboard feature being adopted?"
+
+**Agent**: "Dashboard Feature Adoption:
+- Adoption Rate: 42% (8,400 of 20,000 users)
+- Average Usage: 12 times per user
+- Top User Segment: Enterprise (65% adoption)
+- Growth Trend: +15% week-over-week
+- Recommendation: Promote to mid-market segment"
+
+## Outcomes
+
+- **Feature Adoption**: 30% improvement in adoption rates
+- **User Engagement**: 25% increase in engagement
+- **Product Decisions**: Data-driven feature prioritization
+- **Trend Detection**: 60% faster identification of usage trends
+
+## Next Steps
+
+- [Product Feedback Analyzer Example](/examples/product-feedback-analyzer)
+- [Feature Flag Manager Example](/examples/feature-flag-manager)
+

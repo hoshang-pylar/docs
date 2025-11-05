@@ -1,97 +1,215 @@
 ---
-title: "Introduction"
-description: "Welcome to the new home for your documentation"
+title: "Pylar Documentation"
+description: "Build AI agents that interact with your data securely. Connect databases, create governed views, and deploy MCP tools to any agent builder."
 ---
 
-## Setting up
+## Welcome to Pylar
 
-Get your documentation site up and running in minutes.
+Pylar is a **secure data access layer for AI agents** that enables interaction with structured data sources without requiring direct database access or complex API integrations.
 
-<Card
-  title="Start here"
-  icon="rocket"
-  href="/quickstart"
-  horizontal
->
-  Follow our three step quickstart guide.
-</Card>
+## How It Works
 
-## Make it yours
+1. **Data Sources** connect to Pylar (Snowflake, BigQuery, PostgreSQL, HubSpot, Salesforce, and more)
+2. **SQL View** is created to govern exactly what data agents can access
+3. **MCP Tools** are built on the view—multiple tools for different use cases
+4. **Tools publish** to Agent Builders (Claude Desktop, Cursor, LangGraph, Zapier, Make, n8n, and more)
+5. **Evals** monitors all tool interactions for observability and optimization
 
-Design a docs site that looks great and empowers your users.
+**Key Benefits**:
+- ✅ **Single Control Pane**: Update views and tools without redeploying agents
+- ✅ **No Raw Access**: Agents only access data through your governed views
+- ✅ **Unified Interface**: One MCP endpoint for all data sources
+- ✅ **Real-time Observability**: Monitor all agent interactions with Evals
 
-<Columns cols={2}>
+<CardGroup cols={2}>
   <Card
-    title="Edit locally"
-    icon="pen-to-square"
-    href="/development"
+    title="What is Pylar?"
+    icon="book"
+    href="/introduction/what-is-pylar"
   >
-    Edit your docs locally and preview them in real time.
+    Learn how Pylar provides governed SQL views, AI-powered MCP tool creation, and seamless multi-database integration.
   </Card>
   <Card
-    title="Customize your site"
-    icon="palette"
-    href="/essentials/settings"
+    title="Quick Start"
+    icon="rocket"
+    href="/introduction/quick-start"
   >
-    Customize the design and colors of your site to match your brand.
-  </Card>
-    <Card
-    title="Set up navigation"
-    icon="map"
-    href="/essentials/navigation"
-  >
-    Organize your docs to help users find what they need and succeed with your product.
+    Get up and running in minutes. Connect your databases, create views, and deploy your first agent.
   </Card>
   <Card
-    title="API documentation"
-    icon="terminal"
-    href="/api-reference/introduction"
+    title="Why Pylar?"
+    icon="lightbulb"
+    href="/introduction/why-pylar"
   >
-    Auto-generate API documentation from OpenAPI specifications.
-  </Card>
-</Columns>
-
-## Create beautiful pages
-
-Everything you need to create world-class documentation.
-
-<Columns cols={2}>
-  <Card
-    title="Write with MDX"
-    icon="pen-fancy"
-    href="/essentials/markdown"
-  >
-    Use MDX to style your docs pages.
+    Discover the benefits: security, developer experience, operational excellence, and cost efficiency.
   </Card>
   <Card
-    title="Code samples"
+    title="Examples"
     icon="code"
-    href="/essentials/code"
+    href="/examples/customer-support-agent"
   >
-    Add sample code to demonstrate how to use your product.
+    See 20 real-world agent examples for customer support, sales, marketing, product, finance, and operations.
   </Card>
-  <Card
-    title="Images"
-    icon="image"
-    href="/essentials/images"
-  >
-    Display images and other media.
-  </Card>
-  <Card
-    title="Reusable snippets"
-    icon="recycle"
-    href="/essentials/reusable-snippets"
-  >
-    Write once and reuse across your docs.
-  </Card>
-</Columns>
+</CardGroup>
 
-## Need inspiration?
+## Key Features
+
+### 🔒 Governed SQL Views
+Create SQL views that define exactly what data agents can access. Views are the only access level—agents never get raw database access.
+
+### 🤖 AI-Powered MCP Tool Creation
+Describe what you want in natural language, and Pylar's AI generates MCP tools for your agents. No manual coding required.
+
+### 🔗 Multi-Database Integration
+Join data across multiple databases, warehouses, and business applications. Query Snowflake, BigQuery, PostgreSQL, HubSpot, Salesforce, and more—all in one place.
+
+### 📊 Built-in Observability
+Monitor agent performance with the Evals dashboard. Track errors, query patterns, and optimize your tools based on real usage data.
+
+### 🚀 One Control Pane
+Update views and tools without redeploying agents. Changes reflect immediately across all agent builders—Claude Desktop, Cursor, LangGraph, Zapier, and more.
+
+## Getting Started
+
+### Step 1: Connect Your Data
+Connect your databases and data sources to Pylar. Supported sources include:
+- **Databases**: BigQuery, Snowflake, PostgreSQL, MySQL, Redshift, MotherDuck, Supabase, and more
+- **Business Apps**: HubSpot, Salesforce, Google Sheets, and more
 
 <Card
-  title="See complete examples"
-  icon="stars"
-  href="https://mintlify.com/customers"
+  title="Making Connections"
+  icon="plug"
+  href="/learn/making-connections/overview"
 >
-  Browse our showcase of exceptional documentation sites.
+  Learn how to connect your data sources
 </Card>
+
+### Step 2: Create Views
+Use Pylar's SQL IDE to create governed views of your data. Join across multiple databases, filter sensitive data, and define exactly what agents can access.
+
+<Card
+  title="Creating Data Views"
+  icon="code"
+  href="/learn/creating-data-views/overview"
+>
+  Learn how to create your first view
+</Card>
+
+### Step 3: Build MCP Tools
+Create MCP tools using AI or manually. Each tool defines how agents interact with your views.
+
+<Card
+  title="Building MCP Tools"
+  icon="wrench"
+  href="/learn/building-mcp-tools/overview"
+>
+  Learn how to create MCP tools
+</Card>
+
+### Step 4: Publish and Deploy
+Publish your tools and get your MCP credentials. Connect to any agent builder—no API hassles, no redeployment.
+
+<Card
+  title="Publishing Tools"
+  icon="upload"
+  href="/learn/publishing-tools/publishing-your-tools"
+>
+  Learn how to publish and deploy your tools
+</Card>
+
+## Popular Use Cases
+
+<CardGroup cols={3}>
+  <Card
+    title="Customer Support"
+    icon="headphones"
+    href="/examples/customer-support-agent"
+  >
+    Build agents that access customer history, orders, and support tickets
+  </Card>
+  <Card
+    title="Sales Analytics"
+    icon="trending-up"
+    href="/examples/sales-assistant"
+  >
+    Analyze pipeline, forecast revenue, and identify opportunities
+  </Card>
+  <Card
+    title="Marketing Optimization"
+    icon="megaphone"
+    href="/examples/marketing-campaign-optimizer"
+  >
+    Optimize campaigns, analyze attribution, and measure ROI
+  </Card>
+  <Card
+    title="Product Analytics"
+    icon="chart-bar"
+    href="/examples/product-usage-analyst"
+  >
+    Track feature adoption, analyze usage patterns, and prioritize improvements
+  </Card>
+  <Card
+    title="Financial Analysis"
+    icon="dollar-sign"
+    href="/examples/financial-analyst"
+  >
+    Analyze revenue, track expenses, and generate financial reports
+  </Card>
+  <Card
+    title="Operations Monitoring"
+    icon="server"
+    href="/examples/it-operations-monitor"
+  >
+    Monitor system health, track performance, and generate incident reports
+  </Card>
+</CardGroup>
+
+## Documentation Sections
+
+### 📚 Learn
+Comprehensive guides covering everything from connecting databases to monitoring with Evals:
+- [Making Connections](/learn/making-connections/overview) - Connect your data sources
+- [Creating Data Views](/learn/creating-data-views/overview) - Build governed SQL views
+- [Building MCP Tools](/learn/building-mcp-tools/overview) - Create tools for your agents
+- [Publishing Tools](/learn/publishing-tools/overview) - Deploy to agent builders
+- [Connecting Agent Builders](/learn/connecting-agent-builders/overview) - Integrate with Claude, Cursor, LangGraph, and more
+- [Evals](/learn/evals/overview) - Monitor and optimize agent performance
+
+### 💡 Examples
+20 real-world agent examples across different domains:
+- Customer Support & Success (4 examples)
+- Sales & Revenue (4 examples)
+- Marketing (4 examples)
+- Product (3 examples)
+- Finance (3 examples)
+- Operations (2 examples)
+
+<Card
+  title="Browse All Examples"
+  icon="code"
+  href="/examples/customer-support-agent"
+>
+  See how others are using Pylar
+</Card>
+
+### ❓ Help
+Get answers to common questions and troubleshooting help:
+- [FAQ](/help/faq) - Frequently asked questions
+- [Troubleshooting](/help/troubleshooting) - Common issues and solutions
+
+## Need Help?
+
+- **Support Email**: [support@pylar.ai](mailto:support@pylar.ai)
+- **Get Started**: [Sign up for Pylar](https://app.pylar.ai/signup)
+- **Website**: [pylar.ai](https://www.pylar.ai)
+
+## Ready to Get Started?
+
+<Card
+  title="Quick Start Guide"
+  icon="rocket"
+  href="/introduction/quick-start"
+>
+  Follow our step-by-step guide to build your first agent
+</Card>
+

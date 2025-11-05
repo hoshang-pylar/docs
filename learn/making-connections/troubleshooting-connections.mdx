@@ -1,0 +1,285 @@
+---
+title: "Troubleshooting Connections"
+description: "Common connection issues and solutions for connecting data sources to Pylar"
+---
+
+## Overview
+
+This guide helps you troubleshoot common issues when connecting data sources to Pylar. Follow these solutions to resolve connection problems quickly.
+
+## Common Connection Issues
+
+### Connection Timeout Errors
+
+**Symptoms**: Connection attempts timeout or fail to connect
+
+**Common Causes**:
+- IP address not whitelisted
+- Firewall blocking connections
+- Network connectivity issues
+- Database server not accessible
+
+**Solutions**:
+
+1. **Verify IP Whitelisting**:
+   - Ensure Pylar IP `34.122.205.142` is whitelisted
+   - Check firewall rules allow the database port
+   - Verify security group settings (for cloud databases)
+
+2. **Check Network Connectivity**:
+   - Verify database server is running
+   - Test connection from your local machine
+   - Check if database is publicly accessible
+   - Review network routing
+
+3. **Verify Port Configuration**:
+   - Check port number is correct
+   - Ensure port is open in firewall
+   - Verify database is listening on the port
+
+### Authentication Failures
+
+**Symptoms**: "Authentication failed" or "Access denied" errors
+
+**Common Causes**:
+- Incorrect username or password
+- User account locked or disabled
+- Insufficient permissions
+- Credentials expired
+
+**Solutions**:
+
+1. **Verify Credentials**:
+   - Double-check username spelling
+   - Verify password is correct (no extra spaces)
+   - Test credentials in database client
+   - Reset password if needed
+
+2. **Check User Status**:
+   - Verify user account is active
+   - Check if account is locked
+   - Review user permissions
+   - Ensure user has database access
+
+3. **Review Permissions**:
+   - Verify user has SELECT permissions
+   - Check schema-level permissions
+   - Review table-level access
+   - Grant necessary permissions
+
+### Network Issues
+
+**Symptoms**: "Connection refused" or "Network unreachable" errors
+
+**Common Causes**:
+- Database not publicly accessible
+- VPN or private network restrictions
+- DNS resolution issues
+- Network security policies
+
+**Solutions**:
+
+1. **Database Accessibility**:
+   - Verify database is publicly accessible
+   - Check if database is in private VPC
+   - Configure network access if needed
+   - Use SSH tunnel for private databases
+
+2. **DNS Issues**:
+   - Verify hostname resolves correctly
+   - Try using IP address instead of hostname
+   - Check DNS configuration
+   - Review network settings
+
+3. **Network Policies**:
+   - Review security group rules
+   - Check firewall configurations
+   - Verify network routing
+   - Review cloud provider network settings
+
+### Permission Errors
+
+**Symptoms**: "Permission denied" or "Access denied" when querying
+
+**Common Causes**:
+- User lacks necessary permissions
+- Database-level restrictions
+- Schema-level access controls
+- Table-level permissions
+
+**Solutions**:
+
+1. **Grant Permissions**:
+   ```sql
+   -- Example for PostgreSQL
+   GRANT SELECT ON schema_name.table_name TO pylar_user;
+   GRANT USAGE ON SCHEMA schema_name TO pylar_user;
+   ```
+
+2. **Review Access Controls**:
+   - Check database user permissions
+   - Review schema access
+   - Verify table-level permissions
+   - Check row-level security policies
+
+3. **Test Permissions**:
+   - Test queries directly in database
+   - Verify user can access tables
+   - Check for any access restrictions
+
+## Database-Specific Issues
+
+### BigQuery Issues
+
+**Issue**: Service account JSON invalid
+
+**Solutions**:
+- Verify JSON is complete and valid
+- Check service account has proper roles
+- Ensure JSON key hasn't expired
+- Regenerate JSON key if needed
+
+**Issue**: Project ID not found
+
+**Solutions**:
+- Verify Project ID is correct
+- Check project exists in Google Cloud
+- Ensure service account has project access
+- Review project permissions
+
+### Snowflake Issues
+
+**Issue**: Account URL format incorrect
+
+**Solutions**:
+- Remove `https://` prefix
+- Remove everything after `.snowflakecomputing.com`
+- Verify account identifier is correct
+- Check URL format matches requirements
+
+**Issue**: Network policy blocking
+
+**Solutions**:
+- Add IP `34.122.205.142` to network policy
+- Verify network policy is applied
+- Check account-level network settings
+- Review user network restrictions
+
+### PostgreSQL/MySQL Issues
+
+**Issue**: Connection refused
+
+**Solutions**:
+- Verify database is publicly accessible
+- Check `pg_hba.conf` or MySQL user hosts
+- Ensure IP is whitelisted
+- Review firewall rules
+
+**Issue**: Port not accessible
+
+**Solutions**:
+- Verify port number (5432 for PostgreSQL, 3306 for MySQL)
+- Check firewall allows port
+- Ensure database is listening on port
+- Review security group settings
+
+### Redshift Issues
+
+**Issue**: Endpoint URL format
+
+**Solutions**:
+- Remove port from endpoint (everything after `:`)
+- Enter port separately (default 5439)
+- Verify endpoint format is correct
+- Check cluster is publicly accessible
+
+**Issue**: Security group blocking
+
+**Solutions**:
+- Add IP `34.122.205.142` to security group
+- Allow Redshift protocol (TCP port 5439)
+- Verify security group is attached to cluster
+- Review VPC network settings
+
+## Debugging Tips
+
+### Test Connection Manually
+
+Before troubleshooting in Pylar, test the connection manually:
+
+**PostgreSQL/MySQL**:
+```bash
+psql -h hostname -p port -U username -d database_name
+# or
+mysql -h hostname -P port -u username -p database_name
+```
+
+**BigQuery**:
+```bash
+bq query --use_legacy_sql=false "SELECT 1"
+```
+
+### Check Connection Logs
+
+- Review Pylar connection logs
+- Check database server logs
+- Review firewall/security group logs
+- Look for specific error messages
+
+### Verify Network Connectivity
+
+```bash
+# Test if port is accessible
+telnet hostname port
+# or
+nc -zv hostname port
+```
+
+### Test Credentials
+
+- Test credentials in database client
+- Verify credentials work from command line
+- Check if credentials have necessary permissions
+
+## Getting Help
+
+If you've tried troubleshooting and still have issues:
+
+1. **Check Documentation**: Review specific connection guides
+2. **Review Error Messages**: Look for specific error codes
+3. **Contact Support**: Reach out with:
+   - Connection type
+   - Error message
+   - Steps you've tried
+   - Relevant logs
+
+## Prevention Tips
+
+### Before Connecting
+
+- ✅ Verify you have correct credentials
+- ✅ Check IP whitelisting requirements
+- ✅ Ensure database is accessible
+- ✅ Review permission requirements
+
+### After Connecting
+
+- ✅ Test connection immediately
+- ✅ Verify data appears correctly
+- ✅ Monitor connection health
+- ✅ Set up alerts for failures
+
+## Next Steps
+
+- [Connection Security](/learn/making-connections/connection-security) - Secure your connections
+- [Managing Connections](/learn/making-connections/managing-connections) - Manage your connections
+- [SSH Connections](/learn/making-connections/connecting-via-ssh) - Enhanced security option
+
+<Card
+  title="Secure Connections"
+  icon="shield"
+  href="/learn/making-connections/connection-security"
+>
+  Learn security best practices
+</Card>
+

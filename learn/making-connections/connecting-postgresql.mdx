@@ -1,0 +1,241 @@
+---
+title: "Connecting PostgreSQL"
+description: "Step-by-step guide to connecting your PostgreSQL database to Pylar"
+---
+
+## Overview
+
+Connecting PostgreSQL to Pylar allows you to query and analyze your PostgreSQL data directly from Pylar. Your data remains in PostgreSQL—Pylar indexes it for easier querying and executes queries on your PostgreSQL infrastructure.
+
+## Prerequisites
+
+- ✅ Pylar account with Analyst role or higher
+- ✅ PostgreSQL database access
+- ✅ Database credentials (host, port, database name, username, password)
+- ✅ Ability to whitelist IP addresses in PostgreSQL firewall
+
+## Step 1: Navigate to Connections
+
+1. In your Pylar workspace, click on the **"Connections"** tab located in the sidebar
+2. You'll see the list of available data sources
+
+## Step 2: Select PostgreSQL
+
+From the list of available data sources, select **"PostgreSQL"**.
+
+The connection setup screen will open.
+
+## Step 3: Enter Connection Details
+
+You'll need the following information to connect:
+
+### Host
+
+The hostname or IP address of your PostgreSQL server.
+
+**Examples**:
+- `db.example.com`
+- `192.168.1.100`
+- `postgres.example.com`
+
+### Port
+
+The port number for PostgreSQL.
+
+**Default**: `5432`
+
+**Note**: If your PostgreSQL server uses a non-standard port, enter that port number.
+
+### Database Name
+
+The name of the database you want to connect to.
+
+**Example**: `production`, `analytics`, `customer_data`
+
+### Username
+
+Your PostgreSQL username that has access to the database.
+
+**Best Practice**: Create a dedicated user for Pylar with read-only permissions.
+
+### Password
+
+The corresponding password for your PostgreSQL username.
+
+<Warning>
+Use a dedicated PostgreSQL user account for Pylar with read-only permissions when possible. This enhances security and allows for better access control.
+</Warning>
+
+## Step 4: Whitelist Pylar IP Address
+
+**Critical Step**: Whitelist Pylar's IP address to ensure seamless connectivity.
+
+**Pylar IP Address**: `34.122.205.142`
+
+**How to whitelist**:
+
+### Option 1: PostgreSQL `pg_hba.conf`
+
+1. Edit the `pg_hba.conf` file on your PostgreSQL server
+2. Add a line allowing connections from Pylar's IP:
+   ```
+   host    all    all    34.122.205.142/32    md5
+   ```
+3. Reload PostgreSQL configuration:
+   ```bash
+   sudo systemctl reload postgresql
+   ```
+
+### Option 2: Cloud Provider Firewall
+
+If using a cloud-hosted PostgreSQL (AWS RDS, Google Cloud SQL, Azure Database):
+
+**AWS RDS**:
+1. Go to RDS Security Groups
+2. Add inbound rule: Allow PostgreSQL (port 5432) from IP `34.122.205.142`
+
+**Google Cloud SQL**:
+1. Go to Cloud SQL instance
+2. Add authorized network: `34.122.205.142/32`
+
+**Azure Database**:
+1. Go to Azure Portal → Firewall settings
+2. Add client IP: `34.122.205.142`
+
+<Warning>
+Whitelisting the IP address is crucial for establishing a secure and stable connection. Without it, Pylar will not be able to connect to your PostgreSQL database.
+</Warning>
+
+## Step 5: Test Connection
+
+1. Click the **"Submit"** button
+2. Pylar will test the connection to your PostgreSQL database
+3. If successful, you'll see a success message
+4. If it fails, you'll be prompted to make corrections to your database credentials
+
+<Check>
+A successful connection test means Pylar can reach your PostgreSQL server and authenticate. Verify all details are correct before proceeding.
+</Check>
+
+## Step 6: Save and Connect
+
+Once the connection test is successful:
+
+1. Click **"Save"** to save your configuration
+2. You'll be prompted to give the connection a **schema name**
+3. Enter a descriptive name (e.g., `postgres_production` or `analytics_db`)
+4. Save the configuration
+
+**Naming Rules**:
+- Lowercase letters only
+- Numbers and underscores allowed
+- No spaces or special characters
+
+## Step 7: Start Exploring
+
+Your PostgreSQL database is now connected to Pylar. You can:
+
+- **Query your data**: Use the SQL IDE to query PostgreSQL tables
+- **Create views**: Build views on your PostgreSQL data
+- **Join with other sources**: Combine PostgreSQL data with other connected sources
+
+## Using Your PostgreSQL Connection
+
+### Query PostgreSQL Data
+
+Reference your connection by the schema name you provided:
+
+```sql
+SELECT * 
+FROM postgres_production.public.customers 
+WHERE is_active = true;
+```
+
+### Join with Other Sources
+
+Join PostgreSQL data with other connected sources:
+
+```sql
+SELECT 
+  pg.customer_id,
+  pg.customer_name,
+  hs.email,
+  sf.opportunity_value
+FROM postgres_production.customers pg
+JOIN hubspot.contacts hs ON pg.email = hs.email
+JOIN snowflake.opportunities sf ON pg.customer_id = sf.account_id;
+```
+
+## Troubleshooting
+
+### Issue: Connection test fails
+
+**Solutions**:
+- Verify host and port are correct
+- Check username and password
+- Ensure IP address `34.122.205.142` is whitelisted
+- Verify database name exists
+- Check PostgreSQL is accessible from the internet
+
+### Issue: "Connection refused" error
+
+**Solutions**:
+- Verify PostgreSQL is running
+- Check port number is correct (default 5432)
+- Ensure firewall allows connections from Pylar's IP
+- Verify PostgreSQL is configured to accept remote connections
+
+### Issue: "Authentication failed" error
+
+**Solutions**:
+- Verify username and password are correct
+- Check user has permissions to access the database
+- Review PostgreSQL authentication settings
+- Ensure user is not locked or disabled
+
+### Issue: "Network or security block" error
+
+**Solutions**:
+- Confirm IP address `34.122.205.142` is whitelisted
+- Check firewall rules allow PostgreSQL port (5432)
+- Review network security group settings
+- Verify PostgreSQL `listen_addresses` includes the network interface
+
+## Best Practices
+
+### User Account Security
+
+- ✅ Create a dedicated PostgreSQL user for Pylar
+- ✅ Grant only necessary permissions (read-only if possible)
+- ✅ Use role-based access control
+- ✅ Regularly audit user permissions
+
+### Network Security
+
+- ✅ Whitelist only Pylar's IP address
+- ✅ Use SSL/TLS connections when possible
+- ✅ Monitor connection logs
+- ✅ Review failed connection attempts
+
+### Connection Naming
+
+- ✅ Use descriptive names: `postgres_prod`, `postgres_analytics`
+- ✅ Include environment information
+- ✅ Be consistent across your workspace
+
+## Next Steps
+
+Now that PostgreSQL is connected:
+
+- [Creating Data Views](/learn/creating-data-views/overview) - Create views using PostgreSQL data
+- [Cross-Database Joins](/learn/creating-data-views/cross-database-joins) - Join PostgreSQL with other sources
+- [Connection Security](/learn/making-connections/connection-security) - Secure your connections
+
+<Card
+  title="Create Views"
+  icon="code"
+  href="/learn/creating-data-views/writing-your-first-view"
+>
+  Use your PostgreSQL connection to create data views
+</Card>
+

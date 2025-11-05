@@ -1,0 +1,197 @@
+---
+title: "Connecting Supabase"
+description: "Step-by-step guide to connecting your Supabase (hosted PostgreSQL) database to Pylar"
+---
+
+## Overview
+
+Supabase is a hosted PostgreSQL service. Connecting your Supabase database to Pylar allows you to query and analyze your Supabase data directly from Pylar, just like any PostgreSQL database.
+
+## Prerequisites
+
+- ✅ Pylar account with Analyst role or higher
+- ✅ Supabase account with an active project
+- ✅ Database password (Supabase does not provide this in connection details)
+
+## Step 1: Log into Supabase
+
+1. Log into your **Supabase** account
+2. Open the **project** you want to connect to Pylar
+
+## Step 2: Get Connection Details
+
+1. At the top of your Supabase project, click the **"Connect"** button
+2. You'll see connection options:
+   - **Direct Connection** (for direct access)
+   - **Transaction Pooler** (for pooled connections)
+3. **Ignore the URI**—instead, click **"View Parameters"** to reveal the necessary connection details
+
+<Info>
+Supabase provides connection parameters rather than a single URI. You'll need to copy these individual parameters.
+</Info>
+
+## Step 3: Copy Connection Parameters
+
+From the "View Parameters" view, copy the following details:
+
+- **Host**: The Supabase database host
+- **Port**: The database port (usually 5432)
+- **Database Name**: The database name
+- **User**: The database user
+
+**Important**: Supabase does **not** provide the password in the connection details. You'll need to enter it manually in Pylar.
+
+<Warning>
+You'll need to know your Supabase database password. If you don't have it, you may need to reset it in Supabase settings.
+</Warning>
+
+## Step 4: Configure Pylar Connection
+
+1. Open Pylar's **Connections** page
+2. Select **PostgreSQL** as the database type (since Supabase is PostgreSQL-based)
+3. Enter the connection details:
+
+### Host
+
+Paste the **Host** parameter from Supabase.
+
+### Port
+
+Enter the **Port** parameter (usually `5432`).
+
+### Database Name
+
+Enter the **Database Name** from Supabase.
+
+### Username
+
+Enter the **User** parameter from Supabase.
+
+### Password
+
+**Manually enter** your Supabase database password.
+
+<Info>
+Since Supabase doesn't provide the password in connection details, you must enter it manually. This is the password you set when creating your Supabase project or the one you've configured.
+</Info>
+
+## Step 5: Whitelist Pylar IP Address
+
+**Critical Step**: Whitelist Pylar's IP address in Supabase.
+
+**Pylar IP Address**: `34.122.205.142`
+
+**How to whitelist in Supabase**:
+
+1. In Supabase, go to **Project Settings** → **Database**
+2. Scroll to **Connection Pooling** or **Network Restrictions**
+3. Add `34.122.205.142` to the allowed IP addresses
+4. Or configure your Supabase project's network access settings
+
+<Warning>
+Without whitelisting the IP address, Pylar will not be able to connect to your Supabase database. This step is crucial for establishing a secure connection.
+</Warning>
+
+## Step 6: Test and Connect
+
+1. Click **"Connect"** or **"Submit"** in Pylar
+2. Pylar will test the connection to your Supabase database
+3. If successful, the connection will be established
+
+## Step 7: Wait for Data Sync
+
+After connecting:
+
+1. **Data will begin syncing automatically**
+2. You don't need to wait—Pylar will notify you via **email** once the data is available for querying
+3. The sync process may take some time depending on data volume
+
+<Check>
+You'll receive an email notification when your Supabase data is ready to query. You can continue working while the sync happens in the background.
+</Check>
+
+## Using Your Supabase Connection
+
+Once synced, you can query Supabase data just like any PostgreSQL database:
+
+```sql
+SELECT * 
+FROM supabase_connection.public.customers 
+WHERE is_active = true;
+```
+
+## Connection Type Options
+
+### Direct Connection
+
+- **Use when**: You want direct database access
+- **Best for**: Production workloads
+- **Note**: May have connection limits
+
+### Transaction Pooler
+
+- **Use when**: You want pooled connections
+- **Best for**: High-concurrency scenarios
+- **Note**: Uses a different port (usually 6543)
+
+<Tip>
+Choose the connection type based on your needs. Direct Connection is simpler for most use cases, while Transaction Pooler helps with connection management.
+</Tip>
+
+## Troubleshooting
+
+### Issue: Connection test fails
+
+**Solutions**:
+- Verify all parameters are copied correctly from Supabase
+- Check database password is correct
+- Ensure IP address `34.122.205.142` is whitelisted
+- Verify Supabase project is active
+
+### Issue: "Authentication failed" error
+
+**Solutions**:
+- Double-check database password
+- Verify username matches Supabase user
+- Check if password was reset recently
+- Review Supabase user permissions
+
+### Issue: "Connection refused" error
+
+**Solutions**:
+- Verify IP address is whitelisted in Supabase
+- Check network restrictions in Supabase settings
+- Ensure project is not paused
+- Review Supabase project status
+
+## Best Practices
+
+### Password Security
+
+- ✅ Use a strong database password
+- ✅ Store password securely (password manager)
+- ✅ Never share password publicly
+- ✅ Rotate password periodically
+
+### Connection Naming
+
+- ✅ Use descriptive names: `supabase_prod`, `supabase_staging`
+- ✅ Include environment information
+- ✅ Be consistent across your workspace
+
+## Next Steps
+
+Now that Supabase is connected:
+
+- [Creating Data Views](/learn/creating-data-views/overview) - Create views using Supabase data
+- [Cross-Database Joins](/learn/creating-data-views/cross-database-joins) - Join Supabase with other sources
+- [Connection Security](/learn/making-connections/connection-security) - Secure your connections
+
+<Card
+  title="Create Views"
+  icon="code"
+  href="/learn/creating-data-views/writing-your-first-view"
+>
+  Use your Supabase connection to create data views
+</Card>
+

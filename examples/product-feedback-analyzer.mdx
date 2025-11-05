@@ -1,0 +1,112 @@
+---
+title: "Product Feedback Analyzer"
+description: "Build an AI agent that analyzes user feedback, feature requests, sentiment, and prioritizes improvements"
+---
+
+## Overview
+
+A Product Feedback Analyzer powered by Pylar analyzes user feedback, feature requests, sentiment, and prioritizes product improvements based on data-driven insights.
+
+## What the Agent Needs to Accomplish
+
+The agent must:
+- Analyze user feedback and reviews
+- Track feature requests
+- Perform sentiment analysis
+- Prioritize improvements
+- Identify common pain points
+- Track feedback trends
+
+## How Pylar Helps
+
+Pylar enables the agent by:
+- **Unified Feedback View**: Combining feedback from multiple sources
+- **Sentiment Analysis**: Automated sentiment scoring
+- **Priority Calculation**: Data-driven prioritization
+- **Trend Analysis**: Identifying feedback patterns over time
+
+## Without Pylar vs With Pylar
+
+### Without Pylar
+
+**Challenges**:
+- ❌ Feedback scattered across platforms
+- ❌ Manual sentiment analysis
+- ❌ Difficult to prioritize requests
+- ❌ Limited trend visibility
+
+**Implementation Complexity**: ~4-5 weeks
+
+### With Pylar
+
+**Benefits**:
+- ✅ Single endpoint for all feedback
+- ✅ Automated sentiment analysis
+- ✅ Data-driven prioritization
+- ✅ Real-time trend tracking
+
+**Implementation Complexity**: ~5-6 hours
+
+## Step-by-Step Implementation
+
+### Step 1: Connect Data Sources
+
+1. **Connect Feedback Platform** (UserVoice, Canny, Intercom)
+2. **Connect Reviews** (App Store, G2, Capterra)
+3. **Connect Support** (Support tickets, feature requests)
+
+### Step 2: Create Feedback Views
+
+**Feedback Analysis View**:
+```sql
+CREATE VIEW feedback_analysis AS
+SELECT 
+  f.feedback_id,
+  f.feedback_text,
+  f.category,
+  f.votes,
+  f.sentiment_score,
+  f.created_date,
+  -- Priority score
+  (f.votes * 0.4 + 
+   ABS(f.sentiment_score) * 30 + 
+   CASE WHEN f.category = 'Critical' THEN 30 ELSE 0 END) as priority_score
+FROM feedback.feedback f;
+```
+
+### Step 3: Create MCP Tools
+
+**Tool 1: Analyze Feedback Sentiment**
+- `analyze_feedback_sentiment(category: string, days_back: number)`
+
+**Tool 2: Get Top Feature Requests**
+- `get_top_feature_requests(limit: number, min_votes: number)`
+
+**Tool 3: Identify Common Pain Points**
+- `identify_pain_points(category: string, min_mentions: number)`
+
+**Tool 4: Prioritize Improvements**
+- `prioritize_improvements(criteria: string, limit: number)`
+
+## Example Agent Interactions
+
+**User**: "What are users saying about our mobile app?"
+
+**Agent**: "Mobile App Feedback Analysis:
+- Overall Sentiment: 3.8/5 (Moderately Positive)
+- Top Issues: App crashes (45 mentions), Slow loading (32 mentions)
+- Top Requests: Dark mode (120 votes), Offline mode (95 votes)
+- Priority: Fix app crashes (High), Add dark mode (Medium)"
+
+## Outcomes
+
+- **Feedback Processing**: 70% faster analysis
+- **Prioritization**: 40% improvement in feature prioritization
+- **User Satisfaction**: 25% increase in satisfaction scores
+- **Product Roadmap**: Data-driven roadmap decisions
+
+## Next Steps
+
+- [Product Usage Analyst Example](/examples/product-usage-analyst)
+- [Feature Flag Manager Example](/examples/feature-flag-manager)
+

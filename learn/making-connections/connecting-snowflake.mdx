@@ -1,0 +1,261 @@
+---
+title: "Connecting Snowflake"
+description: "Step-by-step guide to connecting your Snowflake data warehouse to Pylar"
+---
+
+## Overview
+
+Connecting Pylar to Snowflake allows you to leverage your Snowflake data for analysis and insights. Your data remains in Snowflake—Pylar indexes it for easier querying and executes queries on your Snowflake infrastructure.
+
+## Prerequisites
+
+- ✅ Pylar account with Analyst role or higher
+- ✅ Snowflake account with access credentials
+- ✅ Database access permissions in Snowflake
+- ✅ Ability to whitelist IP addresses in Snowflake
+
+## Step 1: Prepare Your Snowflake Account
+
+Before connecting, ensure you have:
+
+1. Access to your Snowflake account
+2. Database credentials (username and password)
+3. Knowledge of which database you want to connect
+4. Ability to modify network policies (for IP whitelisting)
+
+## Step 2: Retrieve Snowflake Account URL
+
+1. Open your **Snowflake UI** in a new tab
+2. Log in to your Snowflake account
+3. Locate your **account URL**
+
+**Format**: The URL is typically displayed as:
+```
+https://<account_identifier>.snowflakecomputing.com
+```
+
+**Example**: `https://abc12345.us-east-1.snowflakecomputing.com`
+
+## Step 3: Trim the URL
+
+Copy your Snowflake account URL and prepare it for Pylar:
+
+1. **Remove the `https://` prefix**
+2. **Remove everything after `.snowflakecomputing.com`**
+
+**Result**: You should be left with just:
+```
+<account_identifier>.snowflakecomputing.com
+```
+
+**Example**: 
+- Original: `https://abc12345.us-east-1.snowflakecomputing.com`
+- Trimmed: `abc12345.us-east-1.snowflakecomputing.com`
+
+<Tip>
+The trimmed URL is what you'll paste into Pylar. Make sure to include the full account identifier including the region (e.g., `.us-east-1`).
+</Tip>
+
+## Step 4: Navigate to Pylar Connections
+
+1. Switch to your Pylar workspace
+2. Click on the **"Connections"** tab located in the sidebar
+3. You'll see the list of available data sources
+
+## Step 5: Select Snowflake Connector
+
+From the list of available data sources, select **"Snowflake"**.
+
+The connection setup screen will open.
+
+## Step 6: Enter Connection Details
+
+Fill in the following information:
+
+### Account URL
+
+Paste the **trimmed Snowflake account URL** you prepared in Step 3.
+
+**Format**: `<account_identifier>.snowflakecomputing.com`
+
+**Example**: `abc12345.us-east-1.snowflakecomputing.com`
+
+### Database Name
+
+Enter the name of the database you want to use.
+
+**Examples**:
+- `SNOWFLAKE_SAMPLE_DATA` (if using sample data)
+- `PRODUCTION` (your production database)
+- `ANALYTICS` (your analytics database)
+
+### Username
+
+Enter the **username** you use to log into your Snowflake account.
+
+**Note**: This should be a user with appropriate permissions to query the database.
+
+### Password
+
+Enter the **corresponding password** for your Snowflake account.
+
+<Warning>
+Use a dedicated Snowflake user account for Pylar with read-only permissions when possible. This enhances security and allows for better access control.
+</Warning>
+
+## Step 7: Whitelist Pylar IP Address
+
+**Critical Step**: Whitelist Pylar's IP address to ensure seamless connectivity.
+
+**Pylar IP Address**: `34.122.205.142`
+
+**How to whitelist in Snowflake**:
+
+1. Log in to Snowflake as an administrator
+2. Go to **Admin** → **Security** → **Network Policies**
+3. Create a new network policy or modify an existing one
+4. Add `34.122.205.142` to the allowed IP addresses
+5. Apply the network policy to your account or user
+
+**Alternative** (if network policies aren't available):
+- Contact your Snowflake administrator to whitelist the IP
+- Or configure at the account level if you have admin access
+
+<Warning>
+Without whitelisting the IP address, Pylar will not be able to connect to your Snowflake database. This step is crucial for establishing a secure and stable connection.
+</Warning>
+
+## Step 8: Test Connection
+
+1. Click the **"Test Connection"** button
+2. Pylar will attempt to connect to your Snowflake database
+3. If successful, you'll see a success message
+4. If it fails, you'll be prompted to correct your credentials
+
+<Check>
+A successful test connection means Pylar can reach your Snowflake database and authenticate. This is a good sign that everything is configured correctly.
+</Check>
+
+## Step 9: Save and Connect
+
+Once the connection test is successful:
+
+1. Click **"Save"** or **"Connect"**
+2. You'll be prompted to give the connection a **schema name**
+3. Enter a descriptive name (e.g., `snowflake_production` or `analytics_warehouse`)
+4. Save the configuration
+
+**Naming Rules**:
+- Lowercase letters only
+- Numbers and underscores allowed
+- No spaces or special characters
+
+## Step 10: Wait for Ingestion
+
+After saving:
+
+1. **Data indexing begins**: Pylar starts indexing your Snowflake data
+2. **Processing time**: This may take a while depending on the volume of data
+3. **Notification**: You'll receive an email notification once data ingestion is complete
+
+<Info>
+If your Snowflake data doesn't show up immediately, give it a few minutes. Large databases can take time to index. You'll receive an email when the process is complete.
+</Info>
+
+## Querying Data from Snowflake
+
+Once indexing is complete, querying data is simple:
+
+### Step 1: Go to Query Section
+
+1. Navigate to the query section in your Pylar workspace
+2. Open the SQL IDE
+
+### Step 2: Run a Query
+
+Enter your SQL query to fetch data from Snowflake:
+
+```sql
+SELECT * 
+FROM snowflake_production.public.customers 
+WHERE region = 'North America';
+```
+
+Reference your connection using the schema name you provided.
+
+### Step 3: View Results
+
+Your query results will be displayed, showing how easy it is to access and analyze data from Snowflake within Pylar.
+
+## Troubleshooting
+
+### Issue: Connection test fails
+
+**Solutions**:
+- Verify account URL is trimmed correctly (no `https://`, nothing after `.snowflakecomputing.com`)
+- Check username and password are correct
+- Ensure IP address `34.122.205.142` is whitelisted
+- Verify database name exists and is accessible
+
+### Issue: "Network policy" error
+
+**Solutions**:
+- Confirm IP address `34.122.205.142` is whitelisted
+- Check network policy is applied to your user or account
+- Verify network policy allows outbound connections
+- Contact Snowflake administrator if needed
+
+### Issue: "Authentication failed"
+
+**Solutions**:
+- Verify username and password are correct
+- Check if account is locked or disabled
+- Ensure user has necessary permissions
+- Try resetting password in Snowflake
+
+### Issue: Data not appearing after connection
+
+**Solutions**:
+- Wait for indexing to complete (check email notification)
+- Verify database name is correct
+- Check user has SELECT permissions on tables
+- Review Snowflake query history for errors
+
+## Best Practices
+
+### User Account Security
+
+- ✅ Create a dedicated Snowflake user for Pylar
+- ✅ Grant only read permissions (SELECT on necessary databases/tables)
+- ✅ Use role-based access control (RBAC) in Snowflake
+- ✅ Regularly review and audit user permissions
+
+### Network Security
+
+- ✅ Whitelist only Pylar's IP address
+- ✅ Use network policies for additional security
+- ✅ Monitor connection logs in Snowflake
+- ✅ Review failed login attempts
+
+### Connection Naming
+
+- ✅ Use descriptive names: `snowflake_prod`, `snowflake_analytics`
+- ✅ Include environment: `snowflake_production`, `snowflake_staging`
+- ✅ Be consistent across your workspace
+
+## Next Steps
+
+Now that Snowflake is connected:
+
+- [Creating Data Views](/learn/creating-data-views/overview) - Create views using Snowflake data
+- [Cross-Database Joins](/learn/creating-data-views/cross-database-joins) - Join Snowflake with other sources
+- [Connection Security](/learn/making-connections/connection-security) - Secure your connections
+
+<Card
+  title="Create Views"
+  icon="code"
+  href="/learn/creating-data-views/writing-your-first-view"
+>
+  Use your Snowflake connection to create data views
+</Card>
+

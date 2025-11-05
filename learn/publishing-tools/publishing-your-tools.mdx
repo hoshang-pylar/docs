@@ -1,0 +1,154 @@
+---
+title: "Publishing Your Tools"
+description: "Step-by-step guide to publishing your MCP tools and generating secure access credentials"
+---
+
+## Prerequisites
+
+Before publishing, ensure:
+
+- ✅ Your MCP tools are created and tested
+- ✅ Tools work correctly (tested successfully)
+- ✅ You're ready to make tools available to agents
+
+<Info>
+Only publish tools that have been tested and verified to work correctly. Publishing untested tools can lead to agent errors.
+</Info>
+
+## Step 1: Publish Your Tools
+
+### Access the Publish Button
+
+1. Navigate to your project in Pylar
+2. Look for the **"Publish"** button in the right sidebar
+3. Click **"Publish"** to begin
+
+### What Happens
+
+When you click Publish:
+- Pylar prepares your tools for deployment
+- Validates all tool configurations
+- Generates secure access credentials
+- Makes tools available via MCP server
+
+## Step 2: Generate Access Credentials
+
+After clicking Publish, a popup window appears.
+
+### Generate Token
+
+1. In the popup, click **"Generate Token"**
+2. Pylar creates a secure authorization token
+3. The token is unique to your project
+4. Token provides secure access to your tools
+
+<Tip>
+Tokens are generated securely and can be regenerated if needed. Store them safely and never share publicly.
+</Tip>
+
+## Step 3: Copy Connection Details
+
+Once the token is generated, you'll see two critical values:
+
+### MCP HTTP Stream URL
+
+The URL where your MCP server is accessible:
+
+```
+https://mcp.publish.pylar.ai/mcp
+```
+
+**What it's for**: Agent builders use this URL to connect to your MCP server.
+
+### Authorization Bearer Token
+
+The authentication token for secure access:
+
+```
+Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+```
+
+**What it's for**: Provides secure authentication when agents connect to your tools.
+
+<Warning>
+Copy both values carefully. You'll need both to connect your tools to agent builders. The Bearer Token should be kept secure.
+</Warning>
+
+## Step 4: Store Credentials Safely
+
+### Security Best Practices
+
+- ✅ **Store Securely**: Use password managers or secure storage
+- ✅ **Don't Share Publicly**: Never commit tokens to version control
+- ✅ **Regenerate if Compromised**: Generate new tokens if exposed
+- ✅ **Limit Access**: Only share with authorized team members
+
+### Where to Store
+
+- Password manager (1Password, LastPass, etc.)
+- Secure team documentation (with access controls)
+- Environment variables (for programmatic access)
+- Secure configuration files (never commit to git)
+
+## Understanding Your Credentials
+
+### MCP HTTP Stream URL
+
+This is the standard endpoint for MCP servers:
+
+- **Format**: `https://mcp.publish.pylar.ai/mcp`
+- **Purpose**: Agent builders connect here
+- **Protocol**: Uses MCP (Machine-Consumable Protocol)
+- **Security**: Protected by Bearer Token authentication
+
+<Info>
+The MCP HTTP Stream URL is the same for all Pylar projects. Your Bearer Token is what makes your connection unique and secure.
+</Info>
+
+### Authorization Bearer Token
+
+This token authenticates your connection:
+
+- **Format**: `Bearer <token_string>`
+- **Purpose**: Proves authorized access
+- **Scope**: Provides access to your published tools
+- **Security**: Keep it secret and secure
+
+### How They Work Together
+
+1. Agent builder connects to MCP HTTP Stream URL
+2. Sends Authorization Bearer Token in request headers
+3. Pylar validates the token
+4. Grants access to your published tools
+5. Agent can now call your tools
+
+## What Gets Published
+
+When you publish:
+
+- ✅ **All MCP Tools**: All tools in your project become available
+- ✅ **Underlying Views**: Tools can query their associated views
+- ✅ **Real-time Access**: Tools are immediately accessible
+- ✅ **Automatic Updates**: Changes to tools reflect automatically
+
+<Check>
+After publishing, your tools are live and ready for agents to use. You can update tools anytime without republishing.
+</Check>
+
+## Next Steps
+
+Now that your tools are published:
+
+- [Getting Your Credentials](/learn/publishing-tools/getting-your-credentials) - Detailed guide to connection details
+- [Connecting to Claude Desktop](/learn/publishing-tools/connecting-claude-desktop) - Connect to Claude Desktop
+- [Connecting to Cursor](/learn/publishing-tools/connecting-cursor) - Connect to Cursor
+- [Connecting to Windsurf](/learn/publishing-tools/connecting-windsurf) - Connect to Windsurf
+
+<Card
+  title="Connect to Agent Builder"
+  icon="plug"
+  href="/learn/publishing-tools/connecting-claude-desktop"
+>
+  Learn how to connect your tools to agent builders
+</Card>
+

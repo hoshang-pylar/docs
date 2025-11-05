@@ -1,0 +1,149 @@
+---
+title: "Overview"
+description: "Introduction to connecting data sources to Pylar - learn about connection types and the connection process"
+---
+
+## What Are Connections?
+
+Connections in Pylar link your data sources to the platform, enabling you to query and analyze data from multiple sources in one place. Connections are the foundation of creating views and building MCP tools.
+
+## Accessing Connections
+
+To connect data sources:
+
+1. In the left sidebar, under your current workspace, find the **"Connections"** page
+2. Click on **"Connections"** to open it
+3. You'll see a list of connect cards, each representing an available data source
+
+## Types of Data Sources
+
+Pylar supports two types of data sources:
+
+### Business Applications
+
+**What they are**: Applications like Google Sheets, HubSpot, Salesforce, etc.
+
+**How they work**:
+- Data is **synced to Pylar Warehouse**
+- Data is copied to Pylar's infrastructure
+- Fast querying with Pylar's optimized storage
+- Regular syncs keep data up to date
+
+**Examples**: Google Sheets, HubSpot, Salesforce, etc.
+
+### Databases and Data Warehouses
+
+**What they are**: Databases like Snowflake, PostgreSQL, BigQuery, etc.
+
+**How they work**:
+- Data is **indexed for easier querying** and autocompletion
+- Your data **remains in its original location**
+- Queries are **executed on your infrastructure**
+- Can be joined with any other sources (including Business Applications)
+- No data copying—direct query access
+
+**Examples**: Snowflake, BigQuery, PostgreSQL, MySQL, Redshift, etc.
+
+<Info>
+The key difference: Business Applications sync data to Pylar, while Databases/Data Warehouses are queried directly where they live.
+</Info>
+
+## Connection Process Overview
+
+### For Business Applications
+
+1. Click on the relevant connection card
+2. Provide a unique name for the connection
+3. Complete the authentication process (varies by source)
+4. Wait for data sync to complete
+
+**Naming Requirements**:
+- Must not contain capital letters
+- No special characters
+- No spaces (use underscores instead)
+- This name will be used to reference the source in SQL queries
+
+**Multiple Instances**: You can connect multiple instances of the same Business Application (e.g., multiple Google Sheets), as long as each has a unique name.
+
+### For Databases/Data Warehouses
+
+1. Click on the database/data warehouse card
+2. Provide connection credentials
+3. Whitelist Pylar's IP address (if required)
+4. Test the connection
+5. Wait for indexing to complete
+
+**IP Address**: Pylar's IP address is **34.122.205.142** (permanently assigned). Whitelist this IP in your database firewall settings.
+
+<Warning>
+If you don't have database credentials, you can invite a team member who does have access to complete the connection.
+</Warning>
+
+## After Connection
+
+### Waiting Period
+
+After completing the connection process:
+
+- **Business Applications**: Data syncs to Pylar Warehouse
+- **Databases**: Data is indexed for querying
+
+**Processing Time**: 
+- Sources with large amounts of historical data may take longer
+- Pylar will notify you via **email** and **in-app notification** when the sync/indexing is complete
+
+### You're Ready to Query
+
+Once the connection is established and processing is complete:
+
+- Use the connection name in your SQL queries
+- Join data across different sources
+- Create views using connected data
+- Build MCP tools on your views
+
+## Prerequisites
+
+### Required Role
+
+To connect data sources, you must have at least **Analyst role privileges** in Pylar.
+
+### Credentials
+
+For databases and data warehouses, you need:
+- Access to connection credentials
+- Database/warehouse administrator access (to whitelist IPs if needed)
+- Or invite a team member who has these credentials
+
+## Security
+
+### How Pylar Protects Your Data
+
+- **Encryption**: Default encryption for all data
+- **Secret Management**: Credentials stored in Google Cloud Platform's Secret Key Manager
+- **HTTPS**: All API interactions use HTTPS
+- **Access Control**: Stringent access controls on all data
+
+### Additional Security Options
+
+- **Dedicated User Accounts**: Create database users specifically for Pylar
+- **Limited Views**: Grant access only to specific database views
+- **Audit Logging**: Monitor all queries executed by Pylar
+- **SSH Tunnels**: Use SSH connections for enhanced security (see SSH Connections guide)
+
+## Next Steps
+
+Ready to connect your first data source?
+
+- [Supported Data Sources](/learn/making-connections/supported-data-sources) - See all available connections
+- [Connecting BigQuery](/learn/making-connections/connecting-bigquery) - Connect to BigQuery
+- [Connecting Snowflake](/learn/making-connections/connecting-snowflake) - Connect to Snowflake
+- [Connecting PostgreSQL](/learn/making-connections/connecting-postgresql) - Connect to PostgreSQL
+
+<Card
+  title="Connect Your First Source"
+  icon="plug"
+  href="/learn/making-connections/supported-data-sources"
+>
+  See all available data sources you can connect
+</Card>
+

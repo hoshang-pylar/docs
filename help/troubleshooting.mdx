@@ -1,0 +1,323 @@
+---
+title: "Troubleshooting Guide"
+description: "Common issues and solutions for Pylar connections, views, tools, and agents"
+---
+
+## Connection Issues
+
+### Connection Test Fails
+
+**Symptoms**: Connection test fails when trying to connect a database
+
+**Common Causes**:
+- IP address not whitelisted
+- Incorrect credentials
+- Database not publicly accessible
+- Firewall blocking connections
+
+**Solutions**:
+
+1. **Verify IP Whitelisting**:
+   - Ensure `34.122.205.142` is whitelisted in your firewall
+   - Check security group settings (AWS, GCP, Azure)
+   - Review network policies (Snowflake)
+
+2. **Check Credentials**:
+   - Verify username and password are correct
+   - Test credentials in a database client
+   - Ensure user has necessary permissions
+
+3. **Network Connectivity**:
+   - Verify database is publicly accessible
+   - Check if database is in private VPC (may need SSH tunnel)
+   - Test connection from your local machine
+
+4. **Database Status**:
+   - Ensure database is running
+   - Check database logs for connection attempts
+   - Verify port number is correct
+
+<Card
+  title="Troubleshooting Connections"
+  icon="tool"
+  href="/learn/making-connections/troubleshooting-connections"
+>
+  More detailed connection troubleshooting
+</Card>
+
+### Data Not Appearing After Connection
+
+**Symptoms**: Connection succeeds but data doesn't appear in queries
+
+**Solutions**:
+- **Wait for Indexing**: Databases need time to index (check email notification)
+- **Verify Permissions**: Ensure database user has SELECT permissions
+- **Check Schema/Table Names**: Verify you're using correct names
+- **Review Connection Logs**: Check for indexing errors
+
+### Connection Timeout
+
+**Symptoms**: Connection attempt times out
+
+**Solutions**:
+- Check network connectivity
+- Verify firewall allows connections
+- Ensure database is accessible from internet
+- Review security group settings
+- Consider using SSH tunnel for private databases
+
+## View and Query Issues
+
+### SQL Query Errors
+
+**Symptoms**: Query fails with syntax or execution errors
+
+**Solutions**:
+1. **Check Syntax**: Review SQL syntax carefully
+2. **Test in Database**: Run query directly in database client
+3. **Verify Table Names**: Ensure table/schema names are correct
+4. **Check Permissions**: Verify user has access to tables
+5. **Review Error Message**: Check specific error details in Pylar
+
+### Cross-Database Join Not Working
+
+**Symptoms**: Joins between different databases fail
+
+**Solutions**:
+- Verify both connections are active
+- Check connection names in query
+- Ensure join keys match data types
+- Review query in SQL IDE for syntax errors
+
+### View Performance Issues
+
+**Symptoms**: Views are slow or timing out
+
+**Solutions**:
+- Add appropriate WHERE clauses to filter data
+- Create indexes on join columns
+- Limit result sets with LIMIT clause
+- Optimize queries for your database type
+- Consider materialized views for complex queries
+
+## MCP Tool Issues
+
+### Tool Returns Errors
+
+**Symptoms**: MCP tool calls fail or return errors
+
+**Solutions**:
+
+1. **Check Evals Dashboard**:
+   - Review error details in Evals
+   - Check error frequency and patterns
+   - Review raw logs for specific errors
+
+2. **Test Tool in Pylar**:
+   - Use Pylar's test interface
+   - Verify SQL query works
+   - Check parameter values
+
+3. **Verify Tool Definition**:
+   - Review function name and description
+   - Check SQL query syntax
+   - Verify parameters are correctly defined
+
+4. **Check Data Access**:
+   - Ensure view is accessible
+   - Verify data exists in view
+   - Check permissions on underlying tables
+
+<Card
+  title="Testing Your Tools"
+  icon="flask"
+  href="/learn/building-mcp-tools/testing-your-tools"
+>
+  Learn how to test and debug tools
+</Card>
+
+### Agent Can't Find Tools
+
+**Symptoms**: Agent builder can't see or access MCP tools
+
+**Solutions**:
+
+1. **Verify Publishing**:
+   - Ensure tools are published in Pylar
+   - Check tool status is "Active"
+   - Verify view is published
+
+2. **Check Credentials**:
+   - Verify MCP HTTP Stream URL is correct
+   - Check Authorization Bearer Token
+   - Ensure credentials are copied correctly
+
+3. **Test Connection**:
+   - Verify agent builder can reach Pylar endpoint
+   - Check network connectivity
+   - Review agent builder logs
+
+4. **Agent Builder Configuration**:
+   - Verify MCP configuration is correct
+   - Check agent builder supports MCP
+   - Review agent builder documentation
+
+### Tool Parameters Not Working
+
+**Symptoms**: Tool parameters aren't being passed correctly
+
+**Solutions**:
+- Verify parameter names match tool definition
+- Check parameter types (string, number, etc.)
+- Review parameter validation rules
+- Test with different parameter values
+- Check agent builder parameter formatting
+
+## Agent Builder Connection Issues
+
+### Claude Desktop Not Connecting
+
+**Symptoms**: Claude Desktop can't connect to Pylar
+
+**Solutions**:
+
+1. **Check MCP Configuration**:
+   - Verify configuration file syntax
+   - Ensure URL and token are correct
+   - Check file location
+
+2. **Restart Claude Desktop**:
+   - Close and restart after configuration changes
+   - Check for error messages on startup
+
+3. **Verify Network**:
+   - Ensure Claude Desktop can reach Pylar URL
+   - Check firewall settings
+   - Review network connectivity
+
+<Card
+  title="Claude Desktop Setup"
+  icon="claude"
+  href="/learn/connecting-agent-builders/claude-desktop"
+>
+  Claude Desktop connection guide
+</Card>
+
+### HTTP-Based Agent Builders (Zapier, Make, n8n)
+
+**Symptoms**: HTTP requests to Pylar fail
+
+**Solutions**:
+- Verify HTTP Stream URL is correct
+- Check Authorization header format (Bearer token)
+- Review request format (MCP HTTP Stream protocol)
+- Test with curl or Postman first
+- Check agent builder HTTP configuration
+
+## Data Issues
+
+### Data Not Updating
+
+**Symptoms**: Data in views is stale or not updating
+
+**Solutions**:
+
+**For Business Applications**:
+- Check sync status in Connections
+- Manually trigger sync if available
+- Verify sync schedule
+- Review sync logs
+
+**For Databases**:
+- Data is queried in real-time
+- Verify database data is current
+- Check if query filters are excluding data
+- Review connection status
+
+### Incorrect Data in Views
+
+**Symptoms**: View returns unexpected or incorrect data
+
+**Solutions**:
+- Review SQL query logic
+- Test query directly in database
+- Verify join conditions
+- Check WHERE clause filters
+- Review data types and conversions
+- Validate data in source systems
+
+## Performance Issues
+
+### Slow Queries
+
+**Symptoms**: Queries take too long to execute
+
+**Solutions**:
+- Add appropriate filters (WHERE clauses)
+- Use LIMIT to restrict result sets
+- Optimize join conditions
+- Create indexes on join columns
+- Review query execution plan
+- Consider materialized views for complex queries
+
+### High Error Rates
+
+**Symptoms**: High error rate in Evals dashboard
+
+**Solutions**:
+
+1. **Analyze Errors**:
+   - Review Error Explorer in Evals
+   - Identify common error patterns
+   - Check error frequencies
+
+2. **Fix Root Causes**:
+   - Update SQL queries based on errors
+   - Fix parameter validation
+   - Improve error handling in tools
+
+3. **Monitor Continuously**:
+   - Use Evals dashboard regularly
+   - Set up alerts for high error rates
+   - Review query shapes for patterns
+
+<Card
+  title="Analyzing Errors"
+  icon="alert-circle"
+  href="/learn/evals/analyzing-errors"
+>
+  Learn how to analyze and fix errors
+</Card>
+
+## Getting More Help
+
+### Review Documentation
+
+- [Connection Troubleshooting](/learn/making-connections/troubleshooting-connections)
+- [Testing Your Tools](/learn/building-mcp-tools/testing-your-tools)
+- [Evals Dashboard](/learn/evals/evals-dashboard)
+
+### Check Examples
+
+- [Customer Support Agent](/examples/customer-support-agent)
+- [Sales Assistant](/examples/sales-assistant)
+- See how others solved similar problems
+
+### Contact Support
+
+If you're still experiencing issues:
+- Contact Pylar support team
+- Provide error messages and logs
+- Include steps to reproduce
+- Share relevant configuration details
+
+---
+
+<Card
+  title="FAQ"
+  icon="help-circle"
+  href="/help/faq"
+>
+  Browse our FAQ for more answers
+</Card>
+

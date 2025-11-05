@@ -1,0 +1,519 @@
+---
+title: "Cross-Database Joins"
+description: "Learn how to query and join data across multiple databases and dataframes in Pylar to create unified views"
+---
+
+## Overview
+
+Pylar allows you to work with **Local Dataframes**—data that's already loaded in your Pylar session. This enables you to query and join multiple dataframes using SQL, creating unified views without needing to connect to external databases.
+
+## What Are Local Dataframes?
+
+Local Dataframes are:
+- Data tables loaded into your Pylar session
+- Accessible through the SQL IDE
+- Queryable using standard SQL syntax
+- Joinable across multiple dataframes
+
+<Tip>
+Think of dataframes as temporary tables that exist in your current Pylar session. They're perfect for combining data from multiple sources or working with intermediate results.
+</Tip>
+
+## Setting Up Dataframe Queries
+
+To query local dataframes:
+
+1. **Select Dataframe Source**: In the SQL IDE, set the datasource dropdown to **"Local Dataframes"**
+2. **Reference Dataframe Names**: Use the dataframe name as the table name in your SQL query
+3. **Write Standard SQL**: Use familiar SQL syntax to query and join your dataframes
+
+<Info>
+Dataframe names are case-sensitive and must match exactly. Make sure you know the exact names of your loaded dataframes before querying.
+</Info>
+
+## Basic Dataframe Queries
+
+### Selecting from a Single Dataframe
+
+Query a specific subset of data from a dataframe:
+
+```sql
+/* Selecting a subset of events from table0 */
+SELECT * 
+FROM table0 
+WHERE event_type = 'login';
+```
+
+This query:
+- References `table0` as a dataframe in your session
+- Filters rows where `event_type` equals `'login'`
+- Returns all columns (`*`) from matching rows
+
+### Selecting Specific Columns
+
+```sql
+SELECT 
+  event_id,
+  event_type,
+  timestamp,
+  user_id
+FROM table0 
+WHERE event_type = 'login'
+ORDER BY timestamp DESC;
+```
+
+### Filtering and Sorting
+
+```sql
+SELECT 
+  user_id,
+  event_type,
+  COUNT(*) as event_count
+FROM table0 
+WHERE event_type IN ('login', 'logout', 'purchase')
+  AND timestamp >= '2024-01-01'
+GROUP BY user_id, event_type
+ORDER BY event_count DESC;
+```
+
+## Joining Multiple Dataframes
+
+One of the most powerful features is joining data from multiple dataframes to create unified views.
+
+### Basic Join Syntax
+
+```sql
+SELECT 
+  t1.column1,
+  t1.column2,
+  t2.column3,
+  t2.column4
+FROM dataframe1 t1
+JOIN dataframe2 t2
+  ON t1.common_id = t2.common_id;
+```
+
+### Example: Joining on Common ID
+
+Join two dataframes on a common identifier:
+
+```sql
+/* Joining on a common ID field between two tables */
+SELECT 
+  t1.event_id,
+  t1.event_type,
+  t1.timestamp,
+  t2.user_id,
+  t2.user_name,
+  t2.user_email
+FROM table1 t1
+JOIN table2 t2 
+  ON t1.event_id = t2.event_id;
+```
+
+This query:
+- Joins `table1` and `table2` dataframes
+- Matches rows where `event_id` values are equal
+- Returns selected columns from both dataframes
+- Uses table aliases (`t1`, `t2`) for clarity
+
+<Tip>
+Always use table aliases when joining dataframes. It makes your queries more readable and helps avoid column name conflicts.
+</Tip>
+
+## Advanced Join Patterns
+
+### Multiple Dataframe Joins
+
+Join three or more dataframes:
+
+```sql
+SELECT 
+  events.event_id,
+  events.event_type,
+  users.user_name,
+  users.user_email,
+  sessions.session_id,
+  sessions.session_duration
+FROM table0 events
+JOIN table1 users
+  ON events.user_id = users.user_id
+JOIN table2 sessions
+  ON events.session_id = sessions.session_id
+WHERE events.event_type = 'purchase';
+```
+
+### Left Join for Optional Data
+
+Include all rows from the first dataframe, with optional data from the second:
+
+```sql
+SELECT 
+  customers.customer_id,
+  customers.customer_name,
+  orders.order_id,
+  orders.order_amount
+FROM table0 customers
+LEFT JOIN table1 orders
+  ON customers.customer_id = orders.customer_id;
+```
+
+### Full Outer Join
+
+Include all rows from both dataframes:
+
+```sql
+SELECT 
+  COALESCE(contacts.contact_id, leads.lead_id) AS unified_id,
+  contacts.email AS contact_email,
+  leads.email AS lead_email,
+  contacts.engagement_score,
+  leads.lead_score
+FROM table0 contacts
+FULL OUTER JOIN table1 leads
+  ON contacts.email = leads.email;
+```
+
+## Real-World Examples
+
+### Example 1: Customer Event Analysis
+
+Combine customer events with user profiles:
+
+```sql
+SELECT 
+  -- Event data
+  e.event_id,
+  e.event_type,
+  e.timestamp,
+  e.event_data,
+  
+  -- User profile data
+  u.user_id,
+  u.user_name,
+  u.user_email,
+  u.signup_date,
+  u.plan_type,
+  
+  -- Calculated fields
+  DATEDIFF(day, u.signup_date, e.timestamp) AS days_since_signup
+
+FROM table0 e  -- events dataframe
+JOIN table1 u  -- users dataframe
+  ON e.user_id = u.user_id
+
+WHERE 
+  e.event_type IN ('purchase', 'subscription_upgrade')
+  AND e.timestamp >= '2024-01-01'
+
+ORDER BY 
+  e.timestamp DESC;
+```
+
+### Example 2: Marketing Attribution
+
+Join campaign data with conversion events:
+
+```sql
+SELECT 
+  -- Campaign data
+  c.campaign_id,
+  c.campaign_name,
+  c.channel,
+  c.start_date,
+  c.budget,
+  
+  -- Conversion data
+  conv.conversion_id,
+  conv.conversion_date,
+  conv.conversion_value,
+  conv.user_id,
+  
+  -- Attribution metrics
+  DATEDIFF(day, c.start_date, conv.conversion_date) AS days_to_convert,
+  conv.conversion_value / c.budget AS roi
+
+FROM table0 c  -- campaigns dataframe
+LEFT JOIN table1 conv  -- conversions dataframe
+  ON c.campaign_id = conv.campaign_id
+  AND conv.conversion_date BETWEEN c.start_date AND DATEADD(day, 30, c.start_date)
+
+WHERE 
+  c.start_date >= '2024-01-01'
+
+ORDER BY 
+  c.start_date DESC, conv.conversion_value DESC;
+```
+
+### Example 3: Product Performance Analysis
+
+Combine product catalog with sales and reviews:
+
+```sql
+SELECT 
+  -- Product catalog
+  p.product_id,
+  p.product_name,
+  p.category,
+  p.price,
+  p.launch_date,
+  
+  -- Sales data
+  s.total_units_sold,
+  s.total_revenue,
+  s.avg_order_quantity,
+  s.last_sale_date,
+  
+  -- Review data
+  r.avg_rating,
+  r.review_count,
+  r.positive_review_pct,
+  
+  -- Performance metrics
+  s.total_revenue / NULLIF(DATEDIFF(day, p.launch_date, CURRENT_DATE()), 0) AS daily_revenue_rate,
+  s.total_units_sold * r.avg_rating AS popularity_score
+
+FROM table0 p  -- products dataframe
+LEFT JOIN (
+  SELECT 
+    product_id,
+    SUM(quantity) AS total_units_sold,
+    SUM(amount) AS total_revenue,
+    AVG(quantity) AS avg_order_quantity,
+    MAX(order_date) AS last_sale_date
+  FROM table1  -- sales dataframe
+  GROUP BY product_id
+) s ON p.product_id = s.product_id
+
+LEFT JOIN (
+  SELECT 
+    product_id,
+    AVG(rating) AS avg_rating,
+    COUNT(*) AS review_count,
+    SUM(CASE WHEN rating >= 4 THEN 1 ELSE 0 END) * 100.0 / COUNT(*) AS positive_review_pct
+  FROM table2  -- reviews dataframe
+  GROUP BY product_id
+) r ON p.product_id = r.product_id
+
+WHERE 
+  p.is_active = true
+
+ORDER BY 
+  popularity_score DESC NULLS LAST;
+```
+
+## Join Types for Dataframes
+
+### INNER JOIN
+
+Returns only rows that have matches in both dataframes.
+
+```sql
+SELECT *
+FROM table1 t1
+INNER JOIN table2 t2 
+  ON t1.id = t2.id;
+```
+
+**Use When**: You only want data that exists in both dataframes.
+
+### LEFT JOIN
+
+Returns all rows from the left dataframe, matched rows from the right.
+
+```sql
+SELECT *
+FROM table1 t1
+LEFT JOIN table2 t2 
+  ON t1.id = t2.id;
+```
+
+**Use When**: You want all data from the primary dataframe, with optional data from the secondary.
+
+### RIGHT JOIN
+
+Returns all rows from the right dataframe, matched rows from the left.
+
+```sql
+SELECT *
+FROM table1 t1
+RIGHT JOIN table2 t2 
+  ON t1.id = t2.id;
+```
+
+**Use When**: You want all data from the secondary dataframe, with optional data from the primary.
+
+### FULL OUTER JOIN
+
+Returns all rows from both dataframes, with NULLs for missing matches.
+
+```sql
+SELECT *
+FROM table1 t1
+FULL OUTER JOIN table2 t2 
+  ON t1.id = t2.id;
+```
+
+**Use When**: You want to combine data from both dataframes regardless of matches.
+
+## Handling Data Type Mismatches
+
+When joining dataframes, ensure join keys are compatible:
+
+### String vs Numeric IDs
+
+```sql
+-- Convert to compatible types
+SELECT *
+FROM table1 t1
+JOIN table2 t2 
+  ON CAST(t1.id AS VARCHAR) = t2.id;
+```
+
+### Handling NULL Values
+
+```sql
+-- Use COALESCE for unified IDs
+SELECT 
+  COALESCE(t1.id, t2.id) AS unified_id
+FROM table1 t1
+FULL OUTER JOIN table2 t2 
+  ON t1.id = t2.id;
+```
+
+### Case-Insensitive Matching
+
+```sql
+-- Normalize case for matching
+SELECT *
+FROM table1 t1
+JOIN table2 t2 
+  ON LOWER(t1.email) = LOWER(t2.email);
+```
+
+## Best Practices
+
+### 1. Use Descriptive Aliases
+
+```sql
+-- Good
+SELECT 
+  events.event_id,
+  users.user_name
+FROM table0 events
+JOIN table1 users
+
+-- Avoid
+SELECT 
+  t1.id,
+  t2.name
+FROM table0 t1
+JOIN table1 t2
+```
+
+### 2. Select Specific Columns
+
+```sql
+-- Good: Explicit columns
+SELECT 
+  events.event_id,
+  events.event_type,
+  users.user_name
+
+-- Avoid: SELECT * in production
+SELECT *
+```
+
+### 3. Filter Early
+
+```sql
+-- Good: Filter in WHERE clause
+FROM table0 events
+WHERE events.event_type = 'purchase'
+JOIN table1 users
+
+-- Avoid: Filtering after join when possible
+FROM table0 events
+JOIN table1 users
+WHERE events.event_type = 'purchase'
+```
+
+### 4. Handle NULLs Explicitly
+
+```sql
+SELECT 
+  COALESCE(column1, 0) AS column1,
+  COALESCE(column2, 'Unknown') AS column2
+FROM ...
+```
+
+### 5. Verify Dataframe Existence
+
+Before querying, ensure your dataframes are loaded and named correctly. Test with a simple query first:
+
+```sql
+SELECT COUNT(*) FROM table0;
+```
+
+## Common Issues and Solutions
+
+### Issue: "Table not found" Error
+
+**Cause**: Dataframe doesn't exist or name is incorrect.
+
+**Solution**:
+- Verify dataframe is loaded in your session
+- Check dataframe name matches exactly (case-sensitive)
+- Ensure datasource is set to "Local Dataframes"
+
+### Issue: Join Returns No Results
+
+**Cause**: Join keys don't match or have incompatible types.
+
+**Solution**:
+- Verify join keys exist in both dataframes
+- Check data types match (use CAST if needed)
+- Test join keys individually:
+  ```sql
+  SELECT DISTINCT id FROM table1;
+  SELECT DISTINCT id FROM table2;
+  ```
+
+### Issue: Column Name Conflicts
+
+**Cause**: Both dataframes have columns with the same name.
+
+**Solution**:
+- Use table aliases and qualify column names
+- Use `AS` to rename columns in SELECT
+- Example:
+  ```sql
+  SELECT 
+    t1.id AS event_id,
+    t2.id AS user_id
+  ```
+
+### Issue: Performance Issues
+
+**Cause**: Large dataframes or complex joins.
+
+**Solution**:
+- Filter dataframes before joining
+- Use LIMIT to test with smaller datasets
+- Consider aggregating dataframes first
+
+## Next Steps
+
+Now that you understand cross-database joins:
+
+- [Writing Your First View](/learn/creating-data-views/writing-your-first-view) - Create comprehensive views using joins
+- [View Best Practices](/learn/creating-data-views/view-best-practices) - Optimize your views for performance and maintainability
+
+<Card
+  title="Create Unified Views"
+  icon="link"
+  href="/learn/creating-data-views/writing-your-first-view"
+>
+  Learn how to combine dataframe queries with database queries
+</Card>
+

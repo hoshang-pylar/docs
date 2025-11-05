@@ -1,0 +1,202 @@
+---
+title: "n8n"
+description: "Connect Pylar MCP tools to n8n for workflow automation with visual data access"
+---
+
+## Overview
+
+n8n is an open-source workflow automation tool. Connect your Pylar MCP tools to n8n to access your data in automation workflows using visual nodes.
+
+## Prerequisites
+
+- ✅ n8n installed (self-hosted or cloud)
+- ✅ Pylar project with published MCP tools
+- ✅ MCP HTTP Stream URL and Bearer Token from Pylar
+
+## Step 1: Get Your Pylar Credentials
+
+1. In Pylar, navigate to your project
+2. Click **"Publish"** in the right sidebar
+3. Copy both:
+   - **MCP HTTP Stream URL**: `https://mcp.publish.pylar.ai/mcp`
+   - **Authorization Bearer Token**: Your unique token
+
+## Step 2: Create HTTP Request Node
+
+1. In n8n, create a new workflow
+2. Add an **"HTTP Request"** node to your canvas
+3. Connect it to your workflow trigger or previous node
+
+## Step 3: Configure HTTP Request Node
+
+### Basic Settings
+
+1. Click on the HTTP Request node to configure it
+2. Set the following:
+
+**Method**: `POST`
+
+**URL**: Enter your MCP HTTP Stream URL
+```
+https://mcp.publish.pylar.ai/mcp
+```
+
+### Authentication
+
+1. Expand the **Authentication** section
+2. Select **"Header Auth"** or **"Generic Credential Type"**
+3. Configure:
+   - **Name**: `Authorization`
+   - **Value**: `Bearer YOUR_BEARER_TOKEN_HERE`
+
+Replace `YOUR_BEARER_TOKEN_HERE` with your actual Bearer Token.
+
+### Headers
+
+Add additional headers if needed:
+- **Content-Type**: `application/json`
+
+### Request Body
+
+1. Set **Body Content Type** to `JSON`
+2. Add the JSON body for calling your MCP tool:
+
+```json
+{
+  "jsonrpc": "2.0",
+  "id": "1",
+  "method": "tools/call",
+  "params": {
+    "name": "fetch_engagement_scores_by_event_type",
+    "arguments": {
+      "event_type": "{{ $json.event_type }}"
+    }
+  }
+}
+```
+
+Use n8n expressions like `{{ $json.event_type }}` to reference data from previous nodes.
+
+## Step 4: Select Tools
+
+Once configured, you can:
+
+1. **Select which tools** you want the agent/workflow to have access to
+2. Configure different nodes for different tools
+3. Chain multiple tool calls if needed
+
+## Step 5: Test the Connection
+
+1. Click **"Execute Step"** to test the node
+2. Review the response to verify the tool works
+3. Check that data is returned correctly
+
+<Check>
+If the Execute Step returns data successfully, your connection is working!
+</Check>
+
+## Step 6: Use in Your Workflow
+
+After testing, you can:
+
+1. **Go to the chat** in n8n and ask questions to the AI
+2. **Run the workflow** to execute automation
+3. The AI or workflow will use your Pylar tools to access data
+
+## Example Workflow
+
+**Trigger**: Webhook receives event with `event_type`
+
+**Node 1**: HTTP Request - Call Pylar Tool
+- Method: POST
+- URL: `https://mcp.publish.pylar.ai/mcp`
+- Auth: Bearer Token
+- Body: Tool call with `event_type` from trigger
+
+**Node 2**: Process Response
+- Parse JSON response
+- Extract engagement scores
+
+**Node 3**: Conditional Logic
+- Check if score is above threshold
+
+**Node 4**: Send Notification
+- Alert if score is high
+
+## Benefits
+
+- ✅ **Visual Workflows**: Build automations visually
+- ✅ **No Code Required**: Use drag-and-drop interface
+- ✅ **Centralized Control**: Update views in Pylar, workflows get updates
+- ✅ **Secure Access**: Through governed views
+- ✅ **Full Visibility**: Monitor usage in Pylar Evals
+- ✅ **Open Source**: Self-host or use cloud
+
+## Troubleshooting
+
+### Issue: Authentication fails
+
+**Solutions**:
+- Verify Bearer Token format: `Bearer YOUR_TOKEN`
+- Check header name is exactly "Authorization"
+- Ensure no extra spaces in token
+- Test authentication separately
+
+### Issue: Tool not found
+
+**Solutions**:
+- Verify tool name matches exactly
+- Check tools are published in Pylar
+- Review JSON body structure
+- Test tool in Pylar first
+
+### Issue: Request format error
+
+**Solutions**:
+- Verify JSON-RPC format is correct
+- Check method name: `tools/call`
+- Ensure parameters match tool schema
+- Review n8n expression syntax
+
+## Best Practices
+
+### Use Expressions
+
+Use n8n expressions to dynamically set parameters:
+
+```json
+{
+  "event_type": "{{ $json.event_type }}",
+  "start_date": "{{ $json.start_date }}"
+}
+```
+
+### Error Handling
+
+Add error handling nodes:
+
+1. Add IF node after HTTP Request
+2. Check for errors in response
+3. Route to error handling or retry logic
+
+### Data Transformation
+
+Process tool responses:
+
+1. Use Set node to extract specific fields
+2. Transform data for next steps
+3. Map to other workflow nodes
+
+## Next Steps
+
+- [Publishing Tools](/learn/publishing-tools/publishing-your-tools) - Publish your tools
+- [Evals](/learn/evals/overview) - Monitor n8n workflow usage
+- [Other Builders](/learn/connecting-agent-builders/overview) - Connect to other platforms
+
+<Card
+  title="Monitor Workflows"
+  icon="chart-bar"
+  href="/learn/evals/overview"
+>
+  See how your n8n workflows use Pylar tools
+</Card>

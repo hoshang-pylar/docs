@@ -1,0 +1,257 @@
+---
+title: "Sales Assistant"
+description: "Build an AI agent that analyzes sales pipeline, identifies opportunities, forecasts revenue, and tracks deal progress"
+---
+
+## Overview
+
+A Sales Assistant powered by Pylar analyzes sales pipeline data, identifies opportunities, forecasts revenue, and provides insights to help sales teams close more deals faster.
+
+## What the Agent Needs to Accomplish
+
+The agent must:
+- Analyze sales pipeline and deal stages
+- Identify high-value opportunities
+- Forecast revenue based on pipeline data
+- Track deal progress and identify stalled deals
+- Provide insights on win rates and conversion metrics
+- Recommend next actions for deals
+- Analyze sales performance by rep, region, or product
+
+## How Pylar Helps
+
+Pylar enables the agent by:
+- **Unified Pipeline View**: Combining CRM data, sales activity, and historical performance
+- **Real-time Analysis**: Querying current pipeline status and forecasts
+- **Multi-Source Integration**: Joining CRM data with product catalog and customer data
+- **Pattern Recognition**: Identifying successful deal patterns
+- **Actionable Insights**: Generating recommendations based on data
+
+## Without Pylar vs With Pylar
+
+### Without Pylar
+
+**Challenges**:
+- ❌ Multiple systems (CRM, sales tools, analytics)
+- ❌ Complex API integrations for each system
+- ❌ Manual pipeline analysis and forecasting
+- ❌ Difficult to correlate deals with customer data
+- ❌ Time-consuming report generation
+- ❌ Limited real-time insights
+
+**Implementation Complexity**:
+- 3-4 different API integrations
+- Custom pipeline analysis logic
+- Manual forecasting calculations
+- Complex data correlation
+- ~4-5 weeks development time
+
+### With Pylar
+
+**Benefits**:
+- ✅ Single endpoint for all sales data
+- ✅ Real-time pipeline analysis
+- ✅ Automated forecasting
+- ✅ Unified customer-deal view
+- ✅ Easy to update analysis logic
+- ✅ Built-in analytics on sales patterns
+
+**Implementation Complexity**:
+- Connect 3-4 data sources (1 hour)
+- Create sales pipeline views (2.5 hours)
+- Build MCP tools with AI (1.5 hours)
+- Connect to agent builder (15 minutes)
+- **Total: ~5 hours**
+
+## Step-by-Step Implementation
+
+### Step 1: Connect Data Sources
+
+Connect your sales data sources:
+
+1. **Connect CRM** (Salesforce/HubSpot - deals, opportunities, contacts)
+2. **Connect Sales Activity** (Email, calls, meetings tracking)
+3. **Connect Product Catalog** (Product pricing, configurations)
+4. **Connect Customer Data** (Account information, historical purchases)
+
+### Step 2: Create Sales Pipeline Views
+
+**Pipeline Overview View**:
+```sql
+CREATE VIEW pipeline_overview AS
+SELECT 
+  d.deal_id,
+  d.deal_name,
+  d.account_name,
+  d.owner_name,
+  d.stage,
+  d.amount,
+  d.probability,
+  d.expected_close_date,
+  d.created_date,
+  DATEDIFF(d.expected_close_date, CURRENT_DATE) as days_to_close,
+  -- Weighted pipeline value
+  d.amount * (d.probability / 100) as weighted_value,
+  -- Deal age
+  DATEDIFF(CURRENT_DATE, d.created_date) as deal_age_days,
+  -- Activity metrics
+  a.email_count,
+  a.call_count,
+  a.meeting_count,
+  a.last_activity_date,
+  DATEDIFF(CURRENT_DATE, a.last_activity_date) as days_since_last_activity,
+  -- Risk indicators
+  CASE 
+    WHEN DATEDIFF(CURRENT_DATE, a.last_activity_date) > 14 THEN 1
+    ELSE 0
+  END as stalled_flag
+FROM crm.deals d
+LEFT JOIN sales.activity_summary a ON d.deal_id = a.deal_id;
+```
+
+**Revenue Forecast View**:
+```sql
+CREATE VIEW revenue_forecast AS
+SELECT 
+  DATE_TRUNC('month', expected_close_date) as forecast_month,
+  stage,
+  COUNT(*) as deal_count,
+  SUM(amount) as total_pipeline_value,
+  SUM(amount * (probability / 100)) as weighted_forecast,
+  AVG(probability) as avg_probability,
+  SUM(CASE WHEN stage = 'Closed Won' THEN amount ELSE 0 END) as closed_won_value
+FROM pipeline_overview
+WHERE expected_close_date >= CURRENT_DATE
+GROUP BY DATE_TRUNC('month', expected_close_date), stage
+ORDER BY forecast_month, stage;
+```
+
+**Opportunity Analysis View**:
+```sql
+CREATE VIEW opportunity_analysis AS
+SELECT 
+  p.*,
+  -- Win probability based on stage
+  CASE 
+    WHEN p.stage = 'Closed Won' THEN 100
+    WHEN p.stage = 'Negotiation' THEN 75
+    WHEN p.stage = 'Proposal' THEN 50
+    WHEN p.stage = 'Qualified' THEN 25
+    ELSE 10
+  END as stage_based_probability,
+  -- Recommendation
+  CASE 
+    WHEN p.stalled_flag = 1 THEN 'Re-engage customer'
+    WHEN p.days_to_close < 7 AND p.probability < 50 THEN 'Increase activity'
+    WHEN p.weighted_value > 100000 THEN 'Prioritize - high value'
+    ELSE 'Continue normal cadence'
+  END as recommended_action
+FROM pipeline_overview p;
+```
+
+### Step 3: Create MCP Tools with AI
+
+**Tool 1: Get Pipeline Summary**
+- Prompt: "Create a tool to get sales pipeline summary by stage, rep, or date range"
+- AI generates: `get_pipeline_summary(stage: string, rep_name: string, start_date: date, end_date: date)`
+
+**Tool 2: Forecast Revenue**
+- Prompt: "Create a tool to forecast revenue for a specific time period"
+- AI generates: `forecast_revenue(months_ahead: number, include_probability: boolean)`
+
+**Tool 3: Identify Opportunities**
+- Prompt: "Create a tool to identify high-value opportunities or stalled deals"
+- AI generates: `identify_opportunities(min_value: number, stage: string, stalled_only: boolean)`
+
+**Tool 4: Analyze Sales Performance**
+- Prompt: "Create a tool to analyze sales performance by rep, region, or product"
+- AI generates: `analyze_sales_performance(group_by: string, start_date: date, end_date: date)`
+
+### Step 4: Test and Publish
+
+1. Test pipeline analysis
+2. Verify revenue forecasting
+3. Validate opportunity identification
+4. Publish tools
+5. Connect to agent builder
+
+## Example Agent Interactions
+
+### Scenario 1: Pipeline Summary
+
+**User**: "What's our current pipeline status?"
+
+**Agent** (using Pylar tools):
+1. Calls `get_pipeline_summary(null, null, null, null)`
+2. Responds:
+   - "Current Pipeline Status:
+     - Total Pipeline Value: $2.4M
+     - Weighted Forecast: $1.2M
+     - Deals by Stage:
+       - Qualified: 45 deals ($800K)
+       - Proposal: 28 deals ($900K)
+       - Negotiation: 12 deals ($500K)
+       - Closed Won this month: $200K"
+
+### Scenario 2: Revenue Forecast
+
+**User**: "What's our revenue forecast for next quarter?"
+
+**Agent** (using Pylar tools):
+1. Calls `forecast_revenue(3, true)`
+2. Responds:
+   - "Q2 Revenue Forecast:
+     - Best Case: $1.8M (all deals close)
+     - Weighted Forecast: $1.2M (probability-adjusted)
+     - Committed: $450K (closed deals)
+     - At Risk: $200K (stalled deals)"
+
+### Scenario 3: Opportunity Identification
+
+**User**: "Show me high-value opportunities that need attention"
+
+**Agent** (using Pylar tools):
+1. Calls `identify_opportunities(50000, null, true)`
+2. Responds:
+   - "High-Value Stalled Opportunities:
+     - Enterprise Corp: $150K, stalled 18 days, recommended: Re-engage
+     - TechStartup: $85K, stalled 12 days, recommended: Schedule meeting
+     - ..."
+
+## Outcomes
+
+### Sales Performance
+
+- **Pipeline Visibility**: 100% real-time pipeline visibility
+- **Forecast Accuracy**: 25% improvement in forecast accuracy
+- **Deal Velocity**: 20% faster deal progression
+- **Win Rate**: 15% improvement in win rates
+
+### Efficiency Gains
+
+- **Report Generation**: 90% reduction in report creation time
+- **Opportunity Identification**: 3x faster identification of high-value deals
+- **Activity Tracking**: Automated tracking of sales activities
+- **Team Productivity**: 2x more deals managed per rep
+
+### Data-Driven Decisions
+
+- **Pattern Recognition**: Identification of successful deal patterns
+- **Risk Identification**: Early detection of at-risk deals
+- **Performance Insights**: Clear visibility into rep and region performance
+- **Optimization**: Data-driven improvements to sales process
+
+## Best Practices
+
+1. **Regular Updates**: Keep pipeline data current
+2. **Activity Tracking**: Monitor sales activity regularly
+3. **Forecast Reviews**: Review forecasts weekly
+4. **Stalled Deal Follow-up**: Follow up on stalled deals within 48 hours
+5. **Performance Analysis**: Analyze performance trends monthly
+
+## Next Steps
+
+- [Revenue Operations Agent Example](/examples/revenue-operations-agent) - Track revenue operations
+- [Lead Qualification Agent Example](/examples/lead-qualification-agent) - Qualify leads automatically
+- [Customer Support Agent Example](/examples/customer-support-agent) - Support customers effectively
+

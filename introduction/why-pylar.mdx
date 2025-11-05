@@ -1,11 +1,187 @@
 ---
 title: "Why Pylar?"
-description: "Discover the benefits and advantages of using Pylar"
+description: "Discover the benefits and advantages of using Pylar for secure AI agent data access"
 ---
 
-## Why Pylar?
+## Why Choose Pylar?
 
-Pylar offers several key advantages that make it the ideal choice for your next project.
+Pylar solves critical challenges in AI agent development by providing a secure, governed data access layer. Here's why organizations choose Pylar over building custom solutions or giving agents direct database access.
 
-Add your content here to explain why developers should choose Pylar.
+## Security & Governance First
 
+### Fine-Grained Access Control
+
+Unlike direct database connections, Pylar lets you define exactly what data agents can access at the view, column, and row level. This means you can:
+
+- **Restrict Sensitive Data**: Automatically mask or exclude PII, financial data, or other sensitive information
+- **Row-Level Security**: Control access based on user context, regions, or business rules
+- **Query Validation**: Prevent unauthorized queries before they reach your database
+- **Audit Every Access**: Track who accessed what data and when
+
+<Tip>
+With Pylar, you can start with read-only access to non-sensitive data and gradually expand as you build confidence in your governance policies.
+</Tip>
+
+### Compliance Ready
+
+Pylar helps you meet regulatory requirements out of the box:
+
+- **Complete Audit Trails**: Every query is logged with full context
+- **Data Lineage**: Understand where data came from and how it's used
+- **Access Controls**: Enforce policies that meet SOC 2, GDPR, HIPAA, and other standards
+- **Documentation**: Auto-generated documentation for compliance reviews
+
+<Warning>
+Direct database access makes compliance nearly impossible. Pylar provides the governance layer you need.
+</Warning>
+
+## Developer Experience
+
+### AI-Powered Tool Creation
+
+Instead of writing custom integrations, use natural language to create MCP tools:
+
+- **Natural Language Prompts**: Write "create a tool to fetch error codes, events, and deal information" and Pylar's AI configures it
+- **Manual Control Available**: Fine-tune tools manually when needed
+- **Multiple Tools Per View**: Create different tools on the same view for flexibility
+- **Test Before Deploy**: Verify tools work correctly before publishing
+- **Standard Protocol**: Uses MCP, the emerging standard for AI tooling
+
+### One View, Multiple Tools
+
+Create multiple MCP tools on a single view, each governing how agents interact with your data differently. All tools work with any MCP-compatible agent:
+
+- Claude Desktop
+- Cursor
+- Windsurf
+- Custom agent frameworks
+- Any MCP-compatible tool
+
+<Check>
+Write your data access logic once, create multiple tools, use everywhere.
+</Check>
+
+### Rapid Iteration Without Redeployment
+
+- **Adjust Anytime**: Update queries, view scope, or tools on the platform
+- **Automatic Propagation**: Changes reflect everywhere automatically—no redeployment needed
+- **Test Before Publish**: Test MCP tools before deploying to ensure they work
+- **Iterative Improvement**: Use Evals insights to refine views and tools continuously
+
+## Operational Excellence
+
+### In-Depth Evals & Observability
+
+Click "Evals" to get comprehensive insights into how agents interact with your views:
+
+- **Interaction Patterns**: See exactly how agents use your tools
+- **Success vs. Errors**: Track successful queries and identify failures
+- **Error Analysis**: Detailed breakdown—what errors occurred, when, and why
+- **Query Shape**: Understand the types of queries agents are making
+- **Raw Logs**: Access full query logs for debugging
+- **Iterative Optimization**: Use insights to adjust view scope and tool configurations
+
+### Scalability Without Headaches
+
+Pylar scales with you:
+
+- **Multi-Database Support**: Connect to BigQuery, Snowflake, PostgreSQL, and more
+- **Cross-Database Joins**: Join data across multiple databases in a single query
+- **Project Organization**: Organize views and tools in projects for better management
+- **SQL IDE**: Built-in SQL editor for easy query development
+- **Views Are the Only Access**: Agents never get raw database access—complete security
+
+<Info>
+Start small with one database and one view. Scale to hundreds of views across multiple data sources as you grow. All within projects that keep everything organized.
+</Info>
+
+## Cost Efficiency
+
+### Reduce Development Time
+
+Building custom agent integrations typically takes weeks or months. With Pylar:
+
+- **Days Instead of Months**: Get your first tools running in hours
+- **No Maintenance Burden**: Pylar handles protocol updates and compatibility
+- **Focus on Value**: Spend time on your business logic, not infrastructure
+
+### Lower Infrastructure Costs
+
+- **Connection Efficiency**: Shared connections reduce database load
+- **Query Optimization**: Built-in query analysis and optimization
+- **Caching Layer**: Reduce redundant queries and costs
+- **Resource Management**: Prevent runaway queries that spike costs
+
+## Real-World Benefits
+
+### For Data Teams
+
+- **Self-Service with SQL IDE**: Use the built-in SQL IDE to create views without waiting for engineering
+- **Cross-Database Analysis**: Join data across warehouses without complex pipelines
+- **Governance Without Friction**: Maintain control—views are the only access level
+- **Evals Insights**: Understand exactly how agents interact with your data
+- **Iterative Improvement**: Use evals to continuously refine views and tools
+
+### For Engineering Teams
+
+- **No Custom Integration Code**: AI-powered tool creation eliminates boilerplate
+- **Standardization**: One platform for all agent data access needs
+- **Faster Shipping**: Get agents to market faster with instant tool creation
+- **Easier Debugging**: Evals provide raw logs, query shapes, and error analysis
+- **No Redeployment**: Changes reflect automatically everywhere
+
+### For Organizations
+
+- **Complete Isolation**: Views are the only access level—agents never get raw database access
+- **Risk Reduction**: Eliminate direct database access for AI agents
+- **Faster AI Adoption**: Remove blockers with AI-powered tool creation
+- **Compliance Confidence**: Meet regulatory requirements with built-in controls
+- **Cost Control**: Monitor and manage data access costs through Evals
+- **Iterative Optimization**: Continuously improve based on real agent behavior
+
+## Comparison: Pylar vs. Alternatives
+
+### Pylar vs. Custom Integration
+
+| Feature | Pylar | Custom Integration |
+|---------|-------|-------------------|
+| Time to First Tool | Hours | Weeks/Months |
+| Maintenance | Automatic | Ongoing |
+| Governance | Built-in | Manual |
+| Observability | Included | Custom Build |
+| Multi-Database | Supported | Per-DB Code |
+| Protocol Updates | Automatic | Manual |
+
+### Pylar vs. Direct Database Access
+
+| Feature | Pylar | Direct Access |
+|---------|-------|---------------|
+| Security | Fine-grained control | All or nothing |
+| Compliance | Audit-ready | Difficult to audit |
+| Cost Control | Built-in monitoring | No visibility |
+| Error Handling | Managed | Manual |
+| Scaling | Automatic | Manual |
+
+## When Pylar Makes Sense
+
+Pylar is ideal if you:
+
+- ✅ Have AI agents that need structured data access
+- ✅ Need to maintain data governance and compliance
+- ✅ Want to avoid writing custom integration code
+- ✅ Need visibility into agent data usage
+- ✅ Work with multiple databases or data sources
+- ✅ Want to scale AI agent usage safely
+- ✅ Need to support multiple agent frameworks
+
+## Getting Started
+
+Ready to experience these benefits? Check out our [Quick Start guide](/introduction/quick-start) to get up and running in minutes.
+
+<Card
+  title="Start Building"
+  icon="rocket"
+  href="/introduction/quick-start"
+>
+  Get your first Pylar tools running in minutes
+</Card>

@@ -1,0 +1,124 @@
+---
+title: "Overview"
+description: "Introduction to data views in Pylar - understand how views provide secure, governed access to your data"
+---
+
+## What Are Data Views?
+
+Data views in Pylar are SQL queries that define exactly what data AI agents can access. Think of views as a **window** into your data—agents can only see and query through these windows, never gaining direct access to your raw database tables.
+
+## Views vs Raw Database Access
+
+### The Problem with Direct Access
+
+Giving AI agents direct database access means:
+
+- ❌ Agents can query any table or column
+- ❌ No control over what data is exposed
+- ❌ Security risks from accidental or malicious queries
+- ❌ Difficult to audit and monitor access
+- ❌ Compliance challenges
+
+### The Pylar Solution: Views
+
+With Pylar views:
+
+- ✅ **Complete Isolation**: Agents only access data through your defined views
+- ✅ **Fine-Grained Control**: You decide exactly what data is available
+- ✅ **Security by Design**: Views are the only access level—no exceptions
+- ✅ **Full Audit Trail**: Every query goes through your views and is logged
+- ✅ **Compliance Ready**: Easy to demonstrate data governance
+
+<Warning>
+Views are the **only** access level AI agents get. They never have direct database access, ensuring complete security and governance.
+</Warning>
+
+## How Views Work in Pylar
+
+### The View Lifecycle
+
+1. **Create**: Write SQL queries in Pylar's SQL IDE
+2. **Test**: Run queries to verify results
+3. **Save**: Save queries as views in your project
+4. **Build Tools**: Create MCP tools on top of views
+5. **Publish**: Make tools available to AI agents
+6. **Monitor**: Use Evals to see how agents interact with views
+
+### View Organization
+
+Views are organized within **projects**:
+
+- Each project contains multiple views
+- Views can reference different data sources
+- You can create views that join across multiple databases
+- Projects help organize views by use case or team
+
+<Info>
+Projects provide a logical way to group related views and tools together. For example, you might have a "Customer Analytics" project with multiple views for different analysis needs.
+</Info>
+
+## Key Concepts
+
+### Views Are Queries
+
+A view is essentially a saved SQL query:
+
+- Write standard SQL queries
+- Use any SQL features your database supports
+- Join tables, filter data, aggregate results
+- Cross-database joins are supported
+
+### Views Are Secure
+
+- Agents can only query through views
+- You control what columns and rows are accessible
+- Sensitive data can be excluded or masked
+- Row-level security can be implemented
+
+### Views Are Flexible
+
+- Multiple MCP tools can be created on a single view
+- Each tool can have different parameters or purposes
+- Views can be updated anytime
+- Changes reflect automatically in all connected agents
+
+## Benefits of Using Views
+
+### For Security Teams
+
+- **Complete Control**: Define exactly what data agents can access
+- **No Raw Access**: Eliminate the risk of direct database queries
+- **Audit Trail**: Every query is logged and traceable
+- **Compliance**: Meet regulatory requirements with clear data governance
+
+### For Data Teams
+
+- **SQL IDE**: Built-in editor makes view creation easy
+- **Cross-Database Joins**: Combine data from multiple sources
+- **Testing**: Verify queries before saving as views
+- **Organization**: Keep views organized in projects
+
+### For Developers
+
+- **No Custom Code**: Define views with SQL, no integration code needed
+- **Standard SQL**: Use familiar SQL syntax
+- **Fast Iteration**: Update views and see changes immediately
+- **Multiple Tools**: Create different tools on the same view
+
+## Next Steps
+
+Ready to create your first view?
+
+- [SQL IDE Basics](/learn/creating-data-views/sql-ide-basics) - Learn how to use the SQL IDE
+- [Writing Your First View](/learn/creating-data-views/writing-your-first-view) - Step-by-step guide to creating a view
+- [Cross-Database Joins](/learn/creating-data-views/cross-database-joins) - Join data across multiple sources
+- [View Best Practices](/learn/creating-data-views/view-best-practices) - Optimize your views
+
+<Card
+  title="Start Creating Views"
+  icon="code"
+  href="/learn/creating-data-views/sql-ide-basics"
+>
+  Learn how to use the SQL IDE to create your first view
+</Card>
+
