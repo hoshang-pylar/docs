@@ -1,0 +1,36 @@
+/* Style the Sign Up link in topbar as a button */
+.topbar a[href*="signup"],
+.topbar a[href*="app.pylar.ai"] {
+  background-color: #FF4017;
+  color: white !important;
+  padding: 6px 16px;
+  border-radius: 6px;
+  font-weight: 500;
+  text-decoration: none;
+  transition: background-color 0.2s ease;
+}
+
+.topbar a[href*="signup"]:hover,
+.topbar a[href*="app.pylar.ai"]:hover {
+  background-color: #CC3300;
+  color: white !important;
+}
+
+/* Alternative selector if the above doesn't work */
+nav[class*="topbar"] a[href*="signup"],
+nav[class*="topbar"] a[href*="app.pylar.ai"] {
+  background-color: #FF4017;
+  color: white !important;
+  padding: 6px 16px;
+  border-radius: 6px;
+  font-weight: 500;
+  text-decoration: none;
+  transition: background-color 0.2s ease;
+}
+
+nav[class*="topbar"] a[href*="signup"]:hover,
+nav[class*="topbar"] a[href*="app.pylar.ai"]:hover {
+  background-color: #CC3300;
+  color: white !important;
+}
+

@@ -144,7 +144,7 @@
     ],
     "primary": {
       "type": "button",
-      "label": "Get Started",
+      "label": "Try Pylar",
       "href": "https://app.pylar.ai/signup"
     }
   },
@@ -162,5 +162,6 @@
   },
   "footer": {
     "socials": {}
-  }
+  },
+  "css": "/custom.css"
 }
