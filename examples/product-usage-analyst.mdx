@@ -26,6 +26,31 @@ Pylar enables the agent by:
 - **Segment Comparison**: Comparing usage across user segments
 - **Data-Driven Insights**: Generating actionable product recommendations
 
+```mermaid
+graph LR
+    subgraph "Data Sources"
+        ANALYTICS[Product Analytics]
+        USERS[User Data]
+        FEATURES[Feature Usage]
+    end
+    
+    PYLAR[Pylar<br/>Unified Views]
+    
+    TOOLS[MCP Tools<br/>analyze_usage<br/>track_adoption<br/>identify_trends]
+    
+    AGENT[Usage Analyst]
+    TEAM[Product Team]
+    
+    ANALYTICS --> PYLAR
+    USERS --> PYLAR
+    FEATURES --> PYLAR
+    PYLAR --> TOOLS
+    TOOLS --> AGENT
+    AGENT --> TEAM
+    
+    style PYLAR fill:#FF4017,stroke:#CC3300,color:#fff
+```
+
 ## Without Pylar vs With Pylar
 
 ### Without Pylar

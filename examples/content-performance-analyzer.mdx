@@ -26,6 +26,31 @@ Pylar enables the agent by:
 - **Trend Analysis**: Identifying content performance trends
 - **Recommendation Engine**: Data-driven content recommendations
 
+```mermaid
+graph LR
+    subgraph "Data Sources"
+        BLOG[Blog Posts]
+        ANALYTICS[Analytics]
+        CONVERSIONS[Conversions]
+    end
+    
+    PYLAR[Pylar<br/>Unified Views]
+    
+    TOOLS[MCP Tools<br/>analyze_performance<br/>calculate_roi<br/>recommend_topics]
+    
+    AGENT[Content Analyzer]
+    TEAM[Content Team]
+    
+    BLOG --> PYLAR
+    ANALYTICS --> PYLAR
+    CONVERSIONS --> PYLAR
+    PYLAR --> TOOLS
+    TOOLS --> AGENT
+    AGENT --> TEAM
+    
+    style PYLAR fill:#FF4017,stroke:#CC3300,color:#fff
+```
+
 ## Without Pylar vs With Pylar
 
 ### Without Pylar

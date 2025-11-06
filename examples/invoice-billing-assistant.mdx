@@ -25,6 +25,31 @@ Pylar enables the agent by:
 - **Automated Tracking**: Automated payment tracking
 - **Collection Management**: Identifying and managing overdue accounts
 
+```mermaid
+graph LR
+    subgraph "Data Sources"
+        INVOICES[Invoices]
+        PAYMENTS[Payments]
+        CUSTOMERS[Customer Data]
+    end
+    
+    PYLAR[Pylar<br/>Unified Views]
+    
+    TOOLS[MCP Tools<br/>get_invoice<br/>track_payment<br/>manage_collections]
+    
+    AGENT[Billing Assistant]
+    USERS[Users]
+    
+    INVOICES --> PYLAR
+    PAYMENTS --> PYLAR
+    CUSTOMERS --> PYLAR
+    PYLAR --> TOOLS
+    TOOLS --> AGENT
+    USERS --> AGENT
+    
+    style PYLAR fill:#FF4017,stroke:#CC3300,color:#fff
+```
+
 ## Without Pylar vs With Pylar
 
 ### Without Pylar

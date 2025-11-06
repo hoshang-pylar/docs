@@ -27,6 +27,33 @@ Pylar enables the agent by:
 - **Pattern Recognition**: SQL views identify churn indicators
 - **Actionable Insights**: Generating retention recommendations based on data
 
+```mermaid
+graph LR
+    subgraph "Data Sources"
+        ANALYTICS[Product Analytics]
+        CRM[CRM]
+        SUPPORT[Support]
+        BILLING[Billing]
+    end
+    
+    PYLAR[Pylar<br/>Unified Views]
+    
+    TOOLS[MCP Tools<br/>calculate_churn_risk<br/>get_usage_patterns<br/>get_retention_actions]
+    
+    AGENT[Churn Predictor]
+    TEAM[CS Team]
+    
+    ANALYTICS --> PYLAR
+    CRM --> PYLAR
+    SUPPORT --> PYLAR
+    BILLING --> PYLAR
+    PYLAR --> TOOLS
+    TOOLS --> AGENT
+    AGENT --> TEAM
+    
+    style PYLAR fill:#FF4017,stroke:#CC3300,color:#fff
+```
+
 ## Without Pylar vs With Pylar
 
 ### Without Pylar

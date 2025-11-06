@@ -25,6 +25,31 @@ Pylar enables the agent by:
 - **Workload Balancing**: Analyzing and optimizing rep workload
 - **Growth Identification**: Identifying untapped opportunities
 
+```mermaid
+graph LR
+    subgraph "Data Sources"
+        SALES[Sales Data]
+        GEO[Geographic Data]
+        ACCOUNTS[Account Info]
+    end
+    
+    PYLAR[Pylar<br/>Unified Views]
+    
+    TOOLS[MCP Tools<br/>analyze_territories<br/>balance_workload<br/>identify_opportunities]
+    
+    AGENT[Territory Optimizer]
+    TEAM[Sales Ops]
+    
+    SALES --> PYLAR
+    GEO --> PYLAR
+    ACCOUNTS --> PYLAR
+    PYLAR --> TOOLS
+    TOOLS --> AGENT
+    AGENT --> TEAM
+    
+    style PYLAR fill:#FF4017,stroke:#CC3300,color:#fff
+```
+
 ## Without Pylar vs With Pylar
 
 ### Without Pylar

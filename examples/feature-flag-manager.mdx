@@ -25,6 +25,31 @@ Pylar enables the agent by:
 - **Impact Analysis**: Automated impact calculations
 - **Decision Support**: Data-driven rollout recommendations
 
+```mermaid
+graph LR
+    subgraph "Data Sources"
+        FLAGS[Feature Flags]
+        ERRORS[Error Rates]
+        METRICS[User Metrics]
+    end
+    
+    PYLAR[Pylar<br/>Unified Views]
+    
+    TOOLS[MCP Tools<br/>monitor_flags<br/>analyze_impact<br/>recommend_rollback]
+    
+    AGENT[Flag Manager]
+    TEAM[Engineering Team]
+    
+    FLAGS --> PYLAR
+    ERRORS --> PYLAR
+    METRICS --> PYLAR
+    PYLAR --> TOOLS
+    TOOLS --> AGENT
+    AGENT --> TEAM
+    
+    style PYLAR fill:#FF4017,stroke:#CC3300,color:#fff
+```
+
 ## Without Pylar vs With Pylar
 
 ### Without Pylar

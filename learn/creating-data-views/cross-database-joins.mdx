@@ -15,6 +15,25 @@ Local Dataframes are:
 - Queryable using standard SQL syntax
 - Joinable across multiple dataframes
 
+```mermaid
+graph TB
+    subgraph "Pylar Session"
+        DF1[table0<br/>Events Dataframe]
+        DF2[table1<br/>Users Dataframe]
+        DF3[table2<br/>Sessions Dataframe]
+    end
+    
+    SQL[SQL Query<br/>JOIN on common keys]
+    RESULT[Unified Result<br/>Combined View]
+    
+    DF1 --> SQL
+    DF2 --> SQL
+    DF3 --> SQL
+    SQL --> RESULT
+    
+    style SQL fill:#FF4017,stroke:#CC3300,color:#fff
+```
+
 <Tip>
 Think of dataframes as temporary tables that exist in your current Pylar session. They're perfect for combining data from multiple sources or working with intermediate results.
 </Tip>

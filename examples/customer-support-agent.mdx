@@ -26,6 +26,31 @@ Pylar enables the agent by:
 - **Multi-Source Integration**: Joining data across Snowflake (orders), HubSpot (CRM), and Zendesk (support tickets)
 - **No API Hassles**: Eliminating the need to manage multiple API integrations
 
+```mermaid
+graph LR
+    subgraph "Data Sources"
+        HS[HubSpot]
+        SF[Snowflake]
+        ZD[Zendesk]
+    end
+    
+    PYLAR[Pylar<br/>Unified Views]
+    
+    TOOLS[MCP Tools<br/>get_customer_info<br/>get_order_details<br/>get_support_history]
+    
+    AGENT[Support Agent]
+    USER[Customer]
+    
+    HS --> PYLAR
+    SF --> PYLAR
+    ZD --> PYLAR
+    PYLAR --> TOOLS
+    TOOLS --> AGENT
+    USER --> AGENT
+    
+    style PYLAR fill:#FF4017,stroke:#CC3300,color:#fff
+```
+
 ## Without Pylar vs With Pylar
 
 ### Without Pylar

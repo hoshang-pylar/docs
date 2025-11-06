@@ -26,6 +26,31 @@ Pylar enables the agent by:
 - **ROI Calculation**: Automated ROI and conversion rate calculations
 - **Segment Analysis**: Identifying profitable customer segments
 
+```mermaid
+graph LR
+    subgraph "Data Sources"
+        CAMPAIGNS[Campaigns]
+        ANALYTICS[Analytics]
+        CRM[CRM]
+    end
+    
+    PYLAR[Pylar<br/>Unified Views]
+    
+    TOOLS[MCP Tools<br/>analyze_campaigns<br/>calculate_roi<br/>optimize_spend]
+    
+    AGENT[Campaign Optimizer]
+    TEAM[Marketing Team]
+    
+    CAMPAIGNS --> PYLAR
+    ANALYTICS --> PYLAR
+    CRM --> PYLAR
+    PYLAR --> TOOLS
+    TOOLS --> AGENT
+    AGENT --> TEAM
+    
+    style PYLAR fill:#FF4017,stroke:#CC3300,color:#fff
+```
+
 ## Without Pylar vs With Pylar
 
 ### Without Pylar

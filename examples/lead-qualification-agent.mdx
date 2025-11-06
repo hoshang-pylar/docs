@@ -26,6 +26,31 @@ Pylar enables the agent by:
 - **Pattern Recognition**: Identifying high-converting lead patterns
 - **Automated Routing**: Intelligent lead distribution
 
+```mermaid
+graph LR
+    subgraph "Data Sources"
+        LEADS[Lead Data]
+        CRM[CRM]
+        MARKETING[Marketing]
+    end
+    
+    PYLAR[Pylar<br/>Unified Views]
+    
+    TOOLS[MCP Tools<br/>score_leads<br/>route_leads<br/>prioritize_prospects]
+    
+    AGENT[Lead Qualifier]
+    REPS[Sales Reps]
+    
+    LEADS --> PYLAR
+    CRM --> PYLAR
+    MARKETING --> PYLAR
+    PYLAR --> TOOLS
+    TOOLS --> AGENT
+    AGENT --> REPS
+    
+    style PYLAR fill:#FF4017,stroke:#CC3300,color:#fff
+```
+
 ## Without Pylar vs With Pylar
 
 ### Without Pylar

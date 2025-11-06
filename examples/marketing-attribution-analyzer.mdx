@@ -25,6 +25,31 @@ Pylar enables the agent by:
 - **Attribution Models**: Multiple attribution model calculations
 - **Channel Comparison**: Side-by-side channel effectiveness
 
+```mermaid
+graph LR
+    subgraph "Data Sources"
+        TOUCHPOINTS[Touchpoints]
+        CHANNELS[Channels]
+        CONVERSIONS[Conversions]
+    end
+    
+    PYLAR[Pylar<br/>Unified Views]
+    
+    TOOLS[MCP Tools<br/>track_journey<br/>attribute_conversions<br/>compare_channels]
+    
+    AGENT[Attribution Analyzer]
+    TEAM[Marketing Team]
+    
+    TOUCHPOINTS --> PYLAR
+    CHANNELS --> PYLAR
+    CONVERSIONS --> PYLAR
+    PYLAR --> TOOLS
+    TOOLS --> AGENT
+    AGENT --> TEAM
+    
+    style PYLAR fill:#FF4017,stroke:#CC3300,color:#fff
+```
+
 ## Without Pylar vs With Pylar
 
 ### Without Pylar

@@ -25,6 +25,31 @@ Pylar enables the agent by:
 - **Priority Calculation**: Data-driven prioritization
 - **Trend Analysis**: Identifying feedback patterns over time
 
+```mermaid
+graph LR
+    subgraph "Data Sources"
+        FEEDBACK[User Feedback]
+        REVIEWS[Reviews]
+        REQUESTS[Feature Requests]
+    end
+    
+    PYLAR[Pylar<br/>Unified Views]
+    
+    TOOLS[MCP Tools<br/>analyze_sentiment<br/>prioritize_features<br/>track_trends]
+    
+    AGENT[Feedback Analyzer]
+    TEAM[Product Team]
+    
+    FEEDBACK --> PYLAR
+    REVIEWS --> PYLAR
+    REQUESTS --> PYLAR
+    PYLAR --> TOOLS
+    TOOLS --> AGENT
+    AGENT --> TEAM
+    
+    style PYLAR fill:#FF4017,stroke:#CC3300,color:#fff
+```
+
 ## Without Pylar vs With Pylar
 
 ### Without Pylar

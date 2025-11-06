@@ -25,6 +25,31 @@ Pylar enables the agent by:
 - **Automated Analysis**: Performance and error analysis
 - **Incident Management**: Automated incident detection and reporting
 
+```mermaid
+graph LR
+    subgraph "Data Sources"
+        LOGS[System Logs]
+        METRICS[Metrics]
+        ERRORS[Error Data]
+    end
+    
+    PYLAR[Pylar<br/>Unified Views]
+    
+    TOOLS[MCP Tools<br/>monitor_health<br/>analyze_performance<br/>generate_reports]
+    
+    AGENT[IT Monitor]
+    TEAM[IT Team]
+    
+    LOGS --> PYLAR
+    METRICS --> PYLAR
+    ERRORS --> PYLAR
+    PYLAR --> TOOLS
+    TOOLS --> AGENT
+    AGENT --> TEAM
+    
+    style PYLAR fill:#FF4017,stroke:#CC3300,color:#fff
+```
+
 ## Without Pylar vs With Pylar
 
 ### Without Pylar

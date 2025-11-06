@@ -26,6 +26,31 @@ Pylar enables the agent by:
 - **Real-time Updates**: Keeping knowledge base current with latest interactions
 - **Governed Access**: Ensuring only appropriate content is accessible
 
+```mermaid
+graph LR
+    subgraph "Data Sources"
+        ZD[Zendesk]
+        DOCS[Product Docs]
+        KB[Knowledge Base]
+    end
+    
+    PYLAR[Pylar<br/>Unified Views]
+    
+    TOOLS[MCP Tools<br/>analyze_tickets<br/>search_docs<br/>update_kb]
+    
+    AGENT[Wiki Agent]
+    USERS[Users]
+    
+    ZD --> PYLAR
+    DOCS --> PYLAR
+    KB --> PYLAR
+    PYLAR --> TOOLS
+    TOOLS --> AGENT
+    USERS --> AGENT
+    
+    style PYLAR fill:#FF4017,stroke:#CC3300,color:#fff
+```
+
 ## Without Pylar vs With Pylar
 
 ### Without Pylar

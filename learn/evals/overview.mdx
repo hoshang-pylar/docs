@@ -7,6 +7,24 @@ description: "Introduction to Evals in Pylar - monitor and analyze how AI agents
 
 Evals in Pylar provide comprehensive insights into how AI agents interact with your MCP tools. They give you visibility into tool usage, performance, errors, and query patterns—helping you optimize your tools and views for better agent performance.
 
+```mermaid
+graph LR
+    AGENTS[AI Agents]
+    TOOLS[MCP Tools]
+    EVALS[Evals Dashboard]
+    INSIGHTS[Insights<br/>Success Rates, Errors,<br/>Query Shapes, Logs]
+    OPTIMIZE[Optimize]
+    
+    AGENTS --> TOOLS
+    TOOLS --> EVALS
+    EVALS --> INSIGHTS
+    INSIGHTS --> OPTIMIZE
+    OPTIMIZE --> TOOLS
+    
+    style EVALS fill:#FF4017,stroke:#CC3300,color:#fff
+    style OPTIMIZE fill:#FF4017,stroke:#CC3300,color:#fff
+```
+
 ## Why Use Evals?
 
 Evals help you:

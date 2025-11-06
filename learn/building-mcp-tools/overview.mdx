@@ -38,6 +38,34 @@ A single view can have multiple MCP tools, each serving different purposes:
 - **Different Queries**: Tools can query the same view differently
 - **Different Use Cases**: Tools can be optimized for specific scenarios
 
+```mermaid
+graph TB
+    VIEW[Customer 360 View<br/>SQL View with customer data]
+    
+    TOOL1[get_customer_by_id<br/>Fetch customer details]
+    TOOL2[get_high_value_customers<br/>Filter by revenue]
+    TOOL3[get_customer_engagement<br/>Calculate engagement score]
+    TOOL4[search_customers<br/>Search by name/email]
+    
+    VIEW --> TOOL1
+    VIEW --> TOOL2
+    VIEW --> TOOL3
+    VIEW --> TOOL4
+    
+    AGENT[AI Agent<br/>Uses all tools]
+    
+    TOOL1 --> AGENT
+    TOOL2 --> AGENT
+    TOOL3 --> AGENT
+    TOOL4 --> AGENT
+    
+    style VIEW fill:#FF4017,stroke:#CC3300,color:#fff
+    style TOOL1 fill:#e9ecef,stroke:#868e96
+    style TOOL2 fill:#e9ecef,stroke:#868e96
+    style TOOL3 fill:#e9ecef,stroke:#868e96
+    style TOOL4 fill:#e9ecef,stroke:#868e96
+```
+
 <Tip>
 Create multiple tools on the same view to provide agents with different ways to interact with your data. For example, one tool for filtering by date, another for filtering by customer segment.
 </Tip>

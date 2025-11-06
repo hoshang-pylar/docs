@@ -1,0 +1,153 @@
+<svg width="100%" viewBox="0 0 1200 480" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet" style="max-width: 1200px;">
+  <defs>
+    <linearGradient id="pylarGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#FF4017;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#FF6B4A;stop-opacity:1" />
+    </linearGradient>
+    <filter id="shadow">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.15"/>
+    </filter>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="1200" height="480" fill="#FAFAFA"/>
+  
+  <!-- Data Sources Section -->
+  <g id="data-sources">
+    <rect x="20" y="80" width="150" height="320" rx="10" fill="white" stroke="#FF4017" stroke-width="1.5" filter="url(#shadow)"/>
+    <text x="95" y="105" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#333" text-anchor="middle">Data Sources</text>
+    
+    <!-- Data source items -->
+    <g>
+      <rect x="35" y="125" width="120" height="28" rx="5" fill="#F8F8F8" stroke="#DDD"/>
+      <text x="95" y="143" font-family="Arial, sans-serif" font-size="10" fill="#555" text-anchor="middle">Snowflake</text>
+    </g>
+    <g>
+      <rect x="35" y="160" width="120" height="28" rx="5" fill="#F8F8F8" stroke="#DDD"/>
+      <text x="95" y="178" font-family="Arial, sans-serif" font-size="10" fill="#555" text-anchor="middle">BigQuery</text>
+    </g>
+    <g>
+      <rect x="35" y="195" width="120" height="28" rx="5" fill="#F8F8F8" stroke="#DDD"/>
+      <text x="95" y="213" font-family="Arial, sans-serif" font-size="10" fill="#555" text-anchor="middle">PostgreSQL</text>
+    </g>
+    <g>
+      <rect x="35" y="230" width="120" height="28" rx="5" fill="#F8F8F8" stroke="#DDD"/>
+      <text x="95" y="248" font-family="Arial, sans-serif" font-size="10" fill="#555" text-anchor="middle">HubSpot</text>
+    </g>
+    <g>
+      <rect x="35" y="265" width="120" height="28" rx="5" fill="#F8F8F8" stroke="#DDD"/>
+      <text x="95" y="283" font-family="Arial, sans-serif" font-size="10" fill="#555" text-anchor="middle">Salesforce</text>
+    </g>
+    <g>
+      <rect x="35" y="300" width="120" height="28" rx="5" fill="#F8F8F8" stroke="#DDD"/>
+      <text x="95" y="318" font-family="Arial, sans-serif" font-size="10" fill="#555" text-anchor="middle">+ More</text>
+    </g>
+  </g>
+  
+  <!-- Arrow from Data Sources to Pylar -->
+  <path d="M 170 240 L 230 240" stroke="#FF4017" stroke-width="2.5" fill="none" marker-end="url(#arrowhead)"/>
+  
+  <!-- Pylar Section -->
+  <g id="pylar">
+    <rect x="250" y="60" width="500" height="360" rx="12" fill="url(#pylarGradient)" filter="url(#shadow)"/>
+    <text x="500" y="90" font-family="Arial, sans-serif" font-size="22" font-weight="bold" fill="white" text-anchor="middle">Pylar</text>
+    
+    <!-- SQL Views Box -->
+    <rect x="270" y="110" width="460" height="65" rx="6" fill="white" fill-opacity="0.96"/>
+    <text x="500" y="133" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#333" text-anchor="middle">SQL Views</text>
+    <text x="500" y="152" font-family="Arial, sans-serif" font-size="10" fill="#666" text-anchor="middle">Governed data access • Cross-database joins</text>
+    <text x="500" y="167" font-family="Arial, sans-serif" font-size="9" fill="#888" text-anchor="middle">Secure scoping</text>
+    
+    <!-- Arrow down -->
+    <path d="M 500 175 L 500 190" stroke="#FF4017" stroke-width="2" fill="none" marker-end="url(#arrowhead-small)"/>
+    
+    <!-- MCP Tools Box -->
+    <rect x="270" y="200" width="460" height="65" rx="6" fill="white" fill-opacity="0.96"/>
+    <text x="500" y="223" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#333" text-anchor="middle">MCP Tools</text>
+    <text x="500" y="242" font-family="Arial, sans-serif" font-size="10" fill="#666" text-anchor="middle">AI-powered creation • Multiple tools per view</text>
+    <text x="500" y="257" font-family="Arial, sans-serif" font-size="9" fill="#888" text-anchor="middle">Test before deploy</text>
+    
+    <!-- Arrow down -->
+    <path d="M 500 265 L 500 280" stroke="#FF4017" stroke-width="2" fill="none" marker-end="url(#arrowhead-small)"/>
+    
+    <!-- Publish Box -->
+    <rect x="270" y="290" width="460" height="65" rx="6" fill="white" fill-opacity="0.96"/>
+    <text x="500" y="313" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#333" text-anchor="middle">Publish</text>
+    <text x="500" y="332" font-family="Arial, sans-serif" font-size="10" fill="#666" text-anchor="middle">MCP HTTP Stream URL + Bearer Token</text>
+    <text x="500" y="347" font-family="Arial, sans-serif" font-size="9" fill="#888" text-anchor="middle">Single endpoint • Secure access</text>
+  </g>
+  
+  <!-- Arrow from Pylar to Agent Builders -->
+  <path d="M 750 240 L 770 240" stroke="#FF4017" stroke-width="2.5" fill="none" marker-end="url(#arrowhead)"/>
+  
+  <!-- Agent Builders Section (moved to middle position) -->
+  <g id="agent-builders">
+    <rect x="790" y="80" width="180" height="320" rx="10" fill="white" stroke="#E0E0E0" stroke-width="1.5" filter="url(#shadow)"/>
+    <text x="880" y="105" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#333" text-anchor="middle">Agent Builders</text>
+    
+    <!-- Agent builder items - single column -->
+    <g>
+      <rect x="805" y="125" width="150" height="26" rx="4" fill="#F8F8F8" stroke="#DDD"/>
+      <text x="880" y="142" font-family="Arial, sans-serif" font-size="9" fill="#555" text-anchor="middle">Claude Desktop</text>
+    </g>
+    <g>
+      <rect x="805" y="158" width="150" height="26" rx="4" fill="#F8F8F8" stroke="#DDD"/>
+      <text x="880" y="175" font-family="Arial, sans-serif" font-size="9" fill="#555" text-anchor="middle">Cursor</text>
+    </g>
+    <g>
+      <rect x="805" y="191" width="150" height="26" rx="4" fill="#F8F8F8" stroke="#DDD"/>
+      <text x="880" y="208" font-family="Arial, sans-serif" font-size="9" fill="#555" text-anchor="middle">LangGraph</text>
+    </g>
+    <g>
+      <rect x="805" y="224" width="150" height="26" rx="4" fill="#F8F8F8" stroke="#DDD"/>
+      <text x="880" y="241" font-family="Arial, sans-serif" font-size="9" fill="#555" text-anchor="middle">Windsurf</text>
+    </g>
+    <g>
+      <rect x="805" y="257" width="150" height="26" rx="4" fill="#F8F8F8" stroke="#DDD"/>
+      <text x="880" y="274" font-family="Arial, sans-serif" font-size="9" fill="#555" text-anchor="middle">VS Code</text>
+    </g>
+    <g>
+      <rect x="805" y="290" width="150" height="26" rx="4" fill="#F8F8F8" stroke="#DDD"/>
+      <text x="880" y="307" font-family="Arial, sans-serif" font-size="9" fill="#555" text-anchor="middle">OpenAI Platform</text>
+    </g>
+    <g>
+      <rect x="805" y="323" width="150" height="26" rx="4" fill="#F8F8F8" stroke="#DDD"/>
+      <text x="880" y="340" font-family="Arial, sans-serif" font-size="9" fill="#555" text-anchor="middle">Zapier</text>
+    </g>
+    <g>
+      <rect x="805" y="356" width="150" height="26" rx="4" fill="#F8F8F8" stroke="#DDD"/>
+      <text x="880" y="373" font-family="Arial, sans-serif" font-size="9" fill="#555" text-anchor="middle">Make • n8n • + More</text>
+    </g>
+  </g>
+  
+  <!-- Arrow from Agent Builders to Evals -->
+  <path d="M 970 240 L 990 240" stroke="#FF4017" stroke-width="2.5" fill="none" marker-end="url(#arrowhead)"/>
+  
+  <!-- Evals Box (moved to right position) -->
+  <rect x="1010" y="110" width="180" height="245" rx="6" fill="white" fill-opacity="0.96" stroke="#FF4017" stroke-width="1.5" filter="url(#shadow)"/>
+  <text x="1100" y="135" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#333" text-anchor="middle">Evals</text>
+  <text x="1100" y="155" font-family="Arial, sans-serif" font-size="10" fill="#666" text-anchor="middle">Observability</text>
+  <circle cx="1020" cy="175" r="3" fill="#FF4017"/>
+  <text x="1030" y="179" font-family="Arial, sans-serif" font-size="9" fill="#666">Success/Error rates</text>
+  <circle cx="1020" cy="200" r="3" fill="#FF4017"/>
+  <text x="1030" y="204" font-family="Arial, sans-serif" font-size="9" fill="#666">Query shapes</text>
+  <circle cx="1020" cy="225" r="3" fill="#FF4017"/>
+  <text x="1030" y="229" font-family="Arial, sans-serif" font-size="9" fill="#666">Error analysis</text>
+  <circle cx="1020" cy="250" r="3" fill="#FF4017"/>
+  <text x="1030" y="254" font-family="Arial, sans-serif" font-size="9" fill="#666">Raw logs</text>
+  <circle cx="1020" cy="275" r="3" fill="#FF4017"/>
+  <text x="1030" y="279" font-family="Arial, sans-serif" font-size="9" fill="#666">Performance</text>
+  <circle cx="1020" cy="300" r="3" fill="#FF4017"/>
+  <text x="1030" y="304" font-family="Arial, sans-serif" font-size="9" fill="#666">Optimization</text>
+  
+  
+  <!-- Arrow markers -->
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="0" refY="3" orient="auto" markerUnits="userSpaceOnUse">
+      <polygon points="0 0, 10 3, 0 6" fill="#FF4017"/>
+    </marker>
+    <marker id="arrowhead-small" markerWidth="8" markerHeight="8" refX="0" refY="2.5" orient="auto" markerUnits="userSpaceOnUse">
+      <polygon points="0 0, 8 2.5, 0 5" fill="#FF4017"/>
+    </marker>
+  </defs>
+</svg>

@@ -26,6 +26,31 @@ Pylar enables the agent by:
 - **Advanced Calculations**: Complex revenue calculations and forecasting
 - **Trend Analysis**: Identifying revenue patterns and trends
 
+```mermaid
+graph LR
+    subgraph "Data Sources"
+        CRM[CRM]
+        BILLING[Billing]
+        FINANCE[Finance]
+    end
+    
+    PYLAR[Pylar<br/>Unified Views]
+    
+    TOOLS[MCP Tools<br/>forecast_revenue<br/>analyze_pipeline<br/>track_quota]
+    
+    AGENT[RevOps Agent]
+    TEAM[Revenue Team]
+    
+    CRM --> PYLAR
+    BILLING --> PYLAR
+    FINANCE --> PYLAR
+    PYLAR --> TOOLS
+    TOOLS --> AGENT
+    AGENT --> TEAM
+    
+    style PYLAR fill:#FF4017,stroke:#CC3300,color:#fff
+```
+
 ## Without Pylar vs With Pylar
 
 ### Without Pylar

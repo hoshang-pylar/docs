@@ -7,6 +7,38 @@ description: "Connect any agent builder to Pylar - code-driven or no-code, all c
 
 Pylar provides a unified way to connect your data views to **any agent builder**—whether it's code-driven like LangGraph, no-code like Zapier, or AI-native like Claude Desktop. All controlled, optimized, and iterated from one place: Pylar.
 
+```mermaid
+graph TB
+    PYLAR[Pylar<br/>MCP Tools Published]
+    
+    subgraph "Code-Driven"
+        CD1[Claude Desktop]
+        CD2[Cursor]
+        CD3[Windsurf]
+        CD4[VS Code]
+        CD5[LangGraph]
+        CD6[OpenAI Platform]
+    end
+    
+    subgraph "No-Code"
+        NC1[Zapier]
+        NC2[Make]
+        NC3[n8n]
+    end
+    
+    PYLAR --> CD1
+    PYLAR --> CD2
+    PYLAR --> CD3
+    PYLAR --> CD4
+    PYLAR --> CD5
+    PYLAR --> CD6
+    PYLAR --> NC1
+    PYLAR --> NC2
+    PYLAR --> NC3
+    
+    style PYLAR fill:#FF4017,stroke:#CC3300,color:#fff
+```
+
 ## The Problem with Traditional Approaches
 
 Traditional data access for agents requires:

@@ -7,6 +7,28 @@ description: "Introduction to publishing MCP tools - make your tools available t
 
 Publishing your MCP tools makes them available to AI agents. When you publish, Pylar generates secure connection credentials that you can use to connect your tools to any agent builder or LLM workflow.
 
+```mermaid
+graph LR
+    TOOLS[MCP Tools<br/>Built on Views]
+    PUBLISH[Publish<br/>Generate Token]
+    ENDPOINT[MCP HTTP Stream URL<br/>+ Bearer Token]
+    
+    AG1[Claude Desktop]
+    AG2[Cursor]
+    AG3[LangGraph]
+    AG4[Zapier]
+    
+    TOOLS --> PUBLISH
+    PUBLISH --> ENDPOINT
+    ENDPOINT --> AG1
+    ENDPOINT --> AG2
+    ENDPOINT --> AG3
+    ENDPOINT --> AG4
+    
+    style PUBLISH fill:#FF4017,stroke:#CC3300,color:#fff
+    style ENDPOINT fill:#FF4017,stroke:#CC3300,color:#fff
+```
+
 ## The Publishing Process
 
 ### Step 1: Publish Your Tools

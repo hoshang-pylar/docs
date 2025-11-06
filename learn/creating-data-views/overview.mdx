@@ -7,6 +7,18 @@ description: "Introduction to data views in Pylar - understand how views provide
 
 Data views in Pylar are SQL queries that define exactly what data AI agents can access. Think of views as a **window** into your data—agents can only see and query through these windows, never gaining direct access to your raw database tables.
 
+```mermaid
+graph LR
+    DS[Data Sources<br/>Snowflake, BigQuery, etc.]
+    VIEW[SQL View<br/>Governed Query]
+    AGENT[AI Agent]
+    
+    DS -->|Raw Data| VIEW
+    VIEW -->|Scoped Data| AGENT
+    
+    style VIEW fill:#FF4017,stroke:#CC3300,color:#fff
+```
+
 ## Views vs Raw Database Access
 
 ### The Problem with Direct Access

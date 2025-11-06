@@ -27,6 +27,31 @@ Pylar enables the agent by:
 - **Pattern Recognition**: Identifying successful deal patterns
 - **Actionable Insights**: Generating recommendations based on data
 
+```mermaid
+graph LR
+    subgraph "Data Sources"
+        CRM[CRM]
+        PRODUCTS[Product Catalog]
+        HISTORY[Sales History]
+    end
+    
+    PYLAR[Pylar<br/>Unified Views]
+    
+    TOOLS[MCP Tools<br/>analyze_pipeline<br/>forecast_revenue<br/>identify_opportunities]
+    
+    AGENT[Sales Assistant]
+    TEAM[Sales Team]
+    
+    CRM --> PYLAR
+    PRODUCTS --> PYLAR
+    HISTORY --> PYLAR
+    PYLAR --> TOOLS
+    TOOLS --> AGENT
+    AGENT --> TEAM
+    
+    style PYLAR fill:#FF4017,stroke:#CC3300,color:#fff
+```
+
 ## Without Pylar vs With Pylar
 
 ### Without Pylar

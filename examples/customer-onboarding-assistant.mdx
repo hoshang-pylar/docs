@@ -26,6 +26,31 @@ Pylar enables the agent by:
 - **Personalized Recommendations**: Tailoring guidance based on customer profile
 - **Effectiveness Analysis**: Measuring onboarding success metrics
 
+```mermaid
+graph LR
+    subgraph "Data Sources"
+        ACCOUNTS[Account Data]
+        USAGE[Usage Metrics]
+        MILESTONES[Milestones]
+    end
+    
+    PYLAR[Pylar<br/>Unified Views]
+    
+    TOOLS[MCP Tools<br/>track_progress<br/>identify_blockers<br/>recommend_steps]
+    
+    AGENT[Onboarding Assistant]
+    CUSTOMERS[Customers]
+    
+    ACCOUNTS --> PYLAR
+    USAGE --> PYLAR
+    MILESTONES --> PYLAR
+    PYLAR --> TOOLS
+    TOOLS --> AGENT
+    AGENT --> CUSTOMERS
+    
+    style PYLAR fill:#FF4017,stroke:#CC3300,color:#fff
+```
+
 ## Without Pylar vs With Pylar
 
 ### Without Pylar

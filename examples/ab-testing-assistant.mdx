@@ -25,6 +25,31 @@ Pylar enables the agent by:
 - **Real-time Monitoring**: Querying current experiment performance
 - **Clear Recommendations**: Data-driven variant recommendations
 
+```mermaid
+graph LR
+    subgraph "Data Sources"
+        EXPERIMENTS[Experiment Data]
+        BEHAVIOR[User Behavior]
+        CONVERSIONS[Conversions]
+    end
+    
+    PYLAR[Pylar<br/>Unified Views]
+    
+    TOOLS[MCP Tools<br/>analyze_results<br/>calculate_significance<br/>recommend_winner]
+    
+    AGENT[AB Testing Assistant]
+    TEAM[Product Team]
+    
+    EXPERIMENTS --> PYLAR
+    BEHAVIOR --> PYLAR
+    CONVERSIONS --> PYLAR
+    PYLAR --> TOOLS
+    TOOLS --> AGENT
+    AGENT --> TEAM
+    
+    style PYLAR fill:#FF4017,stroke:#CC3300,color:#fff
+```
+
 ## Without Pylar vs With Pylar
 
 ### Without Pylar

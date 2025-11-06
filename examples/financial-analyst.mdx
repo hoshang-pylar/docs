@@ -26,6 +26,31 @@ Pylar enables the agent by:
 - **Trend Analysis**: Identifying financial patterns
 - **Report Generation**: Automated financial reporting
 
+```mermaid
+graph LR
+    subgraph "Data Sources"
+        REVENUE[Revenue]
+        EXPENSES[Expenses]
+        BUDGET[Budget]
+    end
+    
+    PYLAR[Pylar<br/>Unified Views]
+    
+    TOOLS[MCP Tools<br/>analyze_trends<br/>calculate_metrics<br/>generate_reports]
+    
+    AGENT[Financial Analyst]
+    TEAM[Finance Team]
+    
+    REVENUE --> PYLAR
+    EXPENSES --> PYLAR
+    BUDGET --> PYLAR
+    PYLAR --> TOOLS
+    TOOLS --> AGENT
+    AGENT --> TEAM
+    
+    style PYLAR fill:#FF4017,stroke:#CC3300,color:#fff
+```
+
 ## Without Pylar vs With Pylar
 
 ### Without Pylar

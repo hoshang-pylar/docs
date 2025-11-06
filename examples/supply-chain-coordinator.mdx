@@ -25,6 +25,31 @@ Pylar enables the agent by:
 - **Automated Optimization**: Calculating optimal reorder points
 - **Performance Analysis**: Analyzing supplier and logistics performance
 
+```mermaid
+graph LR
+    subgraph "Data Sources"
+        INVENTORY[Inventory]
+        SHIPMENTS[Shipments]
+        SUPPLIERS[Supplier Data]
+    end
+    
+    PYLAR[Pylar<br/>Unified Views]
+    
+    TOOLS[MCP Tools<br/>monitor_inventory<br/>track_shipments<br/>optimize_reorder]
+    
+    AGENT[Supply Chain Coordinator]
+    TEAM[Operations Team]
+    
+    INVENTORY --> PYLAR
+    SHIPMENTS --> PYLAR
+    SUPPLIERS --> PYLAR
+    PYLAR --> TOOLS
+    TOOLS --> AGENT
+    AGENT --> TEAM
+    
+    style PYLAR fill:#FF4017,stroke:#CC3300,color:#fff
+```
+
 ## Without Pylar vs With Pylar
 
 ### Without Pylar

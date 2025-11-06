@@ -25,6 +25,31 @@ Pylar enables the agent by:
 - **Compliance Checking**: Policy compliance validation
 - **Audit Reporting**: Automated audit report generation
 
+```mermaid
+graph LR
+    subgraph "Data Sources"
+        EXPENSES[Expenses]
+        POLICIES[Policies]
+        APPROVALS[Approvals]
+    end
+    
+    PYLAR[Pylar<br/>Unified Views]
+    
+    TOOLS[MCP Tools<br/>detect_anomalies<br/>check_compliance<br/>generate_reports]
+    
+    AGENT[Expense Auditor]
+    TEAM[Finance Team]
+    
+    EXPENSES --> PYLAR
+    POLICIES --> PYLAR
+    APPROVALS --> PYLAR
+    PYLAR --> TOOLS
+    TOOLS --> AGENT
+    AGENT --> TEAM
+    
+    style PYLAR fill:#FF4017,stroke:#CC3300,color:#fff
+```
+
 ## Without Pylar vs With Pylar
 
 ### Without Pylar
